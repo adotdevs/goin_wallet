@@ -161,7 +161,7 @@ const ReferralPromo = () => {
         <Paper
           elevation={0}
           sx={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
             borderRadius: 4,
             p: { xs: 4, md: 6 },
             mb: 4,
@@ -278,7 +278,7 @@ const ReferralPromo = () => {
                 onClick={() => navigate('/user/affiliate')}
                 sx={{
                   bgcolor: 'white',
-                  color: '#667eea',
+                  color: '#2563eb',
                   px: 4,
                   py: 1.5,
                   fontSize: '1.1rem',
@@ -320,7 +320,7 @@ const ReferralPromo = () => {
             <Card
               elevation={0}
               sx={{
-                bgcolor: '#242833',
+                bgcolor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
                 border: '1px solid #2d3142',
                 borderRadius: 3,
                 height: '100%',
@@ -338,20 +338,20 @@ const ReferralPromo = () => {
                 <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
                   <Box
                     sx={{
-                      bgcolor: '#667eea20',
+                      bgcolor: '#2563eb20',
                       borderRadius: 2,
                       p: 1.5,
                       display: 'flex',
                       alignItems: 'center'
                     }}
                   >
-                    <PeopleIcon sx={{ color: '#667eea', fontSize: 32 }} />
+                    <PeopleIcon sx={{ color: '#2563eb', fontSize: 32 }} />
                   </Box>
                   <Box>
-                    <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>
+                    <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700 }}>
                       {stats.total}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#8b92a7' }}>
+                    <Typography variant="body2" sx={{ color: '#64748b' }}>
                       Total Referrals
                     </Typography>
                   </Box>
@@ -376,7 +376,7 @@ const ReferralPromo = () => {
             <Card
               elevation={0}
               sx={{
-                bgcolor: '#242833',
+                bgcolor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
                 border: '1px solid #2d3142',
                 borderRadius: 3,
                 height: '100%',
@@ -407,7 +407,7 @@ const ReferralPromo = () => {
                     <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>
                       ${earnings.toLocaleString()}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#8b92a7' }}>
+                    <Typography variant="body2" sx={{ color: '#64748b' }}>
                       Total Earned
                     </Typography>
                   </Box>
@@ -420,7 +420,7 @@ const ReferralPromo = () => {
             <Card
               elevation={0}
               sx={{
-                bgcolor: '#242833',
+                bgcolor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
                 border: '1px solid #2d3142',
                 borderRadius: 3,
                 height: '100%',
@@ -451,7 +451,7 @@ const ReferralPromo = () => {
                     <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>
                       $100
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#8b92a7' }}>
+                    <Typography variant="body2" sx={{ color: '#64748b' }}>
                       Per Referral
                     </Typography>
                   </Box>
@@ -465,7 +465,7 @@ const ReferralPromo = () => {
         <Paper
           elevation={0}
           sx={{
-            bgcolor: '#242833',
+            bgcolor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
             border: '1px solid #2d3142',
             borderRadius: 3,
             p: 4,
@@ -486,7 +486,7 @@ const ReferralPromo = () => {
           <Typography
             variant="body1"
             sx={{
-              color: '#8b92a7',
+              color: '#64748b',
               mb: 4,
               textAlign: 'center'
             }}
@@ -516,7 +516,7 @@ const ReferralPromo = () => {
                 <Card
                   elevation={0}
                   sx={{
-                    bgcolor: '#1a1d29',
+                    bgcolor: '#f8fafc', border: '1px solid #e2e8f0',
                     border: '1px solid #2d3142',
                     borderRadius: 3,
                     height: '100%',
@@ -524,15 +524,15 @@ const ReferralPromo = () => {
                     p: 3,
                     transition: 'all 0.3s ease',
                     '&:hover': {
-                      borderColor: '#667eea',
+                      borderColor: '#2563eb',
                       transform: 'translateY(-4px)'
                     }
                   }}
                 >
                   <Box
                     sx={{
-                      bgcolor: '#667eea20',
-                      color: '#667eea',
+                      bgcolor: '#2563eb20',
+                      color: '#2563eb',
                       borderRadius: '50%',
                       width: 80,
                       height: 80,
@@ -548,7 +548,7 @@ const ReferralPromo = () => {
                   <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, mb: 1 }}>
                     {step.title}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: '#8b92a7' }}>
+                  <Typography variant="body2" sx={{ color: '#64748b' }}>
                     {step.description}
                   </Typography>
                 </Card>

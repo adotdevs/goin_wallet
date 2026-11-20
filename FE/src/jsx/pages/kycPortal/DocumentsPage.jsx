@@ -249,7 +249,7 @@ export default function DocumentGalleryPage() {
     return (<div className="min-h-screen bg-[#F8FAFC] flex flex-col">
       <Navbar />
 
-      <div className="flex-1 max-w-[1600px] w-full mx-auto flex flex-col lg:flex-row">
+      <div className="flex-1 w-full flex flex-col lg:flex-row">
         {/* ==================== LEFT SIDEBAR (SignDocs Style) ==================== */}
         <aside className="w-full lg:w-72 shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-slate-200/80 p-5 flex flex-col justify-between gap-6">
           <div className="space-y-6">

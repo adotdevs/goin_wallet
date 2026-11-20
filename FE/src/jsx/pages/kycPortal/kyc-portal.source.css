@@ -4,10 +4,39 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Restore standard 16px root font-size ONLY while KYC Portal is mounted
-   (wallet's style.css sets :root { font-size: 0.875rem } at <= 100rem). */
+/* Restore standard 16px root font-size and visible scrollbars ONLY while KYC/User Portal is mounted */
 html.kyc-portal-active {
   font-size: 16px !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+html.kyc-portal-active body {
+  overflow-y: auto !important;
+}
+
+html.kyc-portal-active::-webkit-scrollbar,
+html.kyc-portal-active body::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+html.kyc-portal-active::-webkit-scrollbar-track,
+html.kyc-portal-active body::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+html.kyc-portal-active::-webkit-scrollbar-thumb,
+html.kyc-portal-active body::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 9999px;
+  border: 2px solid #f1f5f9;
+}
+
+html.kyc-portal-active::-webkit-scrollbar-thumb:hover,
+html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 #kyc-portal {
@@ -66,14 +95,19 @@ html.kyc-portal-active {
   cursor: pointer;
 }
 
-/* Custom subtle scrollbars matching kyc_data_collector */
+/* Visible, clean scrollbars for sidebar & scrollable panels inside #kyc-portal */
+#kyc-portal * {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
 #kyc-portal ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 #kyc-portal ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f8fafc;
 }
 
 #kyc-portal ::-webkit-scrollbar-thumb {
@@ -83,6 +117,148 @@ html.kyc-portal-active {
 
 #kyc-portal ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Protect embedded shared form controls (Apply Loan, Ticket Attachments, Coin Detail) from preflight border/button stripping */
+#kyc-portal .apply-loan-wrapper input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#kyc-portal .apply-loan-wrapper select,
+#kyc-portal .apply-loan-wrapper textarea {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 10px !important;
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  padding: 10px 14px !important;
+  width: 100%;
+}
+
+#kyc-portal .apply-loan-wrapper input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
+#kyc-portal .apply-loan-wrapper select:focus,
+#kyc-portal .apply-loan-wrapper textarea:focus {
+  border-color: #2563eb !important;
+  background-color: #ffffff !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="actionsBar"] {
+  background-color: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+  padding: 16px 24px !important;
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btn"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 40px !important;
+  padding: 0 18px !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnGhost"],
+#kyc-portal .apply-loan-wrapper [class*="btnSecondary"] {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnGhost"]:hover:not(:disabled),
+#kyc-portal .apply-loan-wrapper [class*="btnSecondary"]:hover:not(:disabled) {
+  background-color: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnPrimary"],
+#kyc-portal .apply-loan-wrapper button[type="submit"] {
+  background-color: #2563eb !important;
+  border: 1px solid #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.25) !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnPrimary"]:hover:not(:disabled),
+#kyc-portal .apply-loan-wrapper button[type="submit"]:hover:not(:disabled) {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnSuccess"] {
+  background-color: #059669 !important;
+  border: 1px solid #059669 !important;
+  color: #ffffff !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnSuccess"]:hover:not(:disabled) {
+  background-color: #047857 !important;
+}
+
+#kyc-portal .apply-loan-wrapper input[type="file"] {
+  border: 1px dashed #cbd5e1 !important;
+  border-radius: 12px !important;
+  background-color: #f8fafc !important;
+  padding: 12px 14px !important;
+  width: 100%;
+  font-size: 13px !important;
+  color: #475569 !important;
+}
+
+#kyc-portal .user-blue-hero h1,
+#kyc-portal .user-blue-hero h2,
+#kyc-portal .user-blue-hero h3,
+#kyc-portal .user-blue-hero h4,
+#kyc-portal .user-blue-hero h5,
+#kyc-portal .user-blue-hero h6,
+#kyc-portal .user-blue-hero p {
+  color: #ffffff !important;
+}
+
+#kyc-portal .user-blue-hero a.MuiButton-contained {
+  background-color: #ffffff !important;
+  color: #2563eb !important;
+  font-weight: 700 !important;
+}
+
+#kyc-portal .user-blue-hero a.MuiButton-contained:hover {
+  background-color: #eff6ff !important;
+}
+
+#kyc-portal [class*="TicketAttachments_attachBtn"] {
+  background-color: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #bfdbfe !important;
+  padding: 8px 14px !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
+#kyc-portal [class*="TicketAttachments_attachBtn"]:hover {
+  background-color: #dbeafe !important;
+}
+
+#kyc-portal [class*="CoinDetail_tabBtn"],
+#kyc-portal [class*="CoinMarketCapChart_rangeBtn"] {
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+}
+
+#kyc-portal [class*="CoinDetail_actionBtn"] {
+  background-color: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+}
+
+#kyc-portal .MuiTab-root {
+  padding: 12px 18px !important;
+  gap: 8px !important;
 }
 
 /* Signature font helpers */

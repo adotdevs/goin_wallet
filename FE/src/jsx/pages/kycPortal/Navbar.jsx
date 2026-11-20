@@ -17,7 +17,9 @@ export default function Navbar() {
     const isStaff = user?.role === "superadmin" ||
         user?.role === "admin" ||
         user?.role === "subadmin";
+
     useEffect(() => {
+        if (user?.role === "user") return undefined;
         const handleClickOutside = (e) => {
             if (notifRef.current && !notifRef.current.contains(e.target)) {
                 setNotifOpen(false);
@@ -28,7 +30,13 @@ export default function Navbar() {
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, [user?.role]);
+
+    // Regular wallet users see the unified User Dashboard Shell (Sidebar + Header)
+    // provided by KycPortalShell, so suppress the standalone KYC top navbar.
+    if (user?.role === "user") {
+        return null;
+    }
     const loadNotifications = async () => {
         try {
             const res = await kycFetch("/api/notifications");

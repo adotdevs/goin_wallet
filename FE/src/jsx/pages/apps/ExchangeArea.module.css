@@ -1,8 +1,8 @@
 .page {
-  --ex-surface: #1a2330;
-  --ex-border: rgba(255, 255, 255, 0.08);
-  --ex-muted: #94a3b8;
-  --ex-text: #f8fafc;
+  --ex-surface: #ffffff;
+  --ex-border: rgba(226, 232, 240, 0.9);
+  --ex-muted: #64748b;
+  --ex-text: #0f172a;
 
   max-width: 1120px;
   margin: 0 auto;
@@ -16,8 +16,8 @@
 
 .title {
   margin: 0 0 0.4rem;
-  font-size: clamp(1.4rem, 2.5vw, 1.85rem);
-  font-weight: 700;
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  font-weight: 800;
   color: var(--ex-text);
   letter-spacing: -0.02em;
 }
@@ -32,9 +32,10 @@
 
 .panel {
   padding: 1.35rem;
-  border-radius: 20px;
+  border-radius: 16px;
   background: var(--ex-surface);
   border: 1px solid var(--ex-border);
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
 }
 
 .grid {
@@ -49,16 +50,17 @@
   gap: 1rem;
   padding: 1.15rem;
   min-height: 196px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   text-decoration: none !important;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .card:hover {
-  background: rgba(255, 255, 255, 0.045);
-  border-color: rgba(91, 141, 239, 0.28);
+  background: #ffffff;
+  border-color: #93c5fd;
+  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.08);
   transform: translateY(-2px);
 }
 
@@ -69,9 +71,9 @@
   justify-content: center;
   min-height: 112px;
   padding: 1.1rem 1.25rem;
-  border-radius: 14px;
+  border-radius: 12px;
   background: #ffffff;
-  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e2e8f0;
 }
 
 .logoWrap img {
@@ -85,8 +87,8 @@
 }
 
 .logoWrapDark {
-  background: #1e293b;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  background: #0f172a;
+  border: 1px solid #1e293b;
 }
 
 .footer {
@@ -98,8 +100,8 @@
 
 .name {
   font-size: 0.95rem;
-  font-weight: 600;
-  color: #e2e8f0;
+  font-weight: 700;
+  color: #0f172a;
   letter-spacing: -0.01em;
 }
 
@@ -111,15 +113,15 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #94a3b8;
+  background: #eff6ff;
+  color: #2563eb;
   font-size: 0.82rem;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .card:hover .arrow {
-  background: rgba(91, 141, 239, 0.18);
-  color: #bfdbfe;
+  background: #2563eb;
+  color: #ffffff;
 }
 
 .loading {
@@ -139,13 +141,8 @@
 
 .skeletonCard {
   min-height: 196px;
-  border-radius: 16px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.04) 0%,
-    rgba(255, 255, 255, 0.08) 50%,
-    rgba(255, 255, 255, 0.04) 100%
-  );
+  border-radius: 14px;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
   background-size: 200% 100%;
   animation: shimmer 1.2s infinite;
 }

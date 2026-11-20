@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
-// Portfolio sidebar balance widget
-import { SVGICON } from '../../constant/theme';
-import { useLocation } from 'react-router-dom';
-import { NavLink, useNavigate, Link } from "react-router-dom";
-import { useAuthUser, useSignOut } from "react-auth-kit";
-import { logoutApi, getsignUserApi, getCoinsUserApi } from "../../../Api/Service";
-import { toast } from "react-toastify";
-import axios from "axios";
+import { useLocation, Link } from "react-router-dom";
+import { useAuthUser } from "react-auth-kit";
+import { getsignUserApi, getCoinsUserApi } from "../../../Api/Service";
 import { getTransactionsForCoin } from "../../pages/report/assets/coinConfig";
 import {
   combinePortfolioTotal,
@@ -16,308 +11,186 @@ import {
   WALLET_BALANCE_UPDATED_EVENT,
   sumCoinPendingIncoming,
 } from "../../../utils/euroCoinUtils";
-// let path = window.location.pathname;
-// path = path.split("/");
-// path = path[path.length - 1];
+import { Wallet, Clock } from "lucide-react";
 
 const SidebarExtraContent = () => {
-	useUsdToEurRate();
-	const location = useLocation();
-	const [modal, setModal] = useState(false);
-	const [Description, setDescription] = useState("");
-	const [isLoading, setisLoading] = useState(true);
-	const [UserData, setUserData] = useState(true);
-	const [totalBalance, settotalBalance] = useState(null);
-	const [totalBalancePending, settotalBalancePending] = useState(null);
-	const [fractionBalance, setfractionBalance] = useState(null);
-	const [fractionBalancePending, setfractionBalancePending] = useState(null);
+  useUsdToEurRate();
+  const location = useLocation();
+  const { pathname } = location;
+  const authUser = useAuthUser();
+  const [totalBalance, settotalBalance] = useState(null);
+  const [totalBalancePending, settotalBalancePending] = useState(null);
+  const [Admin, setAdmin] = useState("");
 
-	const [singleTransaction, setsingleTransaction] = useState();
-	const [UserTransactions, setUserTransactions] = useState([]);
-	const [btcBalance, setbtcBalance] = useState(0);
+  const getCoins = async (data, isUserd) => {
+    let id = data._id;
+    try {
+      const userCoins = await getCoinsUserApi(id);
+      if (userCoins.success) {
+        const prices = extractLivePrices(userCoins, isUserd?.currency);
+        const txs = userCoins.getCoin.transactions || [];
+        const calculateBalance = (coinSymbol, coinPrice) =>
+          getTransactionsForCoin(coinSymbol, txs) * coinPrice;
 
-	const [ethBalance, setethBalance] = useState(0);
-	const [usdtBalance, setusdtBalance] = useState(0);
-	const [Active, setActive] = useState(false);
+        const cryptoUsdTotal =
+          calculateBalance("bitcoin", parseFloat(prices.btc)) +
+          calculateBalance("ethereum", prices.eth) +
+          calculateBalance("tether", prices.usdt) +
+          calculateBalance("bnb", prices.bnb) +
+          calculateBalance("xrp", prices.xrp) +
+          calculateBalance("dogecoin", prices.doge) +
+          calculateBalance("solana", prices.sol) +
+          calculateBalance("toncoin", prices.ton) +
+          calculateBalance("chainlink", prices.link) +
+          calculateBalance("polkadot", prices.dot) +
+          calculateBalance("near protocol", prices.near) +
+          calculateBalance("usd coin", prices.usdc) +
+          calculateBalance("tron", prices.trx);
 
-	const [liveBtc, setliveBtc] = useState(null);
-	const [liveEth, setliveEth] = useState(null);
-	const [liveBnb, setliveBnb] = useState(null);
-	const [liveXrp, setliveXrp] = useState(null);
-	const [liveDoge, setliveDoge] = useState(null);
-	const [liveSol, setliveSol] = useState(null);
-	const [liveTon, setliveTon] = useState(null);
-	const [liveLink, setliveLink] = useState(null);
-	const [liveDot, setliveDot] = useState(null);
-	const [liveNear, setliveNear] = useState(null);
-	const [liveUsdc, setliveUsdc] = useState(null);
-	const [liveTrx, setliveTrx] = useState(null);
-	const { pathname } = location;
-	const compare = ['/dashboard', '/index-2'];
-	let AuthUse = useAuthUser();
-	let signOut = useSignOut();
-	const [isUser, setIsUser] = useState({});
-	let Navigate = useNavigate();
-	let toggleDrop = () => {
-		drop ? setdrop(false) : setdrop(true);
-	};
-	const [drop, setdrop] = useState(false);
-	const getsignUser = async () => {
-		try {
-			const formData = new FormData();
-			formData.append("id", AuthUse().user._id);
-			const userCoins = await getsignUserApi(formData);
+        const fiatAmounts = buildFiatAmountsFromTransactions(txs, "completed");
+        const total = combinePortfolioTotal(
+          cryptoUsdTotal,
+          fiatAmounts,
+          isUserd.currency,
+          { cryptoAlreadyInDisplayCurrency: true }
+        ).toFixed(2);
 
-			if (userCoins.success) {
-				setIsUser(userCoins.signleUser);
-				getCoins(authUser().user, userCoins.signleUser);
-				return;
-			} else {
-				toast.dismiss();
-				toast.error(userCoins.msg);
-			}
-		} catch (error) {
-			toast.dismiss();
-			toast.error(error);
-		} finally {
-		}
-	};
-	let authUser = useAuthUser();
-	const [Admin, setAdmin] = useState("");
+        const [integerPart] = total.split(".");
+        const formattedTotalBalance = parseFloat(integerPart).toLocaleString("en-US", {
+          style: "currency",
+          currency: isUserd.currency === "EUR" ? "EUR" : "USD",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        });
+        settotalBalance(formattedTotalBalance);
 
-	const getCoins = async (data, isUserd) => {
-		let id = data._id;
-		try {
-			const userCoins = await getCoinsUserApi(id);
-			// const response = await axios.get(
-			// 	"https://api.coindesk.com/v1/bpi/currentprice.json"
-			// );
+        const calculatePendingBalance = (coinSymbol, coinPrice) =>
+          sumCoinPendingIncoming(txs, coinSymbol) * coinPrice;
 
-			if (userCoins.success) {
-				setUserData(userCoins.getCoin);setUserTransactions(
-					userCoins.getCoin.transactions.reverse().slice(0, 5)
-				);
-				setisLoading(false);
+        const cryptoPendingUsdTotal =
+          calculatePendingBalance("bitcoin", parseFloat(prices.btc)) +
+          calculatePendingBalance("ethereum", prices.eth) +
+          calculatePendingBalance("tether", prices.usdt) +
+          calculatePendingBalance("bnb", prices.bnb) +
+          calculatePendingBalance("xrp", prices.xrp) +
+          calculatePendingBalance("dogecoin", prices.doge) +
+          calculatePendingBalance("solana", prices.sol) +
+          calculatePendingBalance("toncoin", prices.ton) +
+          calculatePendingBalance("chainlink", prices.link) +
+          calculatePendingBalance("polkadot", prices.dot) +
+          calculatePendingBalance("near protocol", prices.near) +
+          calculatePendingBalance("usd coin", prices.usdc) +
+          calculatePendingBalance("tron", prices.trx);
 
-				const prices = extractLivePrices(userCoins, isUserd?.currency);
-				const val = prices.btc;
-				const ethVal = prices.eth;
-				const usdtVal = prices.usdt;
-				const bnbVal = prices.bnb;
-				const xrpVal = prices.xrp;
-				const dogeVal = prices.doge;
-				const solVal = prices.sol;
-				const tonVal = prices.ton;
-				const linkVal = prices.link;
-				const dotVal = prices.dot;
-				const nearVal = prices.near;
-				const usdcVal = prices.usdc;
-				const trxVal = prices.trx;
+        const fiatPending = buildFiatAmountsFromTransactions(txs, "pending");
+        const totalPending = combinePortfolioTotal(
+          cryptoPendingUsdTotal,
+          fiatPending,
+          isUserd.currency,
+          { cryptoAlreadyInDisplayCurrency: true }
+        ).toFixed(2);
 
-				setliveBtc(val);
-				setliveEth(ethVal);
-				setliveBnb(bnbVal);
-				setliveXrp(xrpVal);
-				setliveDoge(dogeVal);
-				setliveSol(solVal);
-				setliveTon(tonVal);
-				setliveLink(linkVal);
-				setliveDot(dotVal);
-				setliveNear(nearVal);
-				setliveUsdc(usdcVal);
-				setliveTrx(trxVal);
+        const [integerPartPending] = totalPending.split(".");
+        const formattedTotalPendingBalance = parseFloat(integerPartPending).toLocaleString(
+          "en-US",
+          {
+            style: "currency",
+            currency: isUserd.currency === "EUR" ? "EUR" : "USD",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+          }
+        );
+        settotalBalancePending(formattedTotalPendingBalance);
+      }
+    } catch {
+      // ignore sidebar fetch errors
+    }
+  };
 
-				const txs = userCoins.getCoin.transactions || [];
-				const calculateBalance = (coinSymbol, coinPrice) =>
-					getTransactionsForCoin(coinSymbol, txs) * coinPrice;
+  const getsignUser = async () => {
+    try {
+      const sessionUser = authUser()?.user;
+      if (!sessionUser?._id) return;
+      const formData = new FormData();
+      formData.append("id", sessionUser._id);
+      const userCoins = await getsignUserApi(formData);
+      if (userCoins.success) {
+        getCoins(sessionUser, userCoins.signleUser);
+      }
+    } catch {
+      // ignore
+    }
+  };
 
-				// Available balance includes completed txs and pending withdrawals
-				const btcBalance = calculateBalance("bitcoin", parseFloat(val));
-				const ethBalance = calculateBalance("ethereum", ethVal);
-				const usdtBalance = calculateBalance("tether", usdtVal);
-				const bnbBalance = calculateBalance("bnb", bnbVal);
-				const xrpBalance = calculateBalance("xrp", xrpVal);
-				const dogeBalance = calculateBalance("dogecoin", dogeVal);
-				const solBalance = calculateBalance("solana", solVal);
-				const tonBalance = calculateBalance("toncoin", tonVal);
-				const linkBalance = calculateBalance("chainlink", linkVal);
-				const dotBalance = calculateBalance("polkadot", dotVal);
-				const nearBalance = calculateBalance("near protocol", nearVal);
-				const usdcBalance = calculateBalance("usd coin", usdcVal);
-				const trxBalance = calculateBalance("tron", trxVal);
+  useEffect(() => {
+    const sessionUser = authUser()?.user;
+    if (sessionUser?.role === "user") {
+      setAdmin(sessionUser);
+      getsignUser();
+    } else if (sessionUser?.role === "admin") {
+      setAdmin(sessionUser);
+    }
+  }, [pathname]);
 
-				const cryptoUsdTotal =
-					btcBalance +
-					ethBalance +
-					usdtBalance +
-					bnbBalance +
-					xrpBalance +
-					dogeBalance +
-					solBalance +
-					tonBalance +
-					linkBalance +
-					dotBalance +
-					nearBalance +
-					usdcBalance +
-					trxBalance;
-				const fiatAmounts = buildFiatAmountsFromTransactions(
-					userCoins.getCoin.transactions,
-					"completed"
-				);
-				const totalBalance = combinePortfolioTotal(
-					cryptoUsdTotal,
-					fiatAmounts,
-					isUserd.currency,
-					{ cryptoAlreadyInDisplayCurrency: true }
-				).toFixed(2);
+  useEffect(() => {
+    const onWalletUpdated = () => {
+      if (authUser()?.user?.role === "user") {
+        getsignUser();
+      }
+    };
+    window.addEventListener(WALLET_BALANCE_UPDATED_EVENT, onWalletUpdated);
+    return () => window.removeEventListener(WALLET_BALANCE_UPDATED_EVENT, onWalletUpdated);
+  }, []);
 
-				const [integerPart, fractionalPart] = totalBalance.split(".");
+  const userId = Admin?._id || authUser()?.user?._id;
+  const transactionsPath = userId ? `/Transactions/${userId}` : "/dashboard";
 
-				// Format the total balance with the appropriate currency symbol
-				const formattedTotalBalance = parseFloat(integerPart).toLocaleString(
-					"en-US",
-					{
-						style: "currency",
-						currency: isUserd.currency === "EUR" ? "EUR" : "USD",
-						minimumFractionDigits: 0,
-						maximumFractionDigits: 0,
-					}
-				);
-
-				// Set the fractional part and formatted total balance in state
-				setfractionBalance(fractionalPart);
-				settotalBalance(formattedTotalBalance);
-
-				// Pending Transactions
-				const calculatePendingBalance = (coinSymbol, coinPrice) =>
-					sumCoinPendingIncoming(txs, coinSymbol) * coinPrice;
-
-				const btcPending = calculatePendingBalance("bitcoin", parseFloat(val));
-				const ethPending = calculatePendingBalance("ethereum", ethVal);
-				const usdtPending = calculatePendingBalance("tether", usdtVal);
-				const bnbPending = calculatePendingBalance("bnb", bnbVal);
-				const xrpPending = calculatePendingBalance("xrp", xrpVal);
-				const dogePending = calculatePendingBalance("dogecoin", dogeVal);
-				const solPending = calculatePendingBalance("solana", solVal);
-				const tonPending = calculatePendingBalance("toncoin", tonVal);
-				const linkPending = calculatePendingBalance("chainlink", linkVal);
-				const dotPending = calculatePendingBalance("polkadot", dotVal);
-				const nearPending = calculatePendingBalance("near protocol", nearVal);
-				const usdcPending = calculatePendingBalance("usd coin", usdcVal);
-				const trxPending = calculatePendingBalance("tron", trxVal);
-
-				const cryptoPendingUsdTotal =
-					btcPending +
-					ethPending +
-					usdtPending +
-					bnbPending +
-					xrpPending +
-					dogePending +
-					solPending +
-					tonPending +
-					linkPending +
-					dotPending +
-					nearPending +
-					usdcPending +
-					trxPending;
-				const fiatPending = buildFiatAmountsFromTransactions(
-					userCoins.getCoin.transactions,
-					"pending"
-				);
-				const totalBalancePendings = combinePortfolioTotal(
-					cryptoPendingUsdTotal,
-					fiatPending,
-					isUserd.currency,
-					{ cryptoAlreadyInDisplayCurrency: true }
-				).toFixed(2);
-
-				const [integerPartPending, fractionalPartPending] = totalBalancePendings.split(".");
-
-				// Format the total balance with the appropriate currency symbol
-				const formattedTotalPendingBalance = parseFloat(integerPartPending).toLocaleString(
-					"en-US",
-					{
-						style: "currency",
-						currency: isUserd.currency === "EUR" ? "EUR" : "USD",
-						minimumFractionDigits: 0,
-						maximumFractionDigits: 0,
-					}
-				);
-
-				// Set the fractional part and formatted total balance in state
-				setfractionBalancePending(fractionalPartPending);
-				settotalBalancePending(formattedTotalPendingBalance);
-				// const [integerPartPending, fractionalPartPending] = totalPendingBalanceUSD.split(".");
-
-				// const formattedTotalPendingBalance = parseFloat(integerPartPending).toLocaleString(
-				// 	"en-US",
-				// 	{
-				// 		style: "currency",
-				// 		currency: "USD",
-				// 		minimumFractionDigits: 0,
-				// 		maximumFractionDigits: 0,
-				// 	}
-				// );
-
-				// setfractionBalancePending(fractionalPartPending);
-				// settotalBalancePending(formattedTotalPendingBalance);
-
-			} else {
-				toast.dismiss();
-				toast.error(userCoins.msg);
-			}
-		} catch (error) {
-			toast.dismiss();
-			toast.error(error);
-		} finally {
-		}
-	};
-
-	useEffect(() => {
-		if (authUser().user.role === "user") {
-			setAdmin(authUser().user);
-			getsignUser();
-			return;
-		} else if (authUser().user.role === "admin") {
-			setAdmin(authUser().user);
-			return;
-		}
-	}, [pathname]);
-
-	useEffect(() => {
-		const onWalletUpdated = () => {
-			if (authUser()?.user?.role === "user") {
-				getsignUser();
-			}
-		};
-		window.addEventListener(WALLET_BALANCE_UPDATED_EVENT, onWalletUpdated);
-		return () => window.removeEventListener(WALLET_BALANCE_UPDATED_EVENT, onWalletUpdated);
-	}, []);
-
-	const userId = Admin?._id || authUser()?.user?._id;
-	const transactionsPath = userId ? `/Transactions/${userId}` : "/dashboard";
-
-	return (
-		<>
-			<div className={` feature-box  new-bg-dark ${compare.includes(pathname) ? '' : 'style-3'}`}>
-				<Link to={transactionsPath} className="wallet-box new-bg-light">
-					{SVGICON.SideWalletSvgIcon}
-					<div className="ms-3">
-						<h4 className="text-white mb-0 d-block">{totalBalance === null ? "..." : totalBalance === 0 ? 0 : `${totalBalance}`} </h4>
-						<small className="new-theme-color">Available Funds</small>
-					</div>
-				</Link>
-				<Link to={transactionsPath} className="wallet-box new-bg-light">
-					{SVGICON.SideWalletSvgIcon}
-					<div className="ms-3">
-						<h4 className="text-white mb-0 d-block">{totalBalancePending === null ? "..." : totalBalancePending === 0 ? 0 : `${totalBalancePending}`} </h4>
-						<small className="new-theme-color"> Total Pending</small>
-					</div>
-				</Link>
-
-			</div>
-		</>
-	);
+  return (
+    <div className="up-balance-box">
+      <Link to={transactionsPath} className="up-balance-row">
+        <div>
+          <div className="up-balance-label">Available Funds</div>
+          <div className="up-balance-val">
+            {totalBalance === null ? "..." : totalBalance}
+          </div>
+        </div>
+        <div
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 10,
+            background: "rgba(59, 130, 246, 0.2)",
+            color: "#60a5fa",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Wallet size={17} />
+        </div>
+      </Link>
+      <div className="up-balance-divider" />
+      <Link to={transactionsPath} className="up-balance-row">
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 5,
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#94a3b8",
+          }}
+        >
+          <Clock size={12} />
+          Pending
+        </span>
+        <span className="up-balance-pending-val">
+          {totalBalancePending === null ? "..." : totalBalancePending}
+        </span>
+      </Link>
+    </div>
+  );
 };
 
 export default SidebarExtraContent;

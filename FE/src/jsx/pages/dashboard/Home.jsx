@@ -16,6 +16,7 @@ import { getCoinsUserApi, getHtmlDataApi, getsignUserApi, patchCoinsApi, getLink
 import { getTransactionsForCoin } from '../report/assets/coinConfig';
 import { sumCoinPendingIncoming } from '../../../utils/euroCoinUtils';
 import axios from 'axios';
+import { ShieldCheck, Clock, AlertTriangle, Sparkles, FileSignature, ArrowRight } from 'lucide-react';
 
 const compare = ['/dashboard', '/index-2'];
 
@@ -244,9 +245,192 @@ export function MainComponent() {
 		localStorage.setItem('referralAdDismissed', 'true');
 	};
 
+	const kycStatusState = isUser?._id
+		? isUser.kyc === true
+			? "verified"
+			: isUser.submitDoc?.status === "completed"
+			? "pending"
+			: isUser.submitDoc?.status === "rejected"
+			? "rejected"
+			: "unverified"
+		: null;
+
 	return (
 		<Row>
 			<Col xl={12}>
+				{/* Unified KYC Verification & Document Signing Status Card */}
+				{kycStatusState && (
+					<div
+						style={{
+							marginBottom: 20,
+							borderRadius: 18,
+							padding: "18px 22px",
+							display: "flex",
+							flexWrap: "wrap",
+							alignItems: "center",
+							justifyContent: "space-between",
+							gap: 16,
+							background:
+								kycStatusState === "verified"
+									? "#ecfdf5"
+									: kycStatusState === "pending"
+									? "#eff6ff"
+									: kycStatusState === "rejected"
+									? "#fff1f2"
+									: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+							border:
+								kycStatusState === "verified"
+									? "1px solid #a7f3d0"
+									: kycStatusState === "pending"
+									? "1px solid #bfdbfe"
+									: kycStatusState === "rejected"
+									? "1px solid #fecdd3"
+									: "1px solid #1d4ed8",
+							color:
+								kycStatusState === "verified"
+									? "#065f46"
+									: kycStatusState === "pending"
+									? "#1e3a8a"
+									: kycStatusState === "rejected"
+									? "#881337"
+									: "#ffffff",
+							boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
+						}}
+					>
+						<div style={{ display: "flex", alignItems: "center", gap: 14, minWidth: 0, flex: "1 1 320px" }}>
+							<div
+								style={{
+									width: 44,
+									height: 44,
+									borderRadius: 12,
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									flexShrink: 0,
+									background:
+										kycStatusState === "verified"
+											? "#10b981"
+											: kycStatusState === "pending"
+											? "#2563eb"
+											: kycStatusState === "rejected"
+											? "#e11d48"
+											: "rgba(255, 255, 255, 0.18)",
+									color: "#ffffff",
+								}}
+							>
+								{kycStatusState === "verified" ? (
+									<ShieldCheck size={22} />
+								) : kycStatusState === "pending" ? (
+									<Clock size={22} />
+								) : kycStatusState === "rejected" ? (
+									<AlertTriangle size={22} />
+								) : (
+									<Sparkles size={22} />
+								)}
+							</div>
+							<div style={{ minWidth: 0 }}>
+								<div
+									style={{
+										fontSize: 15,
+										fontWeight: 800,
+										lineHeight: 1.3,
+										color: kycStatusState === "unverified" ? "#ffffff" : "inherit",
+									}}
+								>
+									{kycStatusState === "verified"
+										? "KYC Identity Verified"
+										: kycStatusState === "pending"
+										? "KYC Verification Under Compliance Review"
+										: kycStatusState === "rejected"
+										? "KYC Verification Requires Resubmission"
+										: "Complete Your KYC Identity Verification"}
+								</div>
+								<div
+									style={{
+										fontSize: 13,
+										marginTop: 3,
+										opacity: kycStatusState === "unverified" ? 0.92 : 0.85,
+										color: kycStatusState === "unverified" ? "#dbeafe" : "inherit",
+									}}
+								>
+									{kycStatusState === "verified"
+										? "Your identity and address are approved. Full wallet, KYC, and e-signature access is active."
+										: kycStatusState === "pending"
+										? "Your Government ID and Proof of Address have been submitted. You can sign pending documents while we review."
+										: kycStatusState === "rejected"
+										? isUser.submitDoc?.rejectionReason ||
+										  "Your previous KYC submission was rejected. Please upload clear, valid documents."
+										: "Upload your Government ID and Proof of Address to activate full account compliance."}
+								</div>
+							</div>
+						</div>
+
+						<div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+							<Link
+								to="/flows/documents"
+								style={{
+									display: "inline-flex",
+									alignItems: "center",
+									gap: 6,
+									padding: "9px 14px",
+									borderRadius: 11,
+									fontSize: 12,
+									fontWeight: 700,
+									textDecoration: "none",
+									background:
+										kycStatusState === "unverified"
+											? "rgba(255, 255, 255, 0.16)"
+											: "#ffffff",
+									color:
+										kycStatusState === "unverified" ? "#ffffff" : "#0f172a",
+									border:
+										kycStatusState === "unverified"
+											? "1px solid rgba(255, 255, 255, 0.28)"
+											: "1px solid #e2e8f0",
+								}}
+							>
+								<FileSignature size={14} />
+								<span>Document Signing</span>
+							</Link>
+
+							<Link
+								to="/flows/kyc"
+								style={{
+									display: "inline-flex",
+									alignItems: "center",
+									gap: 6,
+									padding: "9px 16px",
+									borderRadius: 11,
+									fontSize: 12,
+									fontWeight: 700,
+									textDecoration: "none",
+									background:
+										kycStatusState === "unverified"
+											? "#ffffff"
+											: kycStatusState === "rejected"
+											? "#e11d48"
+											: kycStatusState === "verified"
+											? "#059669"
+											: "#2563eb",
+									color: kycStatusState === "unverified" ? "#1d4ed8" : "#ffffff",
+									boxShadow: "0 2px 8px rgba(15, 23, 42, 0.08)",
+								}}
+							>
+								<span>
+									{kycStatusState === "verified"
+										? "View KYC Record"
+										: kycStatusState === "pending"
+										? "View KYC Status"
+										: kycStatusState === "rejected"
+										? "Resubmit KYC"
+										: "Complete KYC Now"}
+								</span>
+								<ArrowRight size={14} />
+							</Link>
+						</div>
+					</div>
+				)}
+
 				<div className="row main-card">
 					<MainSlider />
 				</div>
@@ -255,8 +439,8 @@ export function MainComponent() {
 					<Row className="my-2">
 						<Col xl={12}>
 							<div className="card new-bg-dark" style={{
-								background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-								border: '2px solid rgba(255, 255, 255, 0.2)',
+								background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+								border: '1px solid #1d4ed8',
 								position: 'relative',
 								overflow: 'hidden'
 							}}>
@@ -368,31 +552,6 @@ export function MainComponent() {
 							</Col>
 						</Row>
 				}
-				{isUser.submitDoc && isUser.submitDoc.status === "pending" ? (
-					<Row className="my-1">
-						<Col xl={12}>
-							<div className="card new-bg-dark kyc-form-card">
-								<div className="card-header text-white">
-									<h4 className="card-title text-white">Verify Your Identity for Enhanced Security</h4>
-								</div>
-								<div className="card-body text-white">
-									<p>We prioritize the safety and security of our platform to ensure a seamless experience for all users.</p>
-									<p>Completing the KYC process is an essential step in maintaining a secure environment and complying with regulatory standards.</p>
-									<p>To activate your wallet, please complete the identification process.</p>
-									<Alert variant="warning" dismissible className="solid alert-right-icon">
-										<span><i className='mdi mdi-alert'></i></span>{" "}
-										Please verify your identity
-									</Alert>
-									<Link to="/flows/kyc">
-										<Button to="/flows/kyc" variant="primary" className="mt-3">
-											Start KYC
-										</Button>
-									</Link>
-								</div>
-							</div>
-						</Col>
-					</Row>
-				) : ""}
 				<Row>
 					<div className="col-xl-12">
 						<DashboardAssetsWallets />

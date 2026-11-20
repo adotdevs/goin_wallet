@@ -1,316 +1,331 @@
-import React,{ useContext, useEffect, useState} from "react";
-
-import { Dropdown } from "react-bootstrap";
-import { NavLink, useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthUser, useSignOut } from "react-auth-kit";
-import { logoutApi, getsignUserApi, getCoinsUserApi } from "../../../Api/Service";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import axios from "axios";
-/// Image
-import profile from "../../../assets/images/7309681.jpg";
-import avatar from "../../../assets/images/avatar/1.jpg";
-
-import { ThemeContext } from "../../../context/ThemeContext";
-import  Logout  from "../nav/Logout";
-import { SVGICON } from "../../constant/theme";
+import { logoutApi, getsignUserApi } from "../../../Api/Service";
+import { navtoggle } from "../../../store/actions/AuthActions";
 import CryptoNewsTicker from "../../elements/dashboard/CryptoNewsTicker";
+import {
+  Menu,
+  ShieldCheck,
+  Clock,
+  AlertCircle,
+  XCircle,
+  FileSignature,
+  ChevronDown,
+  Settings,
+  User,
+  LogOut,
+  FileText,
+} from "lucide-react";
 
-const listBlog = [
-  { icon:SVGICON.LtcSvgIcon, name:'LTC in DexignLab'},
-  { icon:SVGICON.BtcSvgIcon, name:'BTC/USD in DexignLab'},
-  { icon:SVGICON.EthSvgIcon, name:'ETH/USD Dlab '},
-  { icon:SVGICON.BtcSvgIcon, name:'BTC/USD in DexignLab'},
-  { icon:SVGICON.EthSvgIcon, name:'ETH/USD Dlab '},
-  { icon:SVGICON.LtcSvgIcon, name:'LTC in DexignLab'},  
-];
+const PAGE_TITLES = {
+  dashboard: "Dashboard",
+  assets: "My Assets",
+  tokens: "My Tokens",
+  swap: "Swap",
+  staking: "Staking",
+  transactions: "Transactions",
+  account: "Payment Methods",
+  exchanges: "Exchanges",
+  trading: "AI Trading Bot",
+  "crypto-card": "Crypto Card",
+  "apply-loan": "Apply for Loan",
+  "referral-promo": "Refer & Earn",
+  affiliate: "My Affiliate",
+  "all-files": "Documents",
+  "edit-profile": "Account Settings",
+  support: "Support Desk",
+  "create-ticket": "Create Ticket",
+  tickets: "Support Ticket",
+  market: "Market",
+  stocks: "Stocks",
+  legal: "Legal",
+  kyc: "KYC Verification",
+  documents: "Document Signing",
+  "kyc-profile": "Profile & Signature",
+};
 
-const Header = ({ onNote }) => {
- 
-    
- 
-  const compare = ['/dashboard', '/index-2'];
-  let AuthUse = useAuthUser();
-  let signOut = useSignOut();
+const Header = () => {
+  const authUser = useAuthUser();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
   const [isUser, setIsUser] = useState({});
-  let Navigate = useNavigate();
-  let toggleDrop = () => {
-    drop ? setdrop(false) : setdrop(true);
-  };
-  const [drop, setdrop] = useState(false);
-  const getsignUser = async () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  const sessionUser = authUser()?.user || {};
+
+  useEffect(() => {
+    const handleOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, []);
+
+  useEffect(() => {
+    if (sessionUser?.role !== "user" || !sessionUser?._id) return;
+    let active = true;
+    const loadProfile = async () => {
+      try {
+        const fd = new FormData();
+        fd.append("id", sessionUser._id);
+        const res = await getsignUserApi(fd);
+        if (active && res?.success && res?.signleUser) {
+          setIsUser(res.signleUser);
+        }
+      } catch {
+        // ignore
+      }
+    };
+    loadProfile();
+    return () => {
+      active = false;
+    };
+  }, [location.pathname, sessionUser?._id, sessionUser?.role]);
+
+  const handleLogout = async () => {
+    setMenuOpen(false);
     try {
-      const formData = new FormData();
-      formData.append("id", AuthUse().user._id);
-      const userCoins = await getsignUserApi(formData);
-
-      if (userCoins.success) {
-        setIsUser(userCoins.signleUser);
-
-        return;
+      const res = await logoutApi();
+      if (res?.success) {
+        signOut();
+        localStorage.removeItem("token");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("authUser");
+        localStorage.removeItem("auth_state");
+        localStorage.removeItem("jwttoken");
+        navigate("/auth/login");
       } else {
         toast.dismiss();
-        toast.error(userCoins.msg);
+        toast.error(res?.msg || "Logout failed");
       }
     } catch (error) {
       toast.dismiss();
-      toast.error(error);
-    } finally {
+      toast.error(error?.message || "Logout failed");
     }
   };
-  let authUser = useAuthUser();
-  const [Admin, setAdmin] = useState("");
-  useEffect(() => {
-    if (authUser().user.role === "user") {
-      setAdmin(authUser().user);
-      getsignUser();
-      return;
-    } else if (authUser().user.role === "admin") {
-      setAdmin(authUser().user);
-      return;
-    }
-  }, []);
 
-  const getKycStatus = () => {
-    if (authUser().user.role !== "user" || !isUser._id) {
-      return null;
-    }
-    if (isUser.kyc === true) {
-      return "approved";
-    }
-    if (isUser.submitDoc?.status === "completed") {
-      return "under_review";
-    }
-    return "not_started";
-  };
-
-  const kycStatus = getKycStatus();
-
-  const kycBadgeStyles = {
-    approved: {
-      background: "rgba(16, 185, 129, 0.2)",
-      border: "1px solid rgba(16, 185, 129, 0.5)",
-      color: "#6ee7b7",
-    },
-    under_review: {
-      background: "rgba(245, 158, 11, 0.2)",
-      border: "1px solid rgba(245, 158, 11, 0.5)",
-      color: "#fcd34d",
-    },
-    not_started: {
-      background: "rgba(59, 130, 246, 0.2)",
-      border: "1px solid rgba(59, 130, 246, 0.5)",
-      color: "#93c5fd",
-    },
-  };
-
-  const renderKycHeaderBadge = () => {
-    if (!kycStatus) {
-      return null;
-    }
-
-    const baseStyle = {
-      display: "inline-flex",
-      alignItems: "center",
-      gap: "6px",
-      padding: "5px 12px",
-      borderRadius: "20px",
-      fontSize: "12px",
-      fontWeight: 600,
-      lineHeight: 1.2,
-      whiteSpace: "nowrap",
-      textDecoration: "none",
-      ...kycBadgeStyles[kycStatus],
-    };
-
-    if (kycStatus === "approved") {
-      return (
-        <li className="nav-item d-flex align-items-center me-2">
-          <span style={baseStyle} title="KYC verified">
-            <span style={{ fontSize: "10px" }}>●</span> KYC Verified
-          </span>
-        </li>
-      );
-    }
-
-    if (kycStatus === "under_review") {
-      return (
-        <li className="nav-item d-flex align-items-center me-2">
-          <span style={baseStyle} title="Documents under review">
-            <span style={{ fontSize: "10px" }}>●</span> KYC Pending
-          </span>
-        </li>
-      );
-    }
-
-    return (
-      <li className="nav-item d-flex align-items-center me-2">
-        <Link to="/flows/kyc" style={baseStyle} title="Complete identity verification">
-          <span style={{ fontSize: "10px" }}>●</span> Verify KYC
-        </Link>
-      </li>
-    );
-  };
-  const [headerFix, setheaderFix] = useState(false);
-  
-  function CommanScroll(){
-    setheaderFix(window.scrollY > 50);
+  // Resolve clean page title from current route
+  const isRouteParamId = (segment = "") =>
+    /^[a-f0-9]{24}$/i.test(segment) || /^[0-9]+$/.test(segment);
+  const segments = location.pathname.split("/").filter(Boolean);
+  let lastSeg = (segments[segments.length - 1] || "dashboard").toLowerCase();
+  if (isRouteParamId(lastSeg) && segments.length > 1) {
+    lastSeg = segments[segments.length - 2].toLowerCase();
   }
+  const pageTitle =
+    PAGE_TITLES[lastSeg] ||
+    lastSeg
+      .split("-")
+      .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+      .join(" ");
 
-  useEffect(() => {
-    window.addEventListener("scroll", CommanScroll);
-    return()=>{
-        window.removeEventListener("scroll", CommanScroll)
-    }
-  }, [])
-  
+  const kycState =
+    sessionUser?.role !== "user"
+      ? null
+      : isUser?.kyc === true
+      ? "verified"
+      : isUser?.submitDoc?.status === "completed"
+      ? "pending"
+      : isUser?.submitDoc?.status === "rejected"
+      ? "rejected"
+      : "unverified";
 
-  const {background, changeBackground } = useContext(ThemeContext);
-    const handleThemeMode = () => {
-      if(background.value === 'dark'){
-        changeBackground({ value: "light", label: "Light" });
-      }else{
-        changeBackground({ value: "dark", label: "Dark" });
-      }
-    }
+  const firstName = isUser?.firstName || sessionUser?.firstName || "";
+  const lastName = isUser?.lastName || sessionUser?.lastName || "";
+  const email = isUser?.email || sessionUser?.email || "";
+  const initials = `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() || "U";
 
-    let path = window.location.pathname;
-    path = path.split("/");
-    path = path[path.length - 1];
-
-    const isRouteParamId = (segment = "") =>
-      /^[a-f0-9]{24}$/i.test(segment) || /^[0-9]+$/.test(segment);
-
-    const pathSegments = window.location.pathname.split("/").filter(Boolean);
-    let titleSegment = pathSegments[pathSegments.length - 1] || "dashboard";
-    if (isRouteParamId(titleSegment) && pathSegments.length > 1) {
-      titleSegment = pathSegments[pathSegments.length - 2];
-    }
-
-    const name = titleSegment.split("-");
-    const filterName = name.length >= 3 ? name.filter((n, i) => i > 0) : name;
-    const finalName = filterName.includes("app")
-      ? filterName.filter((f) => f !== "app")
-      : filterName.includes("ui")
-      ? filterName.filter((f) => f !== "ui")
-      : filterName.includes("uc")
-      ? filterName.filter((f) => f !== "uc")
-      : filterName.includes("basic")
-      ? filterName.filter((f) => f !== "basic")
-      : filterName.includes("jquery")
-      ? filterName.filter((f) => f !== "jquery")
-      : filterName.includes("table")
-      ? filterName.filter((f) => f !== "table")
-      : filterName.includes("page")
-      ? filterName.filter((f) => f !== "page")
-      : filterName.includes("email")
-      ? filterName.filter((f) => f !== "email")
-      : filterName.includes("ecom")
-      ? filterName.filter((f) => f !== "ecom")
-      : filterName.includes("chart")
-      ? filterName.filter((f) => f !== "chart")
-      : filterName.includes("editor")
-      ? filterName.filter((f) => f !== "editor")
-      : filterName;
-
-  
   return (
-    <>
-      <div className={`header ${path ==="dashboard" || path ==="index-2" ? 'home' : '' } ${headerFix ? 'is-fixed' : '' }`}>
-        <div className="header-content">
-          <nav className="navbar navbar-expand">
-            <div className="collapse navbar-collapse justify-content-between">
-              <div className="header-left">                
-               
-              </div>
-              <ul className="navbar-nav header-right ">	
-                  {/* on mobile size */}
-                 
-                  {/* end on mobile size */}
-                  {/* <li className="nav-item dropdown notification_dropdown">
-                      <Link to={"#"} 
-                        className={`nav-link bell dz-theme-mode ${background.value === "dark" ? "active" : ""}`}
-                        onClick={()=>handleThemeMode()}
-                      >
-                        {SVGICON.LightSvgIcon}
-                        {SVGICON.DarkSvgIcon}
-                      </Link>
-                  </li>	 */}
-                  
-                    {renderKycHeaderBadge()}
-                    {authUser().user.role === "user" && (
-                      <li className="nav-item d-flex align-items-center me-2">
-                        <Link to="/flows/documents" className="nav-link" title="Sign documents">
-                          Documents
-                        </Link>
-                      </li>
-                    )}
-                <Dropdown as="li" className="nav-item header-profile2">              
-                  <Dropdown.Toggle to={"#"} className="nav-link i-false  noap" as="div">
-                    <div className="header-info2 d-flex align-items-center">
-											<div className="d-flex align-items-center sidebar-info">
-												<div>
-                          <h5 className="mb-0 text-white">{Admin.firstName} {Admin.lastName}</h5>
-													<span className="d-block text-end">{Admin.email}</span>
-												</div>
-											</div>
-											<img src={profile} alt="profile" />
-										</div>                    
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu align="end" className="mt-3 dropdown-menu dropdown-menu-right ">
-                      {/* <Link to={"/app-profile"} className="dropdown-item ai-icon icon-bell-effect">
-                          {SVGICON.ProfileSvgIcon}
-                          <span className="ms-2">Profile </span>
-                      </Link> */}
-                         
-                    <Link to={"/edit-profile"} className="dropdown-item ai-icon ">
-                        {SVGICON.SettingSvgIcon}
-                        <span className="ms-2">Settings </span>
-                      </Link>               
-                      <Logout />
-                  </Dropdown.Menu>
-                </Dropdown>
-              </ul>
-            </div>
-          </nav>
+    <header className="header">
+      <div className="header-content">
+        {/* Left: Mobile Drawer Toggle + Page Title */}
+        <div className="up-header-left">
+          <button
+            type="button"
+            className="up-mobile-menu-btn"
+            onClick={() => dispatch(navtoggle())}
+            aria-label="Toggle navigation menu"
+          >
+            <Menu size={19} />
+          </button>
+          <div style={{ minWidth: 0 }}>
+            <h1 className="up-page-title">{pageTitle}</h1>
+            <p className="up-page-sub up-hide-sm">
+              Welcome back{firstName ? `, ${firstName}` : ""}
+            </p>
+          </div>
         </div>
-         {path === "dashboard" || path=== "index-2" ?  
-            <div className="page-titles">
-              <div className="sub-dz-head">
-                  <div className="d-flex align-items-center dz-head-title">
-                    <h2 className="text-white m-0">Dashboard</h2>
-                    <p className="ms-2 text-warning">Welcome Back {Admin.firstName} {Admin.lastName}!</p>
-                  </div>                      
-              </div>	
-            </div>          
-           :               
-            <div className="page-titles">
-                <div className="d-flex align-items-center">
-                    <h2 className="text-white"
-                      style={{ textTransform: "capitalize" }}
-                    >
-                      {finalName.join(" ").length === 0
-                      ? "Dashboard"
-                      : finalName.join(" ") === "dashboard dark"
-                      ? "Dashboard"
-                      : finalName.join(" ")}
-                    </h2>
-                    <p className="text-warning ms-2">Welcome Back {Admin.firstName} {Admin.lastName}!</p>
+
+        {/* Right: KYC Status Pill + Documents Pill + Profile Menu */}
+        <div className="up-header-right">
+          {kycState === "verified" && (
+            <Link
+              to="/flows/kyc"
+              className="up-pill-link up-pill-verified"
+              title="Identity verified"
+            >
+              <ShieldCheck size={14} />
+              <span className="up-hide-sm">KYC Verified</span>
+            </Link>
+          )}
+          {kycState === "pending" && (
+            <Link
+              to="/flows/kyc"
+              className="up-pill-link up-pill-pending"
+              title="KYC documents under compliance review"
+            >
+              <Clock size={14} />
+              <span className="up-hide-sm">KYC Pending</span>
+            </Link>
+          )}
+          {kycState === "rejected" && (
+            <Link
+              to="/flows/kyc"
+              className="up-pill-link up-pill-rejected"
+              title="KYC requires attention"
+            >
+              <XCircle size={14} />
+              <span className="up-hide-sm">KYC Rejected</span>
+            </Link>
+          )}
+          {kycState === "unverified" && (
+            <Link
+              to="/flows/kyc"
+              className="up-pill-link up-pill-unverified"
+              title="Complete KYC verification"
+            >
+              <AlertCircle size={14} />
+              <span>Verify KYC</span>
+            </Link>
+          )}
+
+          {sessionUser?.role === "user" && (
+            <Link
+              to="/flows/documents"
+              className="up-pill-link up-pill-docs up-hide-sm"
+              title="Sign and view documents"
+            >
+              <FileSignature size={14} />
+              <span>Documents</span>
+            </Link>
+          )}
+
+          {/* Profile Dropdown */}
+          <div style={{ position: "relative" }} ref={menuRef}>
+            <button
+              type="button"
+              className="up-profile-btn"
+              onClick={() => setMenuOpen((prev) => !prev)}
+            >
+              <span className="up-avatar">{initials}</span>
+              <div className="up-hide-sm" style={{ textAlign: "left", lineHeight: 1.2 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#0f172a" }}>
+                  {firstName} {lastName}
                 </div>
-                <ol className="breadcrumb">
-                  <li className="breadcrumb-item active ms-auto">
-                    <Link to={"/dashboard"} className="d-flex align-self-center">
-                      
-                        Dashboard
-                    </Link>
-                  </li>
-                  <li className="breadcrumb-item"><Link to={"#"} style={{ textTransform: "capitalize" }}>{finalName.join(" ")}</Link></li>
-                </ol>
-            </div>
-          }
-        <CryptoNewsTicker />
+                <div style={{ fontSize: 10, fontWeight: 500, color: "#64748b" }}>
+                  {kycState === "verified" ? "Verified Client" : "Client Account"}
+                </div>
+              </div>
+              <ChevronDown size={14} style={{ color: "#94a3b8" }} />
+            </button>
+
+            {menuOpen && (
+              <div className="up-profile-dropdown">
+                <div
+                  style={{
+                    padding: "10px 16px",
+                    borderBottom: "1px solid #f1f5f9",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#0f172a",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {firstName} {lastName}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#64748b",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      marginTop: 2,
+                    }}
+                  >
+                    {email}
+                  </div>
+                </div>
+
+                <div style={{ padding: "4px 0" }}>
+                  <Link
+                    to="/flows/kyc"
+                    className="up-dropdown-item"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <ShieldCheck size={15} style={{ color: "#2563eb" }} />
+                    <span>KYC Verification</span>
+                  </Link>
+                  <Link
+                    to="/flows/documents"
+                    className="up-dropdown-item"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <FileText size={15} style={{ color: "#64748b" }} />
+                    <span>Document Signing</span>
+                  </Link>
+                  <Link
+                    to="/flows/kyc-profile"
+                    className="up-dropdown-item"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <User size={15} style={{ color: "#64748b" }} />
+                    <span>Profile &amp; Saved Signature</span>
+                  </Link>
+                  <Link
+                    to="/edit-profile"
+                    className="up-dropdown-item"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <Settings size={15} style={{ color: "#64748b" }} />
+                    <span>Account Settings</span>
+                  </Link>
+                </div>
+
+                <div style={{ borderTop: "1px solid #f1f5f9", paddingTop: 4 }}>
+                  <button
+                    type="button"
+                    className="up-dropdown-item danger"
+                    onClick={handleLogout}
+                  >
+                    <LogOut size={15} />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-     
-    </>    
+
+      {/* Live market ticker strip */}
+      <CryptoNewsTicker />
+    </header>
   );
 };
 

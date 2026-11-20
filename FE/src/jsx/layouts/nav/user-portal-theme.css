@@ -1,0 +1,857 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+/* ==========================================================================
+   GOin SAS — Unified User Portal Theme (strictly scoped to html.user-portal-theme)
+   Admin pages never receive this class and remain 100% unaffected.
+   ========================================================================== */
+
+html.user-portal-theme {
+  font-size: 16px !important;
+  --up-bg: #f8fafc;
+  --up-surface: #ffffff;
+  --up-border: #e2e8f0;
+  --up-border-soft: rgba(226, 232, 240, 0.85);
+  --up-text: #0f172a;
+  --up-text-secondary: #475569;
+  --up-text-muted: #64748b;
+  --up-primary: #2563eb;
+  --up-primary-hover: #1d4ed8;
+  --up-primary-soft: #eff6ff;
+  --up-shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --up-shadow-hover: 0 10px 25px -5px rgba(37, 99, 235, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --up-sidebar-width: 264px;
+  --up-header-height: 64px;
+}
+
+html.user-portal-theme body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  background-color: var(--up-bg) !important;
+  color: var(--up-text) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Main wrapper & content canvas */
+html.user-portal-theme #main-wrapper {
+  background-color: var(--up-bg) !important;
+  min-height: 100vh;
+}
+
+html.user-portal-theme .new-bg-light {
+  background-color: var(--up-bg) !important;
+}
+
+html.user-portal-theme .new-bg-dark {
+  background-color: var(--up-surface) !important;
+}
+
+html.user-portal-theme .new-theme-bg {
+  background-color: var(--up-primary) !important;
+}
+
+html.user-portal-theme .new-theme-color {
+  color: var(--up-primary) !important;
+}
+
+/* ==========================================================================
+   Sidebar & Brand Header (Desktop fixed left 264px, Mobile slide-over)
+   ========================================================================== */
+html.user-portal-theme .nav-header {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: var(--up-sidebar-width) !important;
+  height: var(--up-header-height) !important;
+  background: var(--up-surface) !important;
+  border-right: 1px solid var(--up-border) !important;
+  border-bottom: 1px solid var(--up-border-soft) !important;
+  z-index: 45 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 20px !important;
+  box-shadow: none !important;
+}
+
+html.user-portal-theme .nav-header .brand-logo {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+html.user-portal-theme .nav-header .nav-control {
+  position: static !important;
+  right: auto !important;
+  top: auto !important;
+  transform: none !important;
+  display: none !important;
+}
+
+html.user-portal-theme .dlabnav {
+  position: fixed !important;
+  top: var(--up-header-height) !important;
+  left: 0 !important;
+  bottom: 0 !important;
+  width: var(--up-sidebar-width) !important;
+  height: calc(100vh - var(--up-header-height)) !important;
+  background: var(--up-surface) !important;
+  border-right: 1px solid var(--up-border) !important;
+  box-shadow: none !important;
+  z-index: 44 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+html.user-portal-theme .up-sidebar-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 16px 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+html.user-portal-theme .up-sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+html.user-portal-theme .up-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+/* Sidebar balance widget */
+html.user-portal-theme .up-balance-box {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+}
+
+html.user-portal-theme .up-balance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+html.user-portal-theme .up-balance-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+html.user-portal-theme .up-balance-val {
+  font-size: 17px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+html.user-portal-theme .up-balance-divider {
+  height: 1px;
+  background: rgba(148, 163, 184, 0.2);
+}
+
+html.user-portal-theme .up-balance-pending-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: #93c5fd;
+}
+
+/* Sidebar section label & nav items */
+html.user-portal-theme .up-nav-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  padding: 0 12px 6px;
+}
+
+html.user-portal-theme .up-nav-list {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+html.user-portal-theme .up-nav-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px;
+  padding: 9px 12px !important;
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+  text-decoration: none !important;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+html.user-portal-theme .up-nav-item:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+html.user-portal-theme .up-nav-item.active {
+  background-color: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+html.user-portal-theme .up-nav-item-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+html.user-portal-theme .up-nav-item-left span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html.user-portal-theme .up-nav-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+/* Sidebar KYC status card */
+html.user-portal-theme .up-sidebar-kyc-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  text-decoration: none !important;
+  transition: all 0.15s ease;
+}
+
+html.user-portal-theme .up-sidebar-kyc-card.verified {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+
+html.user-portal-theme .up-sidebar-kyc-card.pending {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1e40af;
+}
+
+html.user-portal-theme .up-sidebar-kyc-card.rejected {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #9f1239;
+}
+
+html.user-portal-theme .up-sidebar-kyc-card.unverified {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
+}
+
+html.user-portal-theme .up-sidebar-footer {
+  padding: 12px 14px 16px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #ffffff;
+}
+
+html.user-portal-theme .up-logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1px solid #fecdd3;
+  background: #fff1f2;
+  color: #e11d48;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+html.user-portal-theme .up-logout-btn:hover {
+  background: #ffe4e6;
+}
+
+/* ==========================================================================
+   Top Header (Sticky 64px white bar)
+   ========================================================================== */
+html.user-portal-theme .header {
+  position: fixed !important;
+  top: 0 !important;
+  left: var(--up-sidebar-width) !important;
+  right: 0 !important;
+  width: calc(100% - var(--up-sidebar-width)) !important;
+  height: auto !important;
+  min-height: var(--up-header-height) !important;
+  padding-left: 0 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid var(--up-border) !important;
+  z-index: 40 !important;
+  box-shadow: none !important;
+}
+
+html.user-portal-theme .header .header-content {
+  height: var(--up-header-height) !important;
+  padding: 0 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  background: transparent !important;
+}
+
+html.user-portal-theme .up-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+html.user-portal-theme .up-mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #334155;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+html.user-portal-theme .up-page-title {
+  margin: 0 !important;
+  font-size: 17px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  line-height: 1.2 !important;
+  text-transform: capitalize;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html.user-portal-theme .up-page-sub {
+  margin: 0 !important;
+  font-size: 12px !important;
+  color: #64748b !important;
+  line-height: 1.2 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html.user-portal-theme .up-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+html.user-portal-theme .up-pill-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none !important;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+html.user-portal-theme .up-pill-verified {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #047857 !important;
+}
+
+html.user-portal-theme .up-pill-pending {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8 !important;
+}
+
+html.user-portal-theme .up-pill-rejected {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #be123c !important;
+}
+
+html.user-portal-theme .up-pill-unverified {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #b45309 !important;
+}
+
+html.user-portal-theme .up-pill-docs {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #334155 !important;
+}
+
+html.user-portal-theme .up-pill-docs:hover {
+  background: #e2e8f0;
+  color: #0f172a !important;
+}
+
+html.user-portal-theme .up-profile-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 5px;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+html.user-portal-theme .up-profile-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+html.user-portal-theme .up-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+html.user-portal-theme .up-profile-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 248px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px -12px rgba(15, 23, 42, 0.16);
+  padding: 6px 0;
+  z-index: 60;
+}
+
+html.user-portal-theme .up-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155 !important;
+  text-decoration: none !important;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.12s ease;
+}
+
+html.user-portal-theme .up-dropdown-item:hover {
+  background: #f8fafc;
+  color: #0f172a !important;
+}
+
+html.user-portal-theme .up-dropdown-item.danger {
+  color: #e11d48 !important;
+}
+
+html.user-portal-theme .up-dropdown-item.danger:hover {
+  background: #fff1f2;
+}
+
+/* ==========================================================================
+   Content Body Layout
+   ========================================================================== */
+html.user-portal-theme #main-wrapper .content-body {
+  margin-left: var(--up-sidebar-width) !important;
+  padding-top: calc(var(--up-header-height) + 42px) !important;
+  min-height: 100vh !important;
+  background-color: var(--up-bg) !important;
+  color: var(--up-text) !important;
+}
+
+html.user-portal-theme #main-wrapper .content-body.kyc-embedded-body {
+  padding-top: calc(var(--up-header-height) + 34px) !important;
+}
+
+html.user-portal-theme #main-wrapper .content-body > .container-fluid {
+  padding: 20px 24px 40px !important;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+/* Compliance banner offset compatibility */
+html.user-portal-theme.compliance-banner-active .nav-header,
+html.user-portal-theme.compliance-banner-active .header {
+  top: var(--compliance-banner-height, 0px) !important;
+}
+
+html.user-portal-theme.compliance-banner-active .dlabnav {
+  top: calc(var(--up-header-height) + var(--compliance-banner-height, 0px)) !important;
+  height: calc(100vh - var(--up-header-height) - var(--compliance-banner-height, 0px)) !important;
+}
+
+/* ==========================================================================
+   Modern Light Institutional Surface Overrides for User Wallet Pages
+   ========================================================================== */
+html.user-portal-theme .content-body .card {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--up-shadow-card) !important;
+  color: #0f172a !important;
+}
+
+html.user-portal-theme .content-body .card-header {
+  background-color: transparent !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding: 18px 22px !important;
+}
+
+html.user-portal-theme .content-body .card-title,
+html.user-portal-theme .content-body h1,
+html.user-portal-theme .content-body h2,
+html.user-portal-theme .content-body h3,
+html.user-portal-theme .content-body h4,
+html.user-portal-theme .content-body h5,
+html.user-portal-theme .content-body h6 {
+  color: #0f172a;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Convert legacy dark-theme .text-white on light cards/body to slate-900,
+   while preserving true white text on colored buttons/badges/banners/kyc-portal */
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .text-white:not(.btn):not(.badge):not([class*="bg-blue"]):not([class*="bg-emerald"]):not([class*="bg-rose"]):not([class*="bg-amber"]):not([class*="bg-slate-900"]):not([class*="bg-primary"]):not([class*="bg-success"]):not([class*="bg-danger"]):not(.up-keep-white) {
+  color: #0f172a !important;
+}
+
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .btn-primary,
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .btn-primary *,
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .btn-success,
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .btn-danger,
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .badge.bg-primary,
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .badge.bg-success,
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .badge.bg-danger {
+  color: #ffffff !important;
+}
+
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .btn-primary {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+}
+
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .btn-primary:hover {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+/* Tables inside user pages */
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .table {
+  color: #0f172a !important;
+  background-color: transparent !important;
+}
+
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .table thead th {
+  background-color: #f8fafc !important;
+  color: #64748b !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding: 12px 16px !important;
+}
+
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .table tbody td {
+  color: #334155 !important;
+  border-color: #f1f5f9 !important;
+  padding: 13px 16px !important;
+  vertical-align: middle !important;
+}
+
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .table tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Override legacy .naman white-text table class */
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .naman th,
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .naman td {
+  color: #0f172a !important;
+}
+
+/* Inputs & Selects */
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .form-control,
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .form-select {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  color: #0f172a !important;
+  font-size: 14px !important;
+}
+
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .form-control:focus,
+html.user-portal-theme .content-body:not(.kyc-embedded-body) .form-select:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14) !important;
+}
+
+/* Bootstrap Modals in user portal */
+html.user-portal-theme .modal-content {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 20px !important;
+  color: #0f172a !important;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
+}
+
+html.user-portal-theme .modal-header {
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+html.user-portal-theme .modal-footer {
+  border-top: 1px solid #f1f5f9 !important;
+}
+
+/* Footer */
+html.user-portal-theme .footer {
+  margin-left: var(--up-sidebar-width) !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+/* ==========================================================================
+   Page-Specific Light Institutional Polish (Staking, Trading, Crypto Card,
+   Support Tickets, Profile, Tokens, Payment Methods)
+   ========================================================================== */
+html.user-portal-theme .staking-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  color: #0f172a !important;
+  box-shadow: var(--up-shadow-card) !important;
+}
+
+html.user-portal-theme .staking-card:hover {
+  border-color: #bfdbfe !important;
+  box-shadow: var(--up-shadow-hover) !important;
+}
+
+html.user-portal-theme .staking-duration-label,
+html.user-portal-theme .staking-note {
+  color: #64748b !important;
+}
+
+html.user-portal-theme .staking-duration-option {
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+html.user-portal-theme .staking-duration-option.active {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+html.user-portal-theme .staking-min {
+  color: #475569 !important;
+}
+
+html.user-portal-theme .staking-min strong {
+  color: #0f172a !important;
+}
+
+html.user-portal-theme .staking-btn {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+}
+
+html.user-portal-theme .staking-btn:hover {
+  background: #1d4ed8 !important;
+}
+
+/* Crypto Card light surface */
+html.user-portal-theme .cc-page {
+  --cc-bg: #f8fafc;
+  --cc-surface: #ffffff;
+  --cc-border: #e2e8f0;
+  --cc-text: #0f172a;
+  --cc-muted: #64748b;
+  color: #0f172a !important;
+}
+
+html.user-portal-theme .cc-page-title,
+html.user-portal-theme .cc-hero-headline {
+  color: #0f172a !important;
+}
+
+html.user-portal-theme .cc-hero-tagline {
+  background: linear-gradient(90deg, #2563eb, #1d4ed8) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html.user-portal-theme .cc-feature-list li {
+  color: #334155 !important;
+}
+
+html.user-portal-theme .cc-breadcrumb span:last-child,
+html.user-portal-theme .cc-breadcrumb a:hover {
+  color: #0f172a !important;
+}
+
+/* Support Ticket details page */
+html.user-portal-theme .user-ticket-page .saasasa {
+  color: #0f172a !important;
+}
+
+html.user-portal-theme .user-ticket-page .border-infoas {
+  background-color: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  color: #1e3a8a !important;
+  border-radius: 12px !important;
+}
+
+html.user-portal-theme .user-ticket-page .tckt0mn {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html.user-portal-theme .user-ticket-page .ticket-msg-time {
+  color: #64748b !important;
+}
+
+html.user-portal-theme .user-ticket-page .ticket-user-action-btn--edit {
+  background-color: #eff6ff !important;
+  border-color: #bfdbfe !important;
+  color: #2563eb !important;
+}
+
+html.user-portal-theme .user-ticket-page .ticket-user-action-btn--save {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+html.user-portal-theme .user-ticket-page .ticket-user-action-btn--cancel {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+/* Mobile & Tablet Responsive Drawer (<= 1024px) */
+html.user-portal-theme .up-mobile-overlay {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  html.user-portal-theme .nav-header {
+    display: none !important;
+  }
+
+  html.user-portal-theme .header {
+    left: 0 !important;
+    width: 100% !important;
+  }
+
+  html.user-portal-theme .header .header-content {
+    padding: 0 14px !important;
+  }
+
+  html.user-portal-theme .up-mobile-menu-btn {
+    display: inline-flex !important;
+  }
+
+  html.user-portal-theme .dlabnav {
+    top: 0 !important;
+    height: 100vh !important;
+    transform: translateX(-100%) !important;
+    z-index: 60 !important;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25) !important;
+  }
+
+  html.user-portal-theme #main-wrapper.menu-toggle .dlabnav {
+    transform: translateX(0) !important;
+  }
+
+  html.user-portal-theme .up-mobile-drawer-head {
+    display: flex !important;
+  }
+
+  html.user-portal-theme .up-mobile-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 55;
+  }
+
+  html.user-portal-theme #main-wrapper .content-body,
+  html.user-portal-theme .footer {
+    margin-left: 0 !important;
+  }
+
+  html.user-portal-theme #main-wrapper .content-body > .container-fluid {
+    padding: 16px 14px 32px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html.user-portal-theme .up-hide-sm {
+    display: none !important;
+  }
+}

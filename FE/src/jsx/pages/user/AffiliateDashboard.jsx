@@ -93,7 +93,7 @@ const ReferralTree = ({ node, level = 0, isLastChild = false }) => {
             elevation={isYou ? 6 : 3}
             sx={{
               background: isYou 
-                ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)'
                 : level === 1
                   ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
                   : level === 2
@@ -106,7 +106,7 @@ const ReferralTree = ({ node, level = 0, isLastChild = false }) => {
                           ? 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)'
                           : 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)', // Pink for level 6+
               border: isYou 
-                ? '2px solid #667eea' 
+                ? '2px solid #2563eb' 
                 : `2px solid ${
                     level === 1 ? '#10b981' : 
                     level === 2 ? '#f59e0b' : 
@@ -490,10 +490,10 @@ const AffiliateDashboard = () => {
               <Container maxWidth="xl">
         {/* Header */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" sx={{ color: 'white', fontWeight: 700, mb: 1 }}>
+          <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 1 }}>
             My Affiliate Dashboard
           </Typography>
-          <Typography variant="body1" sx={{ color: '#8b92a7' }}>
+          <Typography variant="body1" sx={{ color: '#64748b' }}>
             Track your referrals, earnings, and grow your network
           </Typography>
         </Box>
@@ -502,7 +502,7 @@ const AffiliateDashboard = () => {
         <Paper
           elevation={0}
           sx={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
             borderRadius: 3,
             p: 3,
             mb: 4
@@ -566,7 +566,7 @@ const AffiliateDashboard = () => {
                 fullWidth
                 sx={{
                   bgcolor: 'white',
-                  color: '#667eea',
+                  color: '#2563eb',
                   fontWeight: 700,
                   '&:hover': { bgcolor: '#f0f0f0' }
                 }}
@@ -583,7 +583,7 @@ const AffiliateDashboard = () => {
             <Card
               elevation={0}
               sx={{
-                bgcolor: '#242833',
+                bgcolor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
                 border: '1px solid #2d3142',
                 borderRadius: 3,
                 height: '100%',
@@ -596,18 +596,18 @@ const AffiliateDashboard = () => {
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Box
                     sx={{
-                      bgcolor: '#667eea20',
+                      bgcolor: '#2563eb20',
                       borderRadius: 2,
                       p: 1.5
                     }}
                   >
-                    <PeopleIcon sx={{ color: '#667eea', fontSize: 32 }} />
+                    <PeopleIcon sx={{ color: '#2563eb', fontSize: 32 }} />
                   </Box>
                   <Box>
-                    <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>
+                    <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700 }}>
                       {stats.total}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#8b92a7' }}>
+                    <Typography variant="body2" sx={{ color: '#64748b' }}>
                       Total Referrals
                     </Typography>
                   </Box>
@@ -620,7 +620,7 @@ const AffiliateDashboard = () => {
             <Card
               elevation={0}
               sx={{
-                bgcolor: '#242833',
+                bgcolor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
                 border: '1px solid #2d3142',
                 borderRadius: 3,
                 height: '100%',
@@ -641,10 +641,10 @@ const AffiliateDashboard = () => {
                     <CheckCircleIcon sx={{ color: '#10b981', fontSize: 32 }} />
                   </Box>
                   <Box>
-                    <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>
+                    <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700 }}>
                       {stats.active}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#8b92a7' }}>
+                    <Typography variant="body2" sx={{ color: '#64748b' }}>
                       Active
                     </Typography>
                   </Box>
@@ -657,7 +657,7 @@ const AffiliateDashboard = () => {
             <Card
               elevation={0}
               sx={{
-                bgcolor: '#242833',
+                bgcolor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
                 border: '1px solid #2d3142',
                 borderRadius: 3,
                 height: '100%',
@@ -678,10 +678,10 @@ const AffiliateDashboard = () => {
                     <HourglassIcon sx={{ color: '#f59e0b', fontSize: 32 }} />
                   </Box>
                   <Box>
-                    <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>
+                    <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700 }}>
                       {stats.inactive}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#8b92a7' }}>
+                    <Typography variant="body2" sx={{ color: '#64748b' }}>
                       Pending
                     </Typography>
                   </Box>
@@ -694,7 +694,7 @@ const AffiliateDashboard = () => {
             <Card
               elevation={0}
               sx={{
-                bgcolor: '#242833',
+                bgcolor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
                 border: '1px solid #2d3142',
                 borderRadius: 3,
                 height: '100%',
@@ -715,10 +715,10 @@ const AffiliateDashboard = () => {
                     <MoneyIcon sx={{ color: '#10b981', fontSize: 32 }} />
                   </Box>
                   <Box>
-                    <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>
+                    <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700 }}>
                       ${earnings.total}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#8b92a7' }}>
+                    <Typography variant="body2" sx={{ color: '#64748b' }}>
                       Total Earned
                     </Typography>
                   </Box>
@@ -732,7 +732,7 @@ const AffiliateDashboard = () => {
         <Paper
           elevation={0}
           sx={{
-            bgcolor: '#242833',
+            bgcolor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
             border: '1px solid #2d3142',
             borderRadius: 3,
             overflow: 'hidden'
@@ -745,16 +745,16 @@ const AffiliateDashboard = () => {
               borderBottom: '1px solid #2d3142',
               px: 2,
               '& .MuiTab-root': {
-                color: '#8b92a7',
+                color: '#64748b',
                 fontWeight: 600,
                 textTransform: 'none',
                 fontSize: '1rem'
               },
               '& .Mui-selected': {
-                color: '#667eea !important'
+                color: '#2563eb !important'
               },
               '& .MuiTabs-indicator': {
-                backgroundColor: '#667eea'
+                backgroundColor: '#2563eb'
               }
             }}
           >
@@ -768,7 +768,7 @@ const AffiliateDashboard = () => {
             {activeTab === 0 && (
               <>
                 {referrals.length === 0 ? (
-                  <Alert severity="info" sx={{ bgcolor: '#667eea20', color: 'white', border: '1px solid #667eea' }}>
+                  <Alert severity="info" sx={{ bgcolor: '#2563eb20', color: '#0f172a', border: '1px solid #2563eb' }}>
                     You haven't referred anyone yet. Share your referral code to get started!
                   </Alert>
                 ) : (
@@ -776,16 +776,16 @@ const AffiliateDashboard = () => {
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell sx={{ color: '#8b92a7', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
+                          <TableCell sx={{ color: '#64748b', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
                             Name
                           </TableCell>
-                          <TableCell sx={{ color: '#8b92a7', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
+                          <TableCell sx={{ color: '#64748b', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
                             Email
                           </TableCell>
-                          <TableCell sx={{ color: '#8b92a7', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
+                          <TableCell sx={{ color: '#64748b', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
                             Status
                           </TableCell>
-                          <TableCell sx={{ color: '#8b92a7', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
+                          <TableCell sx={{ color: '#64748b', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
                             Joined Date
                           </TableCell>
                         </TableRow>
@@ -793,10 +793,10 @@ const AffiliateDashboard = () => {
                       <TableBody>
                         {referrals.map((ref, index) => (
                           <TableRow key={index}>
-                            <TableCell sx={{ color: 'white', borderBottom: '1px solid #2d3142' }}>
+                            <TableCell sx={{ color: '#0f172a', borderBottom: '1px solid #2d3142' }}>
                               {ref.name}
                             </TableCell>
-                            <TableCell sx={{ color: '#8b92a7', borderBottom: '1px solid #2d3142' }}>
+                            <TableCell sx={{ color: '#64748b', borderBottom: '1px solid #2d3142' }}>
                               {ref.email}
                             </TableCell>
                             <TableCell sx={{ borderBottom: '1px solid #2d3142' }}>
@@ -810,7 +810,7 @@ const AffiliateDashboard = () => {
                                 }}
                               />
                             </TableCell>
-                            <TableCell sx={{ color: '#8b92a7', borderBottom: '1px solid #2d3142' }}>
+                            <TableCell sx={{ color: '#64748b', borderBottom: '1px solid #2d3142' }}>
                               {new Date(ref.joinedDate).toLocaleDateString()}
                             </TableCell>
                           </TableRow>
@@ -829,10 +829,10 @@ const AffiliateDashboard = () => {
                   <>
                     {/* Tree Header */}
                     <Box sx={{ mb: 4, textAlign: 'center' }}>
-                      <Typography variant="h5" sx={{ color: 'white', fontWeight: 700, mb: 1 }}>
+                      <Typography variant="h5" sx={{ color: '#0f172a', fontWeight: 700, mb: 1 }}>
                         🌳 Your Referral Network
                       </Typography>
-                      <Typography variant="body2" sx={{ color: '#8b92a7', maxWidth: 600, mx: 'auto' }}>
+                      <Typography variant="body2" sx={{ color: '#64748b', maxWidth: 600, mx: 'auto' }}>
                         Visualize your multi-level referral hierarchy and watch your network grow
                       </Typography>
                     </Box>
@@ -855,7 +855,7 @@ const AffiliateDashboard = () => {
                     
                     {/* Tree Legend */}
                     <Box sx={{ mt: 4 }}>
-                      <Typography variant="subtitle2" sx={{ color: 'white', fontWeight: 600, mb: 2, textAlign: 'center' }}>
+                      <Typography variant="subtitle2" sx={{ color: '#0f172a', fontWeight: 600, mb: 2, textAlign: 'center' }}>
                         Legend
                       </Typography>
                       <Grid container spacing={2} justifyContent="center">
@@ -870,9 +870,9 @@ const AffiliateDashboard = () => {
                               textAlign: 'center'
                             }}
                           >
-                            <Box sx={{ width: 24, height: 24, bgcolor: '#667eea', borderRadius: '50%', mx: 'auto', mb: 1, border: '2px solid white' }} />
-                            <Typography variant="caption" sx={{ color: 'white', fontWeight: 600, display: 'block' }}>You</Typography>
-                            <Typography variant="caption" sx={{ color: '#8b92a7', fontSize: '0.65rem' }}>Root Node</Typography>
+                            <Box sx={{ width: 24, height: 24, bgcolor: '#2563eb', borderRadius: '50%', mx: 'auto', mb: 1, border: '2px solid white' }} />
+                            <Typography variant="caption" sx={{ color: '#0f172a', fontWeight: 600, display: 'block' }}>You</Typography>
+                            <Typography variant="caption" sx={{ color: '#64748b', fontSize: '0.65rem' }}>Root Node</Typography>
                           </Paper>
                         </Grid>
                         <Grid item xs={12} sm={6} md={2.4}>
@@ -887,8 +887,8 @@ const AffiliateDashboard = () => {
                             }}
                           >
                             <Box sx={{ width: 24, height: 24, bgcolor: '#10b981', borderRadius: '50%', mx: 'auto', mb: 1, border: '2px solid white' }} />
-                            <Typography variant="caption" sx={{ color: 'white', fontWeight: 600, display: 'block' }}>Level 1</Typography>
-                            <Typography variant="caption" sx={{ color: '#8b92a7', fontSize: '0.65rem' }}>Direct Referrals</Typography>
+                            <Typography variant="caption" sx={{ color: '#0f172a', fontWeight: 600, display: 'block' }}>Level 1</Typography>
+                            <Typography variant="caption" sx={{ color: '#64748b', fontSize: '0.65rem' }}>Direct Referrals</Typography>
                           </Paper>
                         </Grid>
                         <Grid item xs={12} sm={6} md={2.4}>
@@ -903,8 +903,8 @@ const AffiliateDashboard = () => {
                             }}
                           >
                             <Box sx={{ width: 24, height: 24, bgcolor: '#f59e0b', borderRadius: '50%', mx: 'auto', mb: 1, border: '2px solid white' }} />
-                            <Typography variant="caption" sx={{ color: 'white', fontWeight: 600, display: 'block' }}>Level 2</Typography>
-                            <Typography variant="caption" sx={{ color: '#8b92a7', fontSize: '0.65rem' }}>Sub-Referrals</Typography>
+                            <Typography variant="caption" sx={{ color: '#0f172a', fontWeight: 600, display: 'block' }}>Level 2</Typography>
+                            <Typography variant="caption" sx={{ color: '#64748b', fontSize: '0.65rem' }}>Sub-Referrals</Typography>
                           </Paper>
                         </Grid>
                         <Grid item xs={12} sm={6} md={2.4}>
@@ -919,8 +919,8 @@ const AffiliateDashboard = () => {
                             }}
                           >
                             <CheckCircleIcon sx={{ fontSize: 24, color: '#10b981', mb: 1 }} />
-                            <Typography variant="caption" sx={{ color: 'white', fontWeight: 600, display: 'block' }}>Active</Typography>
-                            <Typography variant="caption" sx={{ color: '#8b92a7', fontSize: '0.65rem' }}>Verified Users</Typography>
+                            <Typography variant="caption" sx={{ color: '#0f172a', fontWeight: 600, display: 'block' }}>Active</Typography>
+                            <Typography variant="caption" sx={{ color: '#64748b', fontSize: '0.65rem' }}>Verified Users</Typography>
                           </Paper>
                         </Grid>
                         <Grid item xs={12} sm={6} md={2.4}>
@@ -935,8 +935,8 @@ const AffiliateDashboard = () => {
                             }}
                           >
                             <HourglassIcon sx={{ fontSize: 24, color: '#f59e0b', mb: 1 }} />
-                            <Typography variant="caption" sx={{ color: 'white', fontWeight: 600, display: 'block' }}>Pending</Typography>
-                            <Typography variant="caption" sx={{ color: '#8b92a7', fontSize: '0.65rem' }}>Awaiting Approval</Typography>
+                            <Typography variant="caption" sx={{ color: '#0f172a', fontWeight: 600, display: 'block' }}>Pending</Typography>
+                            <Typography variant="caption" sx={{ color: '#64748b', fontSize: '0.65rem' }}>Awaiting Approval</Typography>
                           </Paper>
                         </Grid>
                       </Grid>
@@ -944,11 +944,11 @@ const AffiliateDashboard = () => {
                   </>
                 ) : (
                   <Box sx={{ textAlign: 'center', py: 8 }}>
-                    <TreeIcon sx={{ fontSize: 80, color: '#667eea40', mb: 3 }} />
-                    <Typography variant="h5" sx={{ color: 'white', fontWeight: 700, mb: 1 }}>
+                    <TreeIcon sx={{ fontSize: 80, color: '#2563eb40', mb: 3 }} />
+                    <Typography variant="h5" sx={{ color: '#0f172a', fontWeight: 700, mb: 1 }}>
                       Build Your Network
                     </Typography>
-                    <Typography variant="body1" sx={{ color: '#8b92a7', mb: 4, maxWidth: 480, mx: 'auto', lineHeight: 1.7 }}>
+                    <Typography variant="body1" sx={{ color: '#64748b', mb: 4, maxWidth: 480, mx: 'auto', lineHeight: 1.7 }}>
                       Your referral tree is empty. Start referring friends to build your multi-level network and watch your earnings grow exponentially!
                     </Typography>
                     <Button
@@ -958,8 +958,8 @@ const AffiliateDashboard = () => {
                       size="large"
                       startIcon={<ShareIcon />}
                       sx={{
-                        bgcolor: '#667eea',
-                        color: 'white',
+                        bgcolor: '#2563eb',
+                        color: '#0f172a',
                         fontWeight: 700,
                         px: 4,
                         py: 1.5,
@@ -988,13 +988,13 @@ const AffiliateDashboard = () => {
                     <Card
                       elevation={0}
                       sx={{
-                        bgcolor: '#1a1d29',
+                        bgcolor: '#f8fafc', border: '1px solid #e2e8f0',
                         border: '1px solid #2d3142',
                         borderRadius: 2
                       }}
                     >
                       <CardContent>
-                        <Typography variant="body2" sx={{ color: '#8b92a7', mb: 1 }}>
+                        <Typography variant="body2" sx={{ color: '#64748b', mb: 1 }}>
                           Total Earned
                         </Typography>
                         <Typography variant="h4" sx={{ color: '#10b981', fontWeight: 700 }}>
@@ -1008,16 +1008,16 @@ const AffiliateDashboard = () => {
                     <Card
                       elevation={0}
                       sx={{
-                        bgcolor: '#1a1d29',
+                        bgcolor: '#f8fafc', border: '1px solid #e2e8f0',
                         border: '1px solid #2d3142',
                         borderRadius: 2
                       }}
                     >
                       <CardContent>
-                        <Typography variant="body2" sx={{ color: '#8b92a7', mb: 1 }}>
+                        <Typography variant="body2" sx={{ color: '#64748b', mb: 1 }}>
                           Paid
                         </Typography>
-                        <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>
+                        <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700 }}>
                           ${earnings.paid}
                         </Typography>
                       </CardContent>
@@ -1028,13 +1028,13 @@ const AffiliateDashboard = () => {
                     <Card
                       elevation={0}
                       sx={{
-                        bgcolor: '#1a1d29',
+                        bgcolor: '#f8fafc', border: '1px solid #e2e8f0',
                         border: '1px solid #2d3142',
                         borderRadius: 2
                       }}
                     >
                       <CardContent>
-                        <Typography variant="body2" sx={{ color: '#8b92a7', mb: 1 }}>
+                        <Typography variant="body2" sx={{ color: '#64748b', mb: 1 }}>
                           Pending
                         </Typography>
                         <Typography variant="h4" sx={{ color: '#f59e0b', fontWeight: 700 }}>
@@ -1046,7 +1046,7 @@ const AffiliateDashboard = () => {
                 </Grid>
 
                 {commissions.length === 0 ? (
-                  <Alert severity="info" sx={{ bgcolor: '#667eea20', color: 'white', border: '1px solid #667eea' }}>
+                  <Alert severity="info" sx={{ bgcolor: '#2563eb20', color: '#0f172a', border: '1px solid #2563eb' }}>
                     No commission earnings yet. Refer friends to start earning!
                   </Alert>
                 ) : (
@@ -1054,19 +1054,19 @@ const AffiliateDashboard = () => {
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell sx={{ color: '#8b92a7', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
+                          <TableCell sx={{ color: '#64748b', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
                             From
                           </TableCell>
-                          <TableCell sx={{ color: '#8b92a7', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
+                          <TableCell sx={{ color: '#64748b', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
                             Amount
                           </TableCell>
-                          <TableCell sx={{ color: '#8b92a7', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
+                          <TableCell sx={{ color: '#64748b', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
                             Status
                           </TableCell>
-                          <TableCell sx={{ color: '#8b92a7', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
+                          <TableCell sx={{ color: '#64748b', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
                             Date
                           </TableCell>
-                          <TableCell sx={{ color: '#8b92a7', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
+                          <TableCell sx={{ color: '#64748b', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
                             Notes
                           </TableCell>
                         </TableRow>
@@ -1074,7 +1074,7 @@ const AffiliateDashboard = () => {
                       <TableBody>
                         {commissions.map((commission, index) => (
                           <TableRow key={index}>
-                            <TableCell sx={{ color: 'white', borderBottom: '1px solid #2d3142' }}>
+                            <TableCell sx={{ color: '#0f172a', borderBottom: '1px solid #2d3142' }}>
                               {commission.from}
                             </TableCell>
                             <TableCell sx={{ color: '#10b981', fontWeight: 600, borderBottom: '1px solid #2d3142' }}>
@@ -1091,10 +1091,10 @@ const AffiliateDashboard = () => {
                                 }}
                               />
                             </TableCell>
-                            <TableCell sx={{ color: '#8b92a7', borderBottom: '1px solid #2d3142' }}>
+                            <TableCell sx={{ color: '#64748b', borderBottom: '1px solid #2d3142' }}>
                               {new Date(commission.date).toLocaleDateString()}
                             </TableCell>
-                            <TableCell sx={{ color: '#8b92a7', borderBottom: '1px solid #2d3142', fontSize: '0.875rem' }}>
+                            <TableCell sx={{ color: '#64748b', borderBottom: '1px solid #2d3142', fontSize: '0.875rem' }}>
                               {commission.notes || '-'}
                             </TableCell>
                           </TableRow>

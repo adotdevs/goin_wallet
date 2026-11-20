@@ -131,7 +131,7 @@ export default function KycOnboardingPage() {
     return (<div className="min-h-screen bg-[#F8FAFC] flex flex-col">
       <Navbar />
 
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="flex-1 w-full px-5 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Top Header & Progress Stepper */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>

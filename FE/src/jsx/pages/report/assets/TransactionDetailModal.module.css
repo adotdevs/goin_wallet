@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 1060;
-  background: rgba(2, 6, 23, 0.72);
+  background: rgba(15, 23, 42, 0.55);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
@@ -13,10 +13,10 @@
 .modal {
   width: min(680px, calc(100vw - 2rem));
   max-height: min(90vh, 720px);
-  border-radius: 16px;
-  background: #1a2330;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.22);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -26,8 +26,8 @@
   display: flex;
   align-items: flex-start;
   gap: 0.85rem;
-  padding: 1rem 1.25rem 0.85rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 1.1rem 1.25rem 0.9rem;
+  border-bottom: 1px solid #f1f5f9;
   flex-shrink: 0;
 }
 
@@ -39,7 +39,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   overflow: hidden;
 }
 
@@ -52,7 +53,7 @@
 .coinFallback {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #cbd5e1;
+  color: #334155;
 }
 
 .headerMain {
@@ -70,41 +71,41 @@
 .title {
   margin: 0;
   font-size: 1rem;
-  font-weight: 600;
-  color: #f8fafc;
+  font-weight: 700;
+  color: #0f172a;
   line-height: 1.3;
 }
 
 .closeBtn {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   flex-shrink: 0;
   border-radius: 8px;
-  border: none;
-  background: rgba(255, 255, 255, 0.06);
-  color: #94a3b8;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
   font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
 }
 
 .closeBtn:hover {
-  color: #e2e8f0;
-  background: rgba(255, 255, 255, 0.1);
+  color: #0f172a;
+  background: #f1f5f9;
 }
 
 .amount {
   margin: 0.3rem 0 0;
   font-size: 1.2rem;
-  font-weight: 700;
-  color: #f1f5f9;
+  font-weight: 800;
+  color: #0f172a;
   line-height: 1.2;
 }
 
 .fiat {
   margin: 0.15rem 0 0;
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .summary {
@@ -119,7 +120,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: capitalize;
-  padding: 0.2rem 0.55rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 999px;
 }
 
@@ -131,8 +132,8 @@
 .details {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.45rem;
-  padding: 0.85rem 1.25rem 1.1rem;
+  gap: 0.5rem;
+  padding: 0.9rem 1.25rem 1.15rem;
   overflow-y: auto;
   flex: 1;
   min-height: 0;
@@ -144,7 +145,7 @@
 }
 
 .details::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: #cbd5e1;
   border-radius: 999px;
 }
 
@@ -153,10 +154,10 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0.22rem;
-  padding: 0.5rem 0.65rem;
+  padding: 0.55rem 0.7rem;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   min-width: 0;
 }
 
@@ -167,13 +168,13 @@
 .label {
   font-size: 0.7rem;
   color: #64748b;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
 
 .value {
   font-size: 0.82rem;
-  color: #e2e8f0;
+  color: #0f172a;
   text-align: left;
   word-break: break-word;
   width: 100%;
@@ -201,54 +202,54 @@
 .copyHint {
   flex-shrink: 0;
   font-size: 0.66rem;
-  font-weight: 600;
-  color: #5b8def;
+  font-weight: 700;
+  color: #2563eb;
 }
 
 .copyable:hover .copyHint {
-  color: #93c5fd;
+  color: #1d4ed8;
 }
 
 .statusCompleted,
 .fiatCompleted {
-  color: #4ade80;
+  color: #059669;
 }
 
 .statusPending,
 .fiatPending {
-  color: #fb923c;
+  color: #d97706;
 }
 
 .statusRejected,
 .fiatRejected {
-  color: #f87171;
+  color: #e11d48;
 }
 
 .statusUnknown {
-  color: #94a3b8;
+  color: #64748b;
 }
 
 .statusCompleted.statusBadge {
-  background: rgba(74, 222, 128, 0.12);
+  background: #ecfdf5;
 }
 
 .statusPending.statusBadge {
-  background: rgba(251, 146, 60, 0.12);
+  background: #fffbeb;
 }
 
 .statusRejected.statusBadge {
-  background: rgba(248, 113, 113, 0.12);
+  background: #fff1f2;
 }
 
 .statusUnknown.statusBadge {
-  background: rgba(148, 163, 184, 0.12);
+  background: #f1f5f9;
 }
 
 .value.statusCompleted,
 .value.statusPending,
 .value.statusRejected,
 .value.statusUnknown {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 @media (max-width: 560px) {

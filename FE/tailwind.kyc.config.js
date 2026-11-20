@@ -6,6 +6,7 @@ module.exports = {
   },
   content: [
     "./src/jsx/pages/kycPortal/**/*.{js,jsx}",
+    "./src/jsx/pages/userPortal/**/*.{js,jsx}",
     "./src/jsx/pages/authentication/Login.jsx",
     "./src/jsx/pages/authentication/Registration.jsx",
     "!./src/jsx/pages/kycPortal/goinLandingData.js",

@@ -502,6 +502,39 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal [hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }
+#kyc-portal .container{
+  width: 100%;
+}
+@media (min-width: 640px){
+
+  #kyc-portal .container{
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px){
+
+  #kyc-portal .container{
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px){
+
+  #kyc-portal .container{
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px){
+
+  #kyc-portal .container{
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px){
+
+  #kyc-portal .container{
+    max-width: 1536px;
+  }
+}
 #kyc-portal .pointer-events-none{
   pointer-events: none !important;
 }
@@ -529,6 +562,16 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .inset-0{
   inset: 0px !important;
+}
+#kyc-portal .inset-y-0{
+  top: 0px !important;
+  bottom: 0px !important;
+}
+#kyc-portal .-bottom-0\.5{
+  bottom: -0.125rem !important;
+}
+#kyc-portal .-right-0\.5{
+  right: -0.125rem !important;
 }
 #kyc-portal .bottom-0{
   bottom: 0px !important;
@@ -581,8 +624,17 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .top-1\/2{
   top: 50% !important;
 }
+#kyc-portal .top-3{
+  top: 0.75rem !important;
+}
 #kyc-portal .top-3\.5{
   top: 0.875rem !important;
+}
+#kyc-portal .z-10{
+  z-index: 10 !important;
+}
+#kyc-portal .z-30{
+  z-index: 30 !important;
 }
 #kyc-portal .z-40{
   z-index: 40 !important;
@@ -602,6 +654,13 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .col-span-full{
   grid-column: 1 / -1 !important;
 }
+#kyc-portal .m-0{
+  margin: 0px !important;
+}
+#kyc-portal .-my-2{
+  margin-top: -0.5rem !important;
+  margin-bottom: -0.5rem !important;
+}
 #kyc-portal .mx-auto{
   margin-left: auto !important;
   margin-right: auto !important;
@@ -614,6 +673,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   margin-top: auto !important;
   margin-bottom: auto !important;
 }
+#kyc-portal .mb-0{
+  margin-bottom: 0px !important;
+}
 #kyc-portal .mb-1{
   margin-bottom: 0.25rem !important;
 }
@@ -623,11 +685,23 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .mb-2{
   margin-bottom: 0.5rem !important;
 }
+#kyc-portal .mb-2\.5{
+  margin-bottom: 0.625rem !important;
+}
+#kyc-portal .mb-3{
+  margin-bottom: 0.75rem !important;
+}
+#kyc-portal .mb-4{
+  margin-bottom: 1rem !important;
+}
 #kyc-portal .mb-5{
   margin-bottom: 1.25rem !important;
 }
 #kyc-portal .mb-6{
   margin-bottom: 1.5rem !important;
+}
+#kyc-portal .ml-1{
+  margin-left: 0.25rem !important;
 }
 #kyc-portal .ml-2{
   margin-left: 0.5rem !important;
@@ -695,6 +769,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .hidden{
   display: none !important;
 }
+#kyc-portal .aspect-\[1\.58\/1\]{
+  aspect-ratio: 1.58/1 !important;
+}
 #kyc-portal .h-0\.5{
   height: 0.125rem !important;
 }
@@ -703,6 +780,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .h-11{
   height: 2.75rem !important;
+}
+#kyc-portal .h-12{
+  height: 3rem !important;
 }
 #kyc-portal .h-14{
   height: 3.5rem !important;
@@ -725,6 +805,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .h-3\.5{
   height: 0.875rem !important;
 }
+#kyc-portal .h-36{
+  height: 9rem !important;
+}
 #kyc-portal .h-4{
   height: 1rem !important;
 }
@@ -733,6 +816,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .h-5{
   height: 1.25rem !important;
+}
+#kyc-portal .h-56{
+  height: 14rem !important;
 }
 #kyc-portal .h-6{
   height: 1.5rem !important;
@@ -764,6 +850,15 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .h-full{
   height: 100% !important;
 }
+#kyc-portal .h-px{
+  height: 1px !important;
+}
+#kyc-portal .h-screen{
+  height: 100vh !important;
+}
+#kyc-portal .max-h-10{
+  max-height: 2.5rem !important;
+}
 #kyc-portal .max-h-32{
   max-height: 8rem !important;
 }
@@ -775,6 +870,12 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .max-h-\[550px\]{
   max-height: 550px !important;
+}
+#kyc-portal .max-h-\[70vh\]{
+  max-height: 70vh !important;
+}
+#kyc-portal .max-h-\[75vh\]{
+  max-height: 75vh !important;
 }
 #kyc-portal .max-h-\[90vh\]{
   max-height: 90vh !important;
@@ -851,6 +952,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .w-7{
   width: 1.75rem !important;
 }
+#kyc-portal .w-72{
+  width: 18rem !important;
+}
 #kyc-portal .w-8{
   width: 2rem !important;
 }
@@ -872,17 +976,23 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .max-w-3xl{
   max-width: 48rem !important;
 }
-#kyc-portal .max-w-4xl{
-  max-width: 56rem !important;
-}
-#kyc-portal .max-w-5xl{
-  max-width: 64rem !important;
-}
 #kyc-portal .max-w-6xl{
   max-width: 72rem !important;
 }
+#kyc-portal .max-w-\[130px\]{
+  max-width: 130px !important;
+}
 #kyc-portal .max-w-\[1600px\]{
   max-width: 1600px !important;
+}
+#kyc-portal .max-w-\[180px\]{
+  max-width: 180px !important;
+}
+#kyc-portal .max-w-\[260px\]{
+  max-width: 260px !important;
+}
+#kyc-portal .max-w-\[85vw\]{
+  max-width: 85vw !important;
 }
 #kyc-portal .max-w-full{
   max-width: 100% !important;
@@ -892,6 +1002,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .max-w-md{
   max-width: 28rem !important;
+}
+#kyc-portal .max-w-none{
+  max-width: none !important;
 }
 #kyc-portal .max-w-sm{
   max-width: 24rem !important;
@@ -911,6 +1024,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .shrink-0{
   flex-shrink: 0 !important;
 }
+#kyc-portal .grow{
+  flex-grow: 1 !important;
+}
 #kyc-portal .border-collapse{
   border-collapse: collapse !important;
 }
@@ -921,6 +1037,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .scale-110{
   --tw-scale-x: 1.1 !important;
   --tw-scale-y: 1.1 !important;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
+}
+#kyc-portal .transform{
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
 }
 @keyframes pulse{
@@ -1029,6 +1148,17 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .gap-8{
   gap: 2rem !important;
 }
+#kyc-portal .gap-x-6{
+  column-gap: 1.5rem !important;
+}
+#kyc-portal .gap-y-1{
+  row-gap: 0.25rem !important;
+}
+#kyc-portal .space-y-0\.5 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0 !important;
+  margin-top: calc(0.125rem * calc(1 - var(--tw-space-y-reverse))) !important;
+  margin-bottom: calc(0.125rem * var(--tw-space-y-reverse)) !important;
+}
 #kyc-portal .space-y-1 > :not([hidden]) ~ :not([hidden]){
   --tw-space-y-reverse: 0 !important;
   margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse))) !important;
@@ -1074,11 +1204,6 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse))) !important;
   margin-bottom: calc(1.5rem * var(--tw-space-y-reverse)) !important;
 }
-#kyc-portal .space-y-8 > :not([hidden]) ~ :not([hidden]){
-  --tw-space-y-reverse: 0 !important;
-  margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse))) !important;
-  margin-bottom: calc(2rem * var(--tw-space-y-reverse)) !important;
-}
 #kyc-portal .divide-y > :not([hidden]) ~ :not([hidden]){
   --tw-divide-y-reverse: 0 !important;
   border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse))) !important;
@@ -1107,6 +1232,15 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
+}
+#kyc-portal .whitespace-nowrap{
+  white-space: nowrap !important;
+}
+#kyc-portal .whitespace-pre-wrap{
+  white-space: pre-wrap !important;
+}
+#kyc-portal .break-all{
+  word-break: break-all !important;
 }
 #kyc-portal .rounded{
   border-radius: 0.25rem !important;
@@ -1144,6 +1278,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .border-l{
   border-left-width: 1px !important;
 }
+#kyc-portal .border-r{
+  border-right-width: 1px !important;
+}
 #kyc-portal .border-t{
   border-top-width: 1px !important;
 }
@@ -1180,6 +1317,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-border-opacity: 1 !important;
   border-color: rgb(37 99 235 / var(--tw-border-opacity, 1)) !important;
 }
+#kyc-portal .border-blue-700{
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(29 78 216 / var(--tw-border-opacity, 1)) !important;
+}
 #kyc-portal .border-emerald-100{
   --tw-border-opacity: 1 !important;
   border-color: rgb(209 250 229 / var(--tw-border-opacity, 1)) !important;
@@ -1194,6 +1335,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .border-emerald-400{
   --tw-border-opacity: 1 !important;
   border-color: rgb(52 211 153 / var(--tw-border-opacity, 1)) !important;
+}
+#kyc-portal .border-indigo-100{
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(224 231 255 / var(--tw-border-opacity, 1)) !important;
 }
 #kyc-portal .border-indigo-200{
   --tw-border-opacity: 1 !important;
@@ -1246,6 +1391,18 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-border-opacity: 1 !important;
   border-color: rgb(255 255 255 / var(--tw-border-opacity, 1)) !important;
 }
+#kyc-portal .border-white\/15{
+  border-color: rgb(255 255 255 / 0.15) !important;
+}
+#kyc-portal .border-white\/20{
+  border-color: rgb(255 255 255 / 0.2) !important;
+}
+#kyc-portal .border-white\/25{
+  border-color: rgb(255 255 255 / 0.25) !important;
+}
+#kyc-portal .border-white\/30{
+  border-color: rgb(255 255 255 / 0.3) !important;
+}
 #kyc-portal .border-t-transparent{
   border-top-color: transparent !important;
 }
@@ -1274,6 +1431,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .bg-amber-600{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(217 119 6 / var(--tw-bg-opacity, 1)) !important;
+}
+#kyc-portal .bg-blue-100{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(219 234 254 / var(--tw-bg-opacity, 1)) !important;
 }
 #kyc-portal .bg-blue-100\/50{
   background-color: rgb(219 234 254 / 0.5) !important;
@@ -1304,6 +1465,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .bg-blue-50\/80{
   background-color: rgb(239 246 255 / 0.8) !important;
+}
+#kyc-portal .bg-blue-500\/20{
+  background-color: rgb(59 130 246 / 0.2) !important;
 }
 #kyc-portal .bg-blue-600{
   --tw-bg-opacity: 1 !important;
@@ -1342,6 +1506,13 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .bg-indigo-50{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(238 242 255 / var(--tw-bg-opacity, 1)) !important;
+}
+#kyc-portal .bg-indigo-50\/70{
+  background-color: rgb(238 242 255 / 0.7) !important;
+}
+#kyc-portal .bg-indigo-600{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(79 70 229 / var(--tw-bg-opacity, 1)) !important;
 }
 #kyc-portal .bg-purple-50{
   --tw-bg-opacity: 1 !important;
@@ -1391,6 +1562,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-bg-opacity: 1 !important;
   background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1)) !important;
 }
+#kyc-portal .bg-slate-100\/80{
+  background-color: rgb(241 245 249 / 0.8) !important;
+}
 #kyc-portal .bg-slate-200{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1)) !important;
@@ -1415,9 +1589,23 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .bg-slate-50\/80{
   background-color: rgb(248 250 252 / 0.8) !important;
 }
+#kyc-portal .bg-slate-700{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(51 65 85 / var(--tw-bg-opacity, 1)) !important;
+}
+#kyc-portal .bg-slate-800{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1)) !important;
+}
 #kyc-portal .bg-slate-900{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(15 23 42 / var(--tw-bg-opacity, 1)) !important;
+}
+#kyc-portal .bg-slate-900\/30{
+  background-color: rgb(15 23 42 / 0.3) !important;
+}
+#kyc-portal .bg-slate-900\/50{
+  background-color: rgb(15 23 42 / 0.5) !important;
 }
 #kyc-portal .bg-slate-900\/60{
   background-color: rgb(15 23 42 / 0.6) !important;
@@ -1425,22 +1613,52 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .bg-slate-900\/70{
   background-color: rgb(15 23 42 / 0.7) !important;
 }
+#kyc-portal .bg-slate-900\/75{
+  background-color: rgb(15 23 42 / 0.75) !important;
+}
+#kyc-portal .bg-transparent{
+  background-color: transparent !important;
+}
 #kyc-portal .bg-white{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1)) !important;
 }
+#kyc-portal .bg-white\/10{
+  background-color: rgb(255 255 255 / 0.1) !important;
+}
 #kyc-portal .bg-white\/15{
   background-color: rgb(255 255 255 / 0.15) !important;
+}
+#kyc-portal .bg-white\/20{
+  background-color: rgb(255 255 255 / 0.2) !important;
 }
 #kyc-portal .bg-white\/95{
   background-color: rgb(255 255 255 / 0.95) !important;
 }
+#kyc-portal .bg-gradient-to-br{
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)) !important;
+}
 #kyc-portal .bg-gradient-to-r{
   background-image: linear-gradient(to right, var(--tw-gradient-stops)) !important;
+}
+#kyc-portal .from-\[\#0B1120\]{
+  --tw-gradient-from: #0B1120 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(11 17 32 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
 }
 #kyc-portal .from-blue-600{
   --tw-gradient-from: #2563eb var(--tw-gradient-from-position) !important;
   --tw-gradient-to: rgb(37 99 235 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+#kyc-portal .from-emerald-600{
+  --tw-gradient-from: #059669 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(5 150 105 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+#kyc-portal .from-slate-900{
+  --tw-gradient-from: #0f172a var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(15 23 42 / 0) var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
 }
 #kyc-portal .from-transparent{
@@ -1448,15 +1666,35 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
 }
+#kyc-portal .via-\[\#1E293B\]{
+  --tw-gradient-to: rgb(30 41 59 / 0)  var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #1E293B var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+#kyc-portal .via-blue-700{
+  --tw-gradient-to: rgb(29 78 216 / 0)  var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #1d4ed8 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
 #kyc-portal .via-indigo-500{
   --tw-gradient-to: rgb(99 102 241 / 0)  var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-from), #6366f1 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+#kyc-portal .to-\[\#1D4ED8\]{
+  --tw-gradient-to: #1D4ED8 var(--tw-gradient-to-position) !important;
+}
+#kyc-portal .to-blue-700{
+  --tw-gradient-to: #1d4ed8 var(--tw-gradient-to-position) !important;
 }
 #kyc-portal .to-cyan-400{
   --tw-gradient-to: #22d3ee var(--tw-gradient-to-position) !important;
 }
 #kyc-portal .to-indigo-700{
   --tw-gradient-to: #4338ca var(--tw-gradient-to-position) !important;
+}
+#kyc-portal .to-slate-800{
+  --tw-gradient-to: #1e293b var(--tw-gradient-to-position) !important;
+}
+#kyc-portal .to-teal-600{
+  --tw-gradient-to: #0d9488 var(--tw-gradient-to-position) !important;
 }
 #kyc-portal .to-white\/80{
   --tw-gradient-to: rgb(255 255 255 / 0.8) var(--tw-gradient-to-position) !important;
@@ -1469,6 +1707,15 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .object-contain{
   object-fit: contain !important;
+}
+#kyc-portal .object-cover{
+  object-fit: cover !important;
+}
+#kyc-portal .p-0{
+  padding: 0px !important;
+}
+#kyc-portal .p-0\.5{
+  padding: 0.125rem !important;
 }
 #kyc-portal .p-1{
   padding: 0.25rem !important;
@@ -1499,6 +1746,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .p-6{
   padding: 1.5rem !important;
+}
+#kyc-portal .p-7{
+  padding: 1.75rem !important;
 }
 #kyc-portal .p-8{
   padding: 2rem !important;
@@ -1563,6 +1813,14 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   padding-top: 3rem !important;
   padding-bottom: 3rem !important;
 }
+#kyc-portal .py-14{
+  padding-top: 3.5rem !important;
+  padding-bottom: 3.5rem !important;
+}
+#kyc-portal .py-16{
+  padding-top: 4rem !important;
+  padding-bottom: 4rem !important;
+}
 #kyc-portal .py-2{
   padding-top: 0.5rem !important;
   padding-bottom: 0.5rem !important;
@@ -1570,6 +1828,14 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .py-2\.5{
   padding-top: 0.625rem !important;
   padding-bottom: 0.625rem !important;
+}
+#kyc-portal .py-20{
+  padding-top: 5rem !important;
+  padding-bottom: 5rem !important;
+}
+#kyc-portal .py-24{
+  padding-top: 6rem !important;
+  padding-bottom: 6rem !important;
 }
 #kyc-portal .py-3{
   padding-top: 0.75rem !important;
@@ -1583,6 +1849,14 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   padding-top: 1rem !important;
   padding-bottom: 1rem !important;
 }
+#kyc-portal .py-5{
+  padding-top: 1.25rem !important;
+  padding-bottom: 1.25rem !important;
+}
+#kyc-portal .py-6{
+  padding-top: 1.5rem !important;
+  padding-bottom: 1.5rem !important;
+}
 #kyc-portal .py-8{
   padding-top: 2rem !important;
   padding-bottom: 2rem !important;
@@ -1595,6 +1869,12 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .pb-4{
   padding-bottom: 1rem !important;
+}
+#kyc-portal .pb-8{
+  padding-bottom: 2rem !important;
+}
+#kyc-portal .pl-1{
+  padding-left: 0.25rem !important;
 }
 #kyc-portal .pl-1\.5{
   padding-left: 0.375rem !important;
@@ -1640,6 +1920,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .pr-4{
   padding-right: 1rem !important;
+}
+#kyc-portal .pr-8{
+  padding-right: 2rem !important;
 }
 #kyc-portal .pt-0\.5{
   padding-top: 0.125rem !important;
@@ -1688,6 +1971,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .text-\[11px\]{
   font-size: 11px !important;
 }
+#kyc-portal .text-\[13px\]{
+  font-size: 13px !important;
+}
 #kyc-portal .text-\[9px\]{
   font-size: 9px !important;
 }
@@ -1695,9 +1981,17 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   font-size: 1rem !important;
   line-height: 1.5rem !important;
 }
+#kyc-portal .text-lg{
+  font-size: 1.125rem !important;
+  line-height: 1.75rem !important;
+}
 #kyc-portal .text-sm{
   font-size: 0.875rem !important;
   line-height: 1.25rem !important;
+}
+#kyc-portal .text-xl{
+  font-size: 1.25rem !important;
+  line-height: 1.75rem !important;
 }
 #kyc-portal .text-xs{
   font-size: 0.75rem !important;
@@ -1712,6 +2006,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .font-medium{
   font-weight: 500 !important;
 }
+#kyc-portal .font-normal{
+  font-weight: 400 !important;
+}
 #kyc-portal .font-semibold{
   font-weight: 600 !important;
 }
@@ -1724,11 +2021,18 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .italic{
   font-style: italic !important;
 }
+#kyc-portal .tabular-nums{
+  --tw-numeric-spacing: tabular-nums !important;
+  font-variant-numeric: var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction) !important;
+}
 #kyc-portal .leading-none{
   line-height: 1 !important;
 }
 #kyc-portal .leading-relaxed{
   line-height: 1.625 !important;
+}
+#kyc-portal .leading-snug{
+  line-height: 1.375 !important;
 }
 #kyc-portal .leading-tight{
   line-height: 1.25 !important;
@@ -1736,8 +2040,14 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .tracking-tight{
   letter-spacing: -0.025em !important;
 }
+#kyc-portal .tracking-wide{
+  letter-spacing: 0.025em !important;
+}
 #kyc-portal .tracking-wider{
   letter-spacing: 0.05em !important;
+}
+#kyc-portal .tracking-widest{
+  letter-spacing: 0.1em !important;
 }
 #kyc-portal .text-amber-600{
   --tw-text-opacity: 1 !important;
@@ -1763,6 +2073,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-text-opacity: 1 !important;
   color: rgb(219 234 254 / var(--tw-text-opacity, 1)) !important;
 }
+#kyc-portal .text-blue-200{
+  --tw-text-opacity: 1 !important;
+  color: rgb(191 219 254 / var(--tw-text-opacity, 1)) !important;
+}
 #kyc-portal .text-blue-300{
   --tw-text-opacity: 1 !important;
   color: rgb(147 197 253 / var(--tw-text-opacity, 1)) !important;
@@ -1770,6 +2084,14 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .text-blue-400{
   --tw-text-opacity: 1 !important;
   color: rgb(96 165 250 / var(--tw-text-opacity, 1)) !important;
+}
+#kyc-portal .text-blue-50{
+  --tw-text-opacity: 1 !important;
+  color: rgb(239 246 255 / var(--tw-text-opacity, 1)) !important;
+}
+#kyc-portal .text-blue-500{
+  --tw-text-opacity: 1 !important;
+  color: rgb(59 130 246 / var(--tw-text-opacity, 1)) !important;
 }
 #kyc-portal .text-blue-600{
   --tw-text-opacity: 1 !important;
@@ -1779,9 +2101,21 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-text-opacity: 1 !important;
   color: rgb(29 78 216 / var(--tw-text-opacity, 1)) !important;
 }
+#kyc-portal .text-blue-800{
+  --tw-text-opacity: 1 !important;
+  color: rgb(30 64 175 / var(--tw-text-opacity, 1)) !important;
+}
 #kyc-portal .text-blue-900{
   --tw-text-opacity: 1 !important;
   color: rgb(30 58 138 / var(--tw-text-opacity, 1)) !important;
+}
+#kyc-portal .text-emerald-100{
+  --tw-text-opacity: 1 !important;
+  color: rgb(209 250 229 / var(--tw-text-opacity, 1)) !important;
+}
+#kyc-portal .text-emerald-300{
+  --tw-text-opacity: 1 !important;
+  color: rgb(110 231 183 / var(--tw-text-opacity, 1)) !important;
 }
 #kyc-portal .text-emerald-600{
   --tw-text-opacity: 1 !important;
@@ -1794,6 +2128,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .text-emerald-800{
   --tw-text-opacity: 1 !important;
   color: rgb(6 95 70 / var(--tw-text-opacity, 1)) !important;
+}
+#kyc-portal .text-emerald-900{
+  --tw-text-opacity: 1 !important;
+  color: rgb(6 78 59 / var(--tw-text-opacity, 1)) !important;
 }
 #kyc-portal .text-emerald-950{
   --tw-text-opacity: 1 !important;
@@ -1810,6 +2148,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .text-purple-700{
   --tw-text-opacity: 1 !important;
   color: rgb(126 34 206 / var(--tw-text-opacity, 1)) !important;
+}
+#kyc-portal .text-rose-300{
+  --tw-text-opacity: 1 !important;
+  color: rgb(253 164 175 / var(--tw-text-opacity, 1)) !important;
 }
 #kyc-portal .text-rose-500{
   --tw-text-opacity: 1 !important;
@@ -1869,6 +2211,17 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .text-white\/80{
   color: rgb(255 255 255 / 0.8) !important;
+}
+#kyc-portal .underline{
+  -webkit-text-decoration-line: underline !important;
+          text-decoration-line: underline !important;
+}
+#kyc-portal .no-underline{
+  -webkit-text-decoration-line: none !important;
+          text-decoration-line: none !important;
+}
+#kyc-portal .underline-offset-4{
+  text-underline-offset: 4px !important;
 }
 #kyc-portal .opacity-60{
   opacity: 0.6 !important;
@@ -1965,6 +2318,14 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-ring-opacity: 1 !important;
   --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity, 1)) !important;
 }
+#kyc-portal .blur{
+  --tw-blur: blur(8px) !important;
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow) !important;
+}
+#kyc-portal .drop-shadow{
+  --tw-drop-shadow: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06)) !important;
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow) !important;
+}
 #kyc-portal .filter{
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow) !important;
 }
@@ -1977,6 +2338,13 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-backdrop-blur: blur(4px) !important;
   -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia) !important;
   backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia) !important;
+}
+#kyc-portal .transition{
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter !important;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter !important;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition-duration: 150ms !important;
 }
 #kyc-portal .transition-all{
   transition-property: all !important;
@@ -2005,10 +2373,39 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1) !important;
 }
 
-/* Restore standard 16px root font-size ONLY while KYC Portal is mounted
-   (wallet's style.css sets :root { font-size: 0.875rem } at <= 100rem). */
+/* Restore standard 16px root font-size and visible scrollbars ONLY while KYC/User Portal is mounted */
 html.kyc-portal-active {
   font-size: 16px !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+html.kyc-portal-active body {
+  overflow-y: auto !important;
+}
+
+html.kyc-portal-active::-webkit-scrollbar,
+html.kyc-portal-active body::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+html.kyc-portal-active::-webkit-scrollbar-track,
+html.kyc-portal-active body::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+html.kyc-portal-active::-webkit-scrollbar-thumb,
+html.kyc-portal-active body::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 9999px;
+  border: 2px solid #f1f5f9;
+}
+
+html.kyc-portal-active::-webkit-scrollbar-thumb:hover,
+html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 #kyc-portal {
@@ -2067,14 +2464,19 @@ html.kyc-portal-active {
   cursor: pointer;
 }
 
-/* Custom subtle scrollbars matching kyc_data_collector */
+/* Visible, clean scrollbars for sidebar & scrollable panels inside #kyc-portal */
+#kyc-portal * {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
 #kyc-portal ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 #kyc-portal ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f8fafc;
 }
 
 #kyc-portal ::-webkit-scrollbar-thumb {
@@ -2084,6 +2486,148 @@ html.kyc-portal-active {
 
 #kyc-portal ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Protect embedded shared form controls (Apply Loan, Ticket Attachments, Coin Detail) from preflight border/button stripping */
+#kyc-portal .apply-loan-wrapper input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#kyc-portal .apply-loan-wrapper select,
+#kyc-portal .apply-loan-wrapper textarea {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 10px !important;
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  padding: 10px 14px !important;
+  width: 100%;
+}
+
+#kyc-portal .apply-loan-wrapper input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
+#kyc-portal .apply-loan-wrapper select:focus,
+#kyc-portal .apply-loan-wrapper textarea:focus {
+  border-color: #2563eb !important;
+  background-color: #ffffff !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="actionsBar"] {
+  background-color: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+  padding: 16px 24px !important;
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btn"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 40px !important;
+  padding: 0 18px !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnGhost"],
+#kyc-portal .apply-loan-wrapper [class*="btnSecondary"] {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnGhost"]:hover:not(:disabled),
+#kyc-portal .apply-loan-wrapper [class*="btnSecondary"]:hover:not(:disabled) {
+  background-color: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnPrimary"],
+#kyc-portal .apply-loan-wrapper button[type="submit"] {
+  background-color: #2563eb !important;
+  border: 1px solid #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.25) !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnPrimary"]:hover:not(:disabled),
+#kyc-portal .apply-loan-wrapper button[type="submit"]:hover:not(:disabled) {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnSuccess"] {
+  background-color: #059669 !important;
+  border: 1px solid #059669 !important;
+  color: #ffffff !important;
+}
+
+#kyc-portal .apply-loan-wrapper [class*="btnSuccess"]:hover:not(:disabled) {
+  background-color: #047857 !important;
+}
+
+#kyc-portal .apply-loan-wrapper input[type="file"] {
+  border: 1px dashed #cbd5e1 !important;
+  border-radius: 12px !important;
+  background-color: #f8fafc !important;
+  padding: 12px 14px !important;
+  width: 100%;
+  font-size: 13px !important;
+  color: #475569 !important;
+}
+
+#kyc-portal .user-blue-hero h1,
+#kyc-portal .user-blue-hero h2,
+#kyc-portal .user-blue-hero h3,
+#kyc-portal .user-blue-hero h4,
+#kyc-portal .user-blue-hero h5,
+#kyc-portal .user-blue-hero h6,
+#kyc-portal .user-blue-hero p {
+  color: #ffffff !important;
+}
+
+#kyc-portal .user-blue-hero a.MuiButton-contained {
+  background-color: #ffffff !important;
+  color: #2563eb !important;
+  font-weight: 700 !important;
+}
+
+#kyc-portal .user-blue-hero a.MuiButton-contained:hover {
+  background-color: #eff6ff !important;
+}
+
+#kyc-portal [class*="TicketAttachments_attachBtn"] {
+  background-color: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #bfdbfe !important;
+  padding: 8px 14px !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
+#kyc-portal [class*="TicketAttachments_attachBtn"]:hover {
+  background-color: #dbeafe !important;
+}
+
+#kyc-portal [class*="CoinDetail_tabBtn"],
+#kyc-portal [class*="CoinMarketCapChart_rangeBtn"] {
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+}
+
+#kyc-portal [class*="CoinDetail_actionBtn"] {
+  background-color: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+}
+
+#kyc-portal .MuiTab-root {
+  padding: 12px 18px !important;
+  gap: 8px !important;
 }
 
 /* Signature font helpers */
@@ -2097,6 +2641,21 @@ html.kyc-portal-active {
 
 #kyc-portal .font-sig-alex {
   font-family: "Alex Brush", cursive;
+}
+
+#kyc-portal .placeholder\:text-slate-300::placeholder{
+  --tw-text-opacity: 1 !important;
+  color: rgb(203 213 225 / var(--tw-text-opacity, 1)) !important;
+}
+
+#kyc-portal .placeholder\:text-slate-400::placeholder{
+  --tw-text-opacity: 1 !important;
+  color: rgb(148 163 184 / var(--tw-text-opacity, 1)) !important;
+}
+
+#kyc-portal .hover\:border-blue-200:hover{
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(191 219 254 / var(--tw-border-opacity, 1)) !important;
 }
 
 #kyc-portal .hover\:border-blue-300:hover{
@@ -2129,8 +2688,18 @@ html.kyc-portal-active {
   border-color: rgb(203 213 225 / var(--tw-border-opacity, 1)) !important;
 }
 
+#kyc-portal .hover\:bg-amber-100:hover{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(254 243 199 / var(--tw-bg-opacity, 1)) !important;
+}
+
 #kyc-portal .hover\:bg-amber-100\/70:hover{
   background-color: rgb(254 243 199 / 0.7) !important;
+}
+
+#kyc-portal .hover\:bg-blue-100:hover{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(219 234 254 / var(--tw-bg-opacity, 1)) !important;
 }
 
 #kyc-portal .hover\:bg-blue-50:hover{
@@ -2156,6 +2725,11 @@ html.kyc-portal-active {
   background-color: rgb(209 250 229 / 0.8) !important;
 }
 
+#kyc-portal .hover\:bg-emerald-50:hover{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(236 253 245 / var(--tw-bg-opacity, 1)) !important;
+}
+
 #kyc-portal .hover\:bg-emerald-600:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(5 150 105 / var(--tw-bg-opacity, 1)) !important;
@@ -2179,6 +2753,10 @@ html.kyc-portal-active {
 #kyc-portal .hover\:bg-rose-50:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 241 242 / var(--tw-bg-opacity, 1)) !important;
+}
+
+#kyc-portal .hover\:bg-rose-500\/30:hover{
+  background-color: rgb(244 63 94 / 0.3) !important;
 }
 
 #kyc-portal .hover\:bg-rose-600:hover{
@@ -2214,8 +2792,17 @@ html.kyc-portal-active {
   background-color: rgb(248 250 252 / var(--tw-bg-opacity, 1)) !important;
 }
 
+#kyc-portal .hover\:bg-slate-50\/70:hover{
+  background-color: rgb(248 250 252 / 0.7) !important;
+}
+
 #kyc-portal .hover\:bg-slate-50\/80:hover{
   background-color: rgb(248 250 252 / 0.8) !important;
+}
+
+#kyc-portal .hover\:bg-slate-800:hover{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1)) !important;
 }
 
 #kyc-portal .hover\:bg-white:hover{
@@ -2225,6 +2812,19 @@ html.kyc-portal-active {
 
 #kyc-portal .hover\:bg-white\/10:hover{
   background-color: rgb(255 255 255 / 0.1) !important;
+}
+
+#kyc-portal .hover\:bg-white\/25:hover{
+  background-color: rgb(255 255 255 / 0.25) !important;
+}
+
+#kyc-portal .hover\:bg-white\/70:hover{
+  background-color: rgb(255 255 255 / 0.7) !important;
+}
+
+#kyc-portal .hover\:text-blue-100:hover{
+  --tw-text-opacity: 1 !important;
+  color: rgb(219 234 254 / var(--tw-text-opacity, 1)) !important;
 }
 
 #kyc-portal .hover\:text-blue-600:hover{
@@ -2283,8 +2883,24 @@ html.kyc-portal-active {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
 }
 
+#kyc-portal .hover\:shadow-md:hover{
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color) !important;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
+}
+
+#kyc-portal .focus\:border-blue-500:focus{
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(59 130 246 / var(--tw-border-opacity, 1)) !important;
+}
+
 #kyc-portal .focus\:border-transparent:focus{
   border-color: transparent !important;
+}
+
+#kyc-portal .focus\:bg-white:focus{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1)) !important;
 }
 
 #kyc-portal .focus\:outline-none:focus{
@@ -2303,9 +2919,32 @@ html.kyc-portal-active {
   --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity, 1)) !important;
 }
 
+#kyc-portal .focus\:ring-blue-500\/15:focus{
+  --tw-ring-color: rgb(59 130 246 / 0.15) !important;
+}
+
+#kyc-portal .focus\:ring-blue-500\/20:focus{
+  --tw-ring-color: rgb(59 130 246 / 0.2) !important;
+}
+
 #kyc-portal .focus\:ring-rose-500:focus{
   --tw-ring-opacity: 1 !important;
   --tw-ring-color: rgb(244 63 94 / var(--tw-ring-opacity, 1)) !important;
+}
+
+#kyc-portal .disabled\:bg-slate-200:disabled{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1)) !important;
+}
+
+#kyc-portal .disabled\:text-slate-400:disabled{
+  --tw-text-opacity: 1 !important;
+  color: rgb(148 163 184 / var(--tw-text-opacity, 1)) !important;
+}
+
+#kyc-portal .disabled\:text-slate-500:disabled{
+  --tw-text-opacity: 1 !important;
+  color: rgb(100 116 139 / var(--tw-text-opacity, 1)) !important;
 }
 
 #kyc-portal .disabled\:opacity-40:disabled{
@@ -2325,15 +2964,33 @@ html.kyc-portal-active {
   border-color: rgb(96 165 250 / var(--tw-border-opacity, 1)) !important;
 }
 
+#kyc-portal .group:hover .group-hover\:bg-blue-600{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1)) !important;
+}
+
 #kyc-portal .group:hover .group-hover\:text-blue-600{
   --tw-text-opacity: 1 !important;
   color: rgb(37 99 235 / var(--tw-text-opacity, 1)) !important;
 }
 
+#kyc-portal .group:hover .group-hover\:text-white{
+  --tw-text-opacity: 1 !important;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1)) !important;
+}
+
 @media (min-width: 640px){
+
+  #kyc-portal .sm\:col-span-1{
+    grid-column: span 1 / span 1 !important;
+  }
 
   #kyc-portal .sm\:col-span-2{
     grid-column: span 2 / span 2 !important;
+  }
+
+  #kyc-portal .sm\:col-span-5{
+    grid-column: span 5 / span 5 !important;
   }
 
   #kyc-portal .sm\:mx-auto{
@@ -2349,8 +3006,16 @@ html.kyc-portal-active {
     display: block !important;
   }
 
+  #kyc-portal .sm\:inline{
+    display: inline !important;
+  }
+
   #kyc-portal .sm\:inline-flex{
     display: inline-flex !important;
+  }
+
+  #kyc-portal .sm\:w-72{
+    width: 18rem !important;
   }
 
   #kyc-portal .sm\:w-96{
@@ -2377,6 +3042,10 @@ html.kyc-portal-active {
     max-width: 36rem !important;
   }
 
+  #kyc-portal .sm\:grid-cols-11{
+    grid-template-columns: repeat(11, minmax(0, 1fr)) !important;
+  }
+
   #kyc-portal .sm\:grid-cols-2{
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
@@ -2397,8 +3066,24 @@ html.kyc-portal-active {
     align-items: center !important;
   }
 
+  #kyc-portal .sm\:justify-between{
+    justify-content: space-between !important;
+  }
+
+  #kyc-portal .sm\:self-auto{
+    align-self: auto !important;
+  }
+
+  #kyc-portal .sm\:p-10{
+    padding: 2.5rem !important;
+  }
+
   #kyc-portal .sm\:p-5{
     padding: 1.25rem !important;
+  }
+
+  #kyc-portal .sm\:p-7{
+    padding: 1.75rem !important;
   }
 
   #kyc-portal .sm\:p-8{
@@ -2420,16 +3105,54 @@ html.kyc-portal-active {
     padding-right: 2rem !important;
   }
 
+  #kyc-portal .sm\:text-2xl{
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
   #kyc-portal .sm\:text-3xl{
     font-size: 1.875rem !important;
     line-height: 2.25rem !important;
+  }
+
+  #kyc-portal .sm\:text-4xl{
+    font-size: 2.25rem !important;
+    line-height: 2.5rem !important;
+  }
+
+  #kyc-portal .sm\:text-base{
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+  }
+
+  #kyc-portal .sm\:text-lg{
+    font-size: 1.125rem !important;
+    line-height: 1.75rem !important;
+  }
+
+  #kyc-portal .sm\:text-sm{
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+
+  #kyc-portal .sm\:text-xl{
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
   }
 }
 
 @media (min-width: 768px){
 
+  #kyc-portal .md\:col-span-2{
+    grid-column: span 2 / span 2 !important;
+  }
+
   #kyc-portal .md\:flex{
     display: flex !important;
+  }
+
+  #kyc-portal .md\:inline-flex{
+    display: inline-flex !important;
   }
 
   #kyc-portal .md\:hidden{
@@ -2438,6 +3161,10 @@ html.kyc-portal-active {
 
   #kyc-portal .md\:grid-cols-2{
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #kyc-portal .md\:grid-cols-3{
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
 
   #kyc-portal .md\:flex-row{
@@ -2451,6 +3178,22 @@ html.kyc-portal-active {
 
 @media (min-width: 1024px){
 
+  #kyc-portal .lg\:col-span-2{
+    grid-column: span 2 / span 2 !important;
+  }
+
+  #kyc-portal .lg\:col-span-5{
+    grid-column: span 5 / span 5 !important;
+  }
+
+  #kyc-portal .lg\:col-span-7{
+    grid-column: span 7 / span 7 !important;
+  }
+
+  #kyc-portal .lg\:block{
+    display: block !important;
+  }
+
   #kyc-portal .lg\:hidden{
     display: none !important;
   }
@@ -2463,8 +3206,20 @@ html.kyc-portal-active {
     width: 18rem !important;
   }
 
+  #kyc-portal .lg\:w-80{
+    width: 20rem !important;
+  }
+
   #kyc-portal .lg\:w-\[380px\]{
     width: 380px !important;
+  }
+
+  #kyc-portal .lg\:grid-cols-12{
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  }
+
+  #kyc-portal .lg\:grid-cols-2{
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 
   #kyc-portal .lg\:grid-cols-3{
@@ -2481,6 +3236,10 @@ html.kyc-portal-active {
 
   #kyc-portal .lg\:items-center{
     align-items: center !important;
+  }
+
+  #kyc-portal .lg\:justify-between{
+    justify-content: space-between !important;
   }
 
   #kyc-portal .lg\:border-b-0{
@@ -2507,9 +3266,21 @@ html.kyc-portal-active {
     padding-left: 2rem !important;
     padding-right: 2rem !important;
   }
+
+  #kyc-portal .lg\:pl-64{
+    padding-left: 16rem !important;
+  }
 }
 
 @media (min-width: 1280px){
+
+  #kyc-portal .xl\:col-span-5{
+    grid-column: span 5 / span 5 !important;
+  }
+
+  #kyc-portal .xl\:col-span-7{
+    grid-column: span 7 / span 7 !important;
+  }
 
   #kyc-portal .xl\:w-\[410px\]{
     width: 410px !important;
@@ -2525,5 +3296,9 @@ html.kyc-portal-active {
 
   #kyc-portal .xl\:grid-cols-4{
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  #kyc-portal .xl\:grid-cols-5{
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   }
 }
