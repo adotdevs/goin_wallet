@@ -1,0 +1,99 @@
+@import url("https://fonts.googleapis.com/css2?family=Alex+Brush&family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Restore standard 16px root font-size ONLY while KYC Portal is mounted
+   (wallet's style.css sets :root { font-size: 0.875rem } at <= 100rem). */
+html.kyc-portal-active {
+  font-size: 16px !important;
+}
+
+#kyc-portal {
+  --brand-primary: #2563eb;
+  --brand-hover: #1d4ed8;
+  --bg-canvas: #f8fafc;
+  --bs-border-color: #e5e7eb;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: #f8fafc;
+  color: #0f172a;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Neutralize non-Tailwind element defaults from wallet's Bootstrap/theme CSS */
+#kyc-portal p {
+  line-height: inherit;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#kyc-portal h1,
+#kyc-portal h2,
+#kyc-portal h3,
+#kyc-portal h4,
+#kyc-portal h5,
+#kyc-portal h6 {
+  color: inherit;
+  line-height: inherit;
+  margin: 0;
+}
+
+#kyc-portal a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#kyc-portal label {
+  margin-bottom: 0;
+}
+
+/* Neutralize wallet style.css rule that stretches input[type="date"]::-webkit-calendar-picker-indicator
+   with position:absolute; inset:0; background:transparent across the page */
+#kyc-portal input[type="date"],
+#kyc-portal input[type="time"],
+#kyc-portal input[type="datetime-local"] {
+  position: relative;
+}
+
+#kyc-portal input[type="date"]::-webkit-calendar-picker-indicator,
+#kyc-portal input[type="time"]::-webkit-calendar-picker-indicator,
+#kyc-portal input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  all: revert;
+  cursor: pointer;
+}
+
+/* Custom subtle scrollbars matching kyc_data_collector */
+#kyc-portal ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+#kyc-portal ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#kyc-portal ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+#kyc-portal ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Signature font helpers */
+#kyc-portal .font-sig-dancing {
+  font-family: "Dancing Script", cursive;
+}
+
+#kyc-portal .font-sig-vibes {
+  font-family: "Great Vibes", cursive;
+}
+
+#kyc-portal .font-sig-alex {
+  font-family: "Alex Brush", cursive;
+}
