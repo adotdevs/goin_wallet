@@ -21,6 +21,7 @@ const {
   fetchCloudinaryAssetBuffer,
 } = require("../utils/kycPortalCloudinary");
 const {
+  getEffectiveSmtpConfig,
   sendEmail,
   sendAdminAlertEmail,
   buildBrandedEmailHtml,
@@ -1941,5 +1942,231 @@ exports.assignUsers = async (req, res) => {
     });
   } catch (error) {
     return fail(res, 500, error?.message || "Failed to update assignment");
+  }
+};
+
+const AGREEMENT_MAX_EVIDENCE_BYTES = 8 * 1024 * 1024;
+const AGREEMENT_ALLOWED_EXTENSIONS = new Set([
+  "jpg",
+  "jpeg",
+  "png",
+  "gif",
+  "webp",
+  "pdf",
+  "doc",
+  "docx",
+  "txt",
+  "eml",
+  "msg",
+]);
+
+function readBodyField(body, key) {
+  const val = body?.[key];
+  if (Array.isArray(val)) return String(val[0] || "").trim();
+  return typeof val === "string" ? val.trim() : "";
+}
+
+exports.submitAgreement = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const fullName = readBodyField(body, "full_name");
+    const idPassport = readBodyField(body, "id_passport");
+    const email = readBodyField(body, "email");
+    const phone = readBodyField(body, "phone");
+    const street = readBodyField(body, "street_address");
+    const addressLine = readBodyField(body, "address_line");
+    const city = readBodyField(body, "city");
+    const state = readBodyField(body, "state");
+    const postal = readBodyField(body, "postal");
+    const country = readBodyField(body, "country");
+    const companyName = readBodyField(body, "company_name");
+    const platformDiscovery = readBodyField(body, "platform_discovery");
+    const contactMethod = readBodyField(body, "contact_method");
+    const lossDetails = readBodyField(body, "loss_details");
+    const additionalLoss = readBodyField(body, "additional_loss_details");
+    const reportedRaw = readBodyField(body, "reported_authorities");
+    const reportedAuthorities =
+      reportedRaw === "Yes" || reportedRaw === "No" ? reportedRaw : "Not specified";
+    const agreeTerms = body.agree_terms;
+    const signatureRaw = readBodyField(body, "signature");
+
+    const rawHelpWith = []
+      .concat(body["help_with[]"] || [])
+      .concat(body.help_with || []);
+    const helpWithEntries = rawHelpWith
+      .filter((v) => typeof v === "string")
+      .map((v) => v.trim())
+      .filter(Boolean);
+
+    if (
+      !fullName ||
+      !idPassport ||
+      !email ||
+      !phone ||
+      !street ||
+      !city ||
+      !postal ||
+      !country ||
+      !agreeTerms
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Please complete all required fields.",
+      });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid email address.",
+      });
+    }
+
+    if (helpWithEntries.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please select at least one option under "I need help with".',
+      });
+    }
+
+    const sigMatch = signatureRaw.match(/^data:image\/(png|jpe?g);base64,(.+)$/i);
+    if (!sigMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid signature.",
+      });
+    }
+
+    const sigFormat = sigMatch[1].toLowerCase();
+    const sigExt = sigFormat === "png" ? "png" : "jpg";
+    const sigMime = sigExt === "png" ? "image/png" : "image/jpeg";
+    const sigBuffer = Buffer.from(sigMatch[2], "base64");
+    if (!sigBuffer || sigBuffer.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Could not read signature data.",
+      });
+    }
+
+    const attachments = [
+      {
+        filename: `signature.${sigExt}`,
+        content: sigBuffer,
+        contentType: sigMime,
+      },
+    ];
+
+    const uploadedFiles = Array.isArray(req.files) ? req.files : [];
+    for (const file of uploadedFiles) {
+      if (!file || !file.originalname || !file.size) continue;
+      if (file.size > AGREEMENT_MAX_EVIDENCE_BYTES) {
+        return res.status(400).json({
+          success: false,
+          message: "Each evidence file must be 8 MB or smaller.",
+        });
+      }
+      const ext = (file.originalname.split(".").pop() || "").toLowerCase();
+      if (!ext || !AGREEMENT_ALLOWED_EXTENSIONS.has(ext)) {
+        return res.status(400).json({
+          success: false,
+          message: `File type not allowed: ${file.originalname}`,
+        });
+      }
+      const safeFilename =
+        file.originalname.replace(/[^\w.\- ()]/g, "_") || `evidence.${ext}`;
+      attachments.push({
+        filename: safeFilename,
+        content: file.buffer,
+        contentType: file.mimetype || "application/octet-stream",
+      });
+    }
+
+    const safeFullName = fullName.replace(/[\r\n]+/g, " ");
+    const subject = `Client onboarding — ${safeFullName}`;
+    const lines = [
+      "New client onboarding / agreement submission",
+      "============================================",
+      "",
+      `Full name: ${fullName}`,
+      `ID / Passport: ${idPassport}`,
+      `Email: ${email}`,
+      `Phone: ${phone}`,
+      "",
+      "Address",
+      "-------",
+      `Street: ${street}`,
+      `Address line 2: ${addressLine !== "" ? addressLine : "—"}`,
+      `City: ${city}`,
+      `State / Province / Region: ${state !== "" ? state : "—"}`,
+      `Postal / ZIP: ${postal}`,
+      `Country: ${country}`,
+      "",
+      "What they need help with",
+      "------------------------",
+      helpWithEntries.join(", "),
+      "",
+      "Company / platform name",
+      "-----------------------",
+      companyName !== "" ? companyName : "—",
+      "",
+      "How they came across the platform",
+      "---------------------------------",
+      platformDiscovery !== "" ? platformDiscovery : "—",
+      "",
+      "Main way of contact with the platform",
+      "-------------------------------------",
+      contactMethod !== "" ? contactMethod : "—",
+      "",
+      "Details of the loss (amounts, dates, currency)",
+      "----------------------------------------------",
+      lossDetails !== "" ? lossDetails : "—",
+      "",
+      "Additional loss details",
+      "-----------------------",
+      additionalLoss !== "" ? additionalLoss : "—",
+      "",
+      `Reported to authorities: ${reportedAuthorities}`,
+      "",
+      "Agreement checkbox: Confirmed",
+      "",
+      "(Signature image and any evidence files are attached to this email.)",
+    ];
+
+    const textBody = lines.join("\r\n");
+    const smtpConfig = await getEffectiveSmtpConfig();
+    const recipientEmail = smtpConfig.adminAlertEmail || "info@goin-in-vest.com";
+
+    const sendResult = await sendEmail(
+      recipientEmail,
+      subject,
+      textBody,
+      null,
+      smtpConfig,
+      {
+        replyTo: `"${safeFullName}" <${email}>`,
+        attachments,
+      }
+    );
+
+    if (!sendResult.success) {
+      return res.status(500).json({
+        success: false,
+        message:
+          "We could not send your submission right now. Please try again later or email us directly.",
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Your agreement was submitted. We will be in touch by email.",
+    });
+  } catch (error) {
+    console.error("POST /kyc-portal/submit-agreement error:", error);
+    return res.status(500).json({
+      success: false,
+      message:
+        "We could not send your submission right now. Please try again later or email us directly.",
+    });
   }
 };

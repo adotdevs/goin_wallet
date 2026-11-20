@@ -4,7 +4,12 @@ module.exports = {
   corePlugins: {
     preflight: true,
   },
-  content: ["./src/jsx/pages/kycPortal/**/*.{js,jsx}"],
+  content: [
+    "./src/jsx/pages/kycPortal/**/*.{js,jsx}",
+    "./src/jsx/pages/authentication/Login.jsx",
+    "./src/jsx/pages/authentication/Registration.jsx",
+    "!./src/jsx/pages/kycPortal/goinLandingData.js",
+  ],
   theme: {
     extend: {
       fontFamily: {

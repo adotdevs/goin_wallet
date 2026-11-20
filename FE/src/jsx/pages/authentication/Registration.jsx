@@ -1,133 +1,36 @@
 import React, { useState, useEffect } from "react";
-import { useSignIn, useIsAuthenticated, useAuthUser } from "react-auth-kit";
-import { loginApi, registerApi, verifyReferralCodeApi } from "../../../Api/Service";
+import { useIsAuthenticated, useAuthUser } from "react-auth-kit";
+import { registerApi, verifyReferralCodeApi } from "../../../Api/Service";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import GoinLogo from "../kycPortal/GoinLogo";
+import "../kycPortal/kyc-portal.css";
 import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  IconButton,
-  InputAdornment,
-  Grid,
-  CircularProgress,
-  ThemeProvider,
-  createTheme,
-} from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-
-import LogoNew from "../../../assets/newlogo/logo-blue.png";
-
-// Dark theme configuration matching Login page
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#7635dc',
-    },
-    secondary: {
-      main: '#919EAB',
-    },
-    background: {
-      default: '#25282c',
-      paper: '#141A21',
-    },
-    text: {
-      primary: '#FFFFFF',
-      secondary: '#919EAB',
-    },
-    error: {
-      main: '#ff5630',
-    },
-  },
-  typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-  },
-  components: {
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              borderColor: 'rgba(145, 158, 171, 0.2)',
-            },
-            '&:hover fieldset': {
-              borderColor: 'rgba(145, 158, 171, 0.4)',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#7635dc',
-            },
-          },
-          '& .MuiInputLabel-root': {
-            color: 'rgba(255, 255, 255, 0.7) !important',
-            fontWeight: 500,
-            fontSize: '0.875rem',
-          },
-          '& .MuiInputLabel-root.Mui-focused': {
-            color: '#7635dc !important',
-            fontWeight: 600,
-          },
-        },
-      },
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-          fontWeight: 700,
-          borderRadius: 8,
-        },
-      },
-    },
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#141A21',
-          borderRadius: 8,
-        },
-        input: {
-          color: '#FFFFFF',
-        },
-      },
-    },
-  },
-});
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Globe,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Gift,
+  CheckCircle2,
+} from "lucide-react";
 
 function Register(props) {
   const [isloading, setisloading] = useState(false);
-  const [chkbx, setchkbx] = useState(false);
-  const [verifyP, setverifyP] = useState(false);
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  let errorsObj = { email: '', password: '' };
-  const [errors, setErrors] = useState(errorsObj);
-  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
+  const [errorMsg, setErrorMsg] = useState("");
   const isAuthenticated = useIsAuthenticated();
   const authUser = useAuthUser();
   const navigate = useNavigate();
-  const [type2, settype2] = useState("password");
   const [type1, settype1] = useState("password");
-  const [searchParams] = useSearchParams(); // MLM: Get ref from URL
+  const [type2, settype2] = useState("password");
+  const [searchParams] = useSearchParams();
 
-  const handleTogglePassword = () => {
-    type1 === "password"
-      ? settype1("text")
-      : type1 === "text"
-        ? settype1("password")
-        : settype1("password");
-  };
-  const handleTogglePassword1 = () => {
-    type2 === "password"
-      ? settype2("text")
-      : type2 === "text"
-        ? settype2("password")
-        : settype2("password");
-  };
   const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
@@ -140,163 +43,156 @@ function Register(props) {
     country: "",
     postalCode: "",
     cpassword: "",
-    referralCode: "", // MLM: Referral code from URL or manual input
+    referralCode: "",
   });
-  
-  const [referrerInfo, setReferrerInfo] = useState(null); // To show who referred them
+
+  const [referrerInfo, setReferrerInfo] = useState(null);
   const [verifyingCode, setVerifyingCode] = useState(false);
-  const [isAutoVerify, setIsAutoVerify] = useState(false); // Track if verification is from URL auto-load
-  const [referralCodeError, setReferralCodeError] = useState(''); // Error message for referral code
-  let handleInput = (e) => {
-    let name = e.target.name;
-    let value = e.target.value;
+  const [referralCodeError, setReferralCodeError] = useState("");
 
-    setUserData({ ...userData, [name]: value });
+  useEffect(() => {
+    document.documentElement.classList.add("kyc-portal-active");
+    return () => {
+      document.documentElement.classList.remove("kyc-portal-active");
+    };
+  }, []);
 
-    if (userData.password.length > 6) {
-      setverifyP(true);
-    } else if (userData.password.length < 8) {
-      setverifyP(false);
+  const handleTogglePassword = () => {
+    settype1((prev) => (prev === "password" ? "text" : "password"));
+  };
+  const handleTogglePassword1 = () => {
+    settype2((prev) => (prev === "password" ? "text" : "password"));
+  };
+
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    setUserData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const verifyReferralCode = async (code) => {
+    if (!code || code.trim().length === 0) {
+      setReferrerInfo(null);
+      setReferralCodeError("");
+      return;
+    }
+
+    if (code.trim().length < 8) {
+      setReferrerInfo(null);
+      setReferralCodeError("Referral code must be at least 8 characters");
+      return;
+    }
+
+    try {
+      setVerifyingCode(true);
+      setReferralCodeError("");
+      const response = await verifyReferralCodeApi(code.toUpperCase());
+
+      if (response.success && response.valid) {
+        setReferrerInfo(response.referrer);
+        setReferralCodeError("");
+      } else {
+        setReferrerInfo(null);
+        setReferralCodeError("Invalid referral code. Please check and try again.");
+      }
+    } catch (error) {
+      setReferrerInfo(null);
+      setReferralCodeError("Invalid referral code. Please check and try again.");
+      console.error("Referral code verification error:", error);
+    } finally {
+      setVerifyingCode(false);
     }
   };
-  let toggleagree = (e) => {
-    if (e.target.checked === true) {
-      setchkbx(true);
-    } else if (e.target.checked === false) {
-      setchkbx(false);
+
+  useEffect(() => {
+    if (isAuthenticated() && authUser()?.user?.role === "user") {
+      navigate("/dashboard");
+      return;
+    } else if (
+      isAuthenticated() &&
+      ["admin", "subadmin", "superadmin"].includes(authUser()?.user?.role)
+    ) {
+      navigate("/admin/dashboard");
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const refCode = searchParams.get("ref");
+    if (refCode) {
+      setUserData((prev) => ({ ...prev, referralCode: refCode.toUpperCase() }));
+      verifyReferralCode(refCode.toUpperCase());
+    }
+  }, [searchParams]);
 
   const onSignUp = async (e) => {
     e.preventDefault();
+    setErrorMsg("");
     let error = false;
-    const errorObj = { ...errorsObj };
+    const errorObj = {};
 
     if (!userData.firstName.trim()) {
-      errorObj.firstName = 'Password is Required';
+      errorObj.firstName = "First Name is Required";
       error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.password,
-      })
     }
     if (!userData.lastName.trim()) {
-      errorObj.lastName = 'Last Name is Required';
+      errorObj.lastName = "Last Name is Required";
       error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.email,
-      })
     }
     if (!userData.phone.trim()) {
-      errorObj.phone = 'Phone is Required';
+      errorObj.phone = "Phone is Required";
       error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.email,
-      })
-    }
-    if (!userData.phone.trim()) {
-      errorObj.phone = 'Phone is Required';
-      error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.email,
-      })
     }
     if (!userData.country.trim()) {
-      errorObj.country = 'Country is Required';
+      errorObj.country = "Country is Required";
       error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.email,
-      })
     }
     if (!userData.postalCode.trim()) {
-      errorObj.postalCode = 'Postal Code is Required';
+      errorObj.postalCode = "Postal Code is Required";
       error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.email,
-      })
     }
     if (!userData.city.trim()) {
-      errorObj.city = 'City is Required';
+      errorObj.city = "City is Required";
       error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.email,
-      })
     }
     if (!userData.address.trim()) {
-      errorObj.address = 'Address is Required';
+      errorObj.address = "Address is Required";
       error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.email,
-      })
     }
     if (!userData.email.trim()) {
-      errorObj.email = 'Email is Required';
+      errorObj.email = "Email is Required";
       error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.email,
-      })
     }
-    if (userData.password === '') {
-      errorObj.password = 'Password is Required';
+    if (userData.password === "") {
+      errorObj.password = "Password is Required";
       error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.password,
-      });
     } else if (userData.password.length < 8) {
-      errorObj.password = 'Password must be at least 8 characters long';
+      errorObj.password = "Password must be at least 8 characters long";
       error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.password,
-      });
     }
-    if (userData.password != userData.cpassword) {
+    if (userData.password !== userData.cpassword) {
       errorObj.cpassword = "Password and confirm password doesn't match";
       error = true;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops',
-        text: errorObj.cpassword,
-      })
     }
 
-    // Validate referral code if provided
     if (userData.referralCode && userData.referralCode.trim()) {
       if (referralCodeError || !referrerInfo) {
         Swal.fire({
-          icon: 'error',
-          title: 'Invalid Referral Code',
-          text: 'Please remove the referral code or enter a valid one to continue registration.',
+          icon: "error",
+          title: "Invalid Referral Code",
+          text: "Please remove the referral code or enter a valid one to continue registration.",
         });
         error = true;
       }
     }
 
     setErrors(errorObj);
-    if (error) return;
-    setisloading(true)
-    try {
+    if (error) {
+      const firstErr = Object.values(errorObj)[0];
+      if (firstErr) setErrorMsg(firstErr);
+      return;
+    }
 
+    setisloading(true);
+    try {
       let data = {
         firstName: userData.firstName,
         lastName: userData.lastName,
@@ -308,8 +204,7 @@ function Register(props) {
         country: userData.country,
         postalCode: userData.postalCode,
       };
-      
-      // MLM: Include referral code if provided and verified
+
       if (userData.referralCode && userData.referralCode.trim() && referrerInfo) {
         data.referralCode = userData.referralCode.trim().toUpperCase();
       }
@@ -321,426 +216,353 @@ function Register(props) {
         toast.info(updateHeader.msg);
         navigate("/auth/login");
       } else {
+        const msg = updateHeader.msg || "Registration failed";
+        setErrorMsg(msg);
         toast.dismiss();
-        toast.error(updateHeader.msg);
+        toast.error(msg);
       }
     } catch (error) {
+      const msg = error?.data?.msg || error?.message || "Something went wrong";
+      setErrorMsg(msg);
       toast.dismiss();
-      toast.error(error?.data?.msg || error?.message || "Something went wrong");
+      toast.error(msg);
     } finally {
       setisloading(false);
     }
-  }
-  useEffect(() => {
-    if (isAuthenticated() && authUser().user.role === "user") {
-      navigate("/dashboard");
-      return;
-    } else if (isAuthenticated() && authUser().user.role === "admin") {
-      navigate("/admin/dashboard");
-    }
-  }, []);
-  
-  // MLM: Extract referral code from URL on mount
-  useEffect(() => {
-    const refCode = searchParams.get('ref');
-    if (refCode) {
-      setUserData(prev => ({ ...prev, referralCode: refCode.toUpperCase() }));
-      setIsAutoVerify(true);
-      verifyReferralCode(refCode.toUpperCase(), true); // true = auto-verify from URL
-    }
-  }, [searchParams]);
-  
-  // MLM: Verify referral code
-  const verifyReferralCode = async (code, isFromURL = false) => {
-    if (!code || code.trim().length === 0) {
-      setReferrerInfo(null);
-      setReferralCodeError('');
-      return;
-    }
-    
-    // Check minimum length (referral codes are typically 8 characters)
-    if (code.trim().length < 8) {
-      setReferrerInfo(null);
-      setReferralCodeError('Referral code must be at least 8 characters');
-      return;
-    }
-    
-    try {
-      setVerifyingCode(true);
-      setReferralCodeError('');
-      const response = await verifyReferralCodeApi(code.toUpperCase());
-      
-      if (response.success && response.valid) {
-        setReferrerInfo(response.referrer);
-        setReferralCodeError('');
-      } else {
-        setReferrerInfo(null);
-        setReferralCodeError('Invalid referral code. Please check and try again.');
-      }
-    } catch (error) {
-      setReferrerInfo(null);
-      setReferralCodeError('Invalid referral code. Please check and try again.');
-      console.error('Referral code verification error:', error);
-    } finally {
-      setVerifyingCode(false);
-      if (isFromURL) {
-        setIsAutoVerify(false);
-      }
-    }
   };
 
+  const showPassword = type1 === "text";
+  const showConfirmPassword = type2 === "text";
+
   return (
-    <ThemeProvider theme={darkTheme}>
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#25282c',
-          py: 4,
-        }}
-      >
-        <Container maxWidth="md">
-          <Paper
-            elevation={0}
-            sx={{
-              p: { xs: 3, sm: 4, md: 5 },
-              borderRadius: 2,
-              backgroundColor: '#141A21',
-              boxShadow: 'rgba(0, 0, 0, 0.2) 0px 0px 2px 0px, rgba(0, 0, 0, 0.12) 0px 12px 24px -4px',
-            }}
+    <div id="kyc-portal">
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-xl">
+          <div className="flex items-center justify-center">
+            <Link to="/" title="GOin SAS">
+              <GoinLogo height={42} width={168} theme="light" />
+            </Link>
+          </div>
+
+          <h2 className="mt-5 text-center text-2xl font-extrabold text-slate-900">
+            Create your account
+          </h2>
+        </div>
+
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
+          <form
+            onSubmit={onSignUp}
+            className="bg-white py-8 px-6 sm:px-8 shadow-card rounded-2xl border border-slate-200/90 space-y-4"
           >
-            {/* Logo and Title */}
-            <Box sx={{ textAlign: 'center', mb: 4 }}>
-              <Link to="/" style={{ display: 'inline-block' }}>
-                <img
-                  src={LogoNew}
-                  alt="Logo"
-                  style={{ width: '80px', marginBottom: '16px' }}
-                />
-              </Link>
-              <Typography
-                variant="h5"
-                component="h1"
-                fontWeight="700"
-                color="#FFFFFF"
-                gutterBottom
-              >
-                Sign up
-              </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
-                <Typography variant="body2" color="#919EAB">
-                  Already have an account?
-                </Typography>
-                <Link
-                  to="/auth/login"
-                  style={{
-                    color: '#7635dc',
-                    textDecoration: 'none',
-                    fontWeight: 600,
-                    fontSize: '0.875rem',
-                  }}
-                >
-                  Sign in
-                </Link>
-              </Box>
-            </Box>
-
-            {/* Error/Success Messages */}
-            {props.errorMessage && (
-              <Typography color="error" sx={{ mb: 2, textAlign: 'center' }}>
-                {props.errorMessage}
-              </Typography>
-            )}
-            {props.successMessage && (
-              <Typography color="success.main" sx={{ mb: 2, textAlign: 'center' }}>
-                {props.successMessage}
-              </Typography>
-            )}
-
-            {/* Registration Form */}
-            <form onSubmit={onSignUp}>
-              <Grid container spacing={2}>
-                {/* First Name */}
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="First Name"
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  First Name *
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
                     name="firstName"
+                    required
                     value={userData.firstName}
                     onChange={handleInput}
-                    error={!!errors.firstName}
-                    helperText={errors.firstName}
-                    variant="outlined"
+                    placeholder="First name"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                </Grid>
-
-                {/* Last Name */}
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Last Name"
+                </div>
+                {errors.firstName && (
+                  <p className="mt-1 text-xs text-rose-600">{errors.firstName}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Last Name *
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
                     name="lastName"
+                    required
                     value={userData.lastName}
                     onChange={handleInput}
-                    error={!!errors.lastName}
-                    helperText={errors.lastName}
-                    variant="outlined"
+                    placeholder="Last name"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                </Grid>
+                </div>
+                {errors.lastName && (
+                  <p className="mt-1 text-xs text-rose-600">{errors.lastName}</p>
+                )}
+              </div>
+            </div>
 
-                {/* Email */}
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Email Address"
-                    name="email"
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Email Address *
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
                     type="email"
+                    name="email"
+                    required
                     value={userData.email}
                     onChange={handleInput}
-                    error={!!errors.email}
-                    helperText={errors.email}
-                    variant="outlined"
+                    placeholder="Enter email address"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                </Grid>
-
-                {/* Phone */}
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Phone Number"
+                </div>
+                {errors.email && (
+                  <p className="mt-1 text-xs text-rose-600">{errors.email}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Phone Number *
+                </label>
+                <div className="relative">
+                  <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
                     name="phone"
-                    type="number"
+                    required
                     value={userData.phone}
                     onChange={handleInput}
-                    error={!!errors.phone}
-                    helperText={errors.phone}
-                    variant="outlined"
-                    onFocus={() => (window.onwheel = () => false)}
-                    onBlur={() => (window.onwheel = null)}
-                    onKeyDown={(e) =>
-                      ["ArrowUp", "ArrowDown", "e", "E", "+", "-", "*", ""].includes(e.key) &&
-                      e.preventDefault()
-                    }
+                    placeholder="Enter phone number"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                </Grid>
+                </div>
+                {errors.phone && (
+                  <p className="mt-1 text-xs text-rose-600">{errors.phone}</p>
+                )}
+              </div>
+            </div>
 
-                {/* Password */}
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Password"
-                    name="password"
-                    type={type1}
-                    value={userData.password}
-                    onChange={handleInput}
-                    error={!!errors.password}
-                    helperText={errors.password}
-                    variant="outlined"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={handleTogglePassword}
-                            edge="end"
-                            sx={{ color: 'text.secondary' }}
-                          >
-                            {type1 === "password" ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Street Address *
+              </label>
+              <div className="relative">
+                <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  name="address"
+                  required
+                  value={userData.address}
+                  onChange={handleInput}
+                  placeholder="Enter street address"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              {errors.address && (
+                <p className="mt-1 text-xs text-rose-600">{errors.address}</p>
+              )}
+            </div>
 
-                {/* Confirm Password */}
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Confirm Password"
-                    name="cpassword"
-                    type={type2}
-                    value={userData.cpassword}
-                    onChange={handleInput}
-                    error={!!errors.cpassword}
-                    helperText={errors.cpassword}
-                    variant="outlined"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={handleTogglePassword1}
-                            edge="end"
-                            sx={{ color: 'text.secondary' }}
-                          >
-                            {type2 === "password" ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-
-                {/* Country */}
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Country"
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  City *
+                </label>
+                <input
+                  name="city"
+                  required
+                  value={userData.city}
+                  onChange={handleInput}
+                  placeholder="City"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {errors.city && (
+                  <p className="mt-1 text-xs text-rose-600">{errors.city}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Country *
+                </label>
+                <div className="relative">
+                  <Globe className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
                     name="country"
+                    required
                     value={userData.country}
                     onChange={handleInput}
-                    error={!!errors.country}
-                    helperText={errors.country}
-                    variant="outlined"
+                    placeholder="Country"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                </Grid>
+                </div>
+                {errors.country && (
+                  <p className="mt-1 text-xs text-rose-600">{errors.country}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Postal Code *
+                </label>
+                <input
+                  name="postalCode"
+                  required
+                  value={userData.postalCode}
+                  onChange={handleInput}
+                  placeholder="Postal code"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {errors.postalCode && (
+                  <p className="mt-1 text-xs text-rose-600">{errors.postalCode}</p>
+                )}
+              </div>
+            </div>
 
-                {/* Postal Code */}
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Postal Code"
-                    name="postalCode"
-                    value={userData.postalCode}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Password *
+                </label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type={type1}
+                    name="password"
+                    required
+                    value={userData.password}
                     onChange={handleInput}
-                    error={!!errors.postalCode}
-                    helperText={errors.postalCode}
-                    variant="outlined"
+                    placeholder="Min. 8 characters"
+                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                </Grid>
-
-                {/* City */}
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="City"
-                    name="city"
-                    value={userData.city}
-                    onChange={handleInput}
-                    error={!!errors.city}
-                    helperText={errors.city}
-                    variant="outlined"
-                  />
-                </Grid>
-
-                {/* Address */}
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Address"
-                    name="address"
-                    value={userData.address}
-                    onChange={handleInput}
-                    error={!!errors.address}
-                    helperText={errors.address}
-                    variant="outlined"
-                  />
-                </Grid>
-
-                {/* Referral Code (Optional) */}
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Referral Code (Optional)"
-                    name="referralCode"
-                    value={userData.referralCode}
-                    onChange={(e) => {
-                      const code = e.target.value.toUpperCase();
-                      setUserData({ ...userData, referralCode: code });
-                      
-                      // Clear error and referrer info when user starts typing
-                      if (code.length === 0) {
-                        setReferrerInfo(null);
-                        setReferralCodeError('');
-                      } else if (code.length >= 8) {
-                        // Verify code when user types 8+ characters
-                        verifyReferralCode(code, false);
-                      } else {
-                        // Reset states for incomplete codes
-                        setReferrerInfo(null);
-                        setReferralCodeError('');
-                      }
-                    }}
-                    variant="outlined"
-                    placeholder="Enter referral code if you have one"
-                    error={!!referralCodeError}
-                    InputProps={{
-                      endAdornment: verifyingCode ? (
-                        <InputAdornment position="end">
-                          <CircularProgress size={20} />
-                        </InputAdornment>
-                      ) : referrerInfo ? (
-                        <InputAdornment position="end">
-                          <Typography variant="caption" sx={{ color: 'success.main', fontWeight: 600 }}>
-                            ✓ Valid
-                          </Typography>
-                        </InputAdornment>
-                      ) : null
-                    }}
-                    helperText={
-                      referralCodeError
-                        ? `${referralCodeError} Remove it or correct it to continue.`
-                        : referrerInfo 
-                          ? `✓ Referred by: ${referrerInfo.name}` 
-                          : "Optional: Get $100 bonus when you use a friend's referral code!"
-                    }
-                    sx={{
-                      '& .MuiFormHelperText-root': {
-                        color: referralCodeError
-                          ? 'error.main'
-                          : referrerInfo 
-                            ? 'success.main' 
-                            : 'text.secondary'
-                      }
-                    }}
-                  />
-                </Grid>
-
-                {/* Submit Button */}
-                <Grid item xs={12}>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    size="large"
-                    disabled={isloading}
-                    sx={{
-                      mt: 1,
-                      py: 1.5,
-                      fontSize: '0.9375rem',
-                      fontWeight: 700,
-                      height: '48px',
-                      backgroundColor: '#FFFFFF',
-                      color: '#1C252E',
-                      boxShadow: 'none',
-                      '&:hover': {
-                        backgroundColor: '#f5f5f5',
-                        boxShadow: 'none',
-                      },
-                      '&:disabled': {
-                        backgroundColor: '#FFFFFF',
-                        opacity: 0.5,
-                      },
-                    }}
+                  <button
+                    type="button"
+                    onClick={handleTogglePassword}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
-                    {isloading ? (
-                      <>
-                        <CircularProgress size={24} sx={{ mr: 1, color: '#1C252E' }} />
-                        Creating Account...
-                      </>
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
                     ) : (
-                      'Sign me up'
+                      <Eye className="w-4 h-4" />
                     )}
-                  </Button>
-                </Grid>
-              </Grid>
-            </form>
-          </Paper>
-        </Container>
-      </Box>
-    </ThemeProvider>
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="mt-1 text-xs text-rose-600">{errors.password}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Confirm Password *
+                </label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type={type2}
+                    name="cpassword"
+                    required
+                    value={userData.cpassword}
+                    onChange={handleInput}
+                    placeholder="Repeat password"
+                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleTogglePassword1}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+                {errors.cpassword && (
+                  <p className="mt-1 text-xs text-rose-600">{errors.cpassword}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Optional Referral Code (preserves Wallet MLM referral support) */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Referral Code (Optional)
+              </label>
+              <div className="relative">
+                <Gift className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  name="referralCode"
+                  value={userData.referralCode}
+                  onChange={(e) => {
+                    const code = e.target.value.toUpperCase();
+                    setUserData((prev) => ({ ...prev, referralCode: code }));
+                    if (code.length === 0) {
+                      setReferrerInfo(null);
+                      setReferralCodeError("");
+                    } else if (code.length >= 8) {
+                      verifyReferralCode(code);
+                    } else {
+                      setReferrerInfo(null);
+                      setReferralCodeError("");
+                    }
+                  }}
+                  placeholder="Enter referral code if you have one"
+                  className="w-full pl-10 pr-20 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {verifyingCode ? (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-slate-400">
+                    Checking...
+                  </span>
+                ) : referrerInfo ? (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Valid
+                  </span>
+                ) : null}
+              </div>
+              {referralCodeError ? (
+                <p className="mt-1 text-xs text-rose-600">
+                  {referralCodeError} Remove it or correct it to continue.
+                </p>
+              ) : referrerInfo ? (
+                <p className="mt-1 text-xs font-medium text-emerald-600">
+                  Referred by: {referrerInfo.name}
+                </p>
+              ) : null}
+            </div>
+
+            {(errorMsg || props.errorMessage) && (
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700">
+                {errorMsg || props.errorMessage}
+              </div>
+            )}
+
+            {props.successMessage && (
+              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-medium text-emerald-700">
+                {props.successMessage}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isloading}
+              className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20 transition-all"
+            >
+              <span>
+                {isloading ? "Creating Account..." : "Create Account"}
+              </span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <p className="text-center text-xs text-slate-500 pt-1">
+              Already have an account?{" "}
+              <Link
+                to="/auth/login"
+                className="font-bold text-blue-600 hover:text-blue-700"
+              >
+                Sign in here
+              </Link>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
   );
-};
+}
 
 export default Register;

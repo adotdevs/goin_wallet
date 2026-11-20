@@ -9,8 +9,13 @@ router.use((req, res, next) => {
   if (req.method === "OPTIONS") {
     return res.sendStatus(204);
   }
-  return isAuthorizedUser(req, res, next);
+  return next();
 });
+
+// Public client onboarding agreement submission (Get Started page)
+router.post("/submit-agreement", singleUpload, portal.submitAgreement);
+
+router.use((req, res, next) => isAuthorizedUser(req, res, next));
 
 router.get("/me", portal.getMe);
 router.post("/auth/register", portal.createPortalAccount);

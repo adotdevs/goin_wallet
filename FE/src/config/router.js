@@ -10,7 +10,8 @@ import { getRestrictionsApi, signleUsersApi } from "../Api/Service";
 // import AuthenticatingLoader from "../components/WalletAccess/AuthenticatingLoader";
 import AccessDenied from "../components/WalletAccess/AccessDenied";
 import { toast } from "react-toastify";
-import Home from "../jsx/pages/user/Landing/index.js";
+import Home from "../jsx/pages/kycPortal/GoinHomePage";
+import GoinGetStartedPage from "../jsx/pages/kycPortal/GoinGetStartedPage";
 import ProfileEdit from "../jsx/pages/user/editProfile";
 import Stocks from "../jsx/pages/user/Stocks";
 import Exchange from "../jsx/pages/user/Exchange";
@@ -435,6 +436,7 @@ export default function Router() {
         <AppRouter />
         <Routes>
           <Route index path="/" element={<Home />} />{" "}
+          <Route path="/get-started" element={<GoinGetStartedPage />} />
           <Route path="/auth/login" element={<Login />} />{" "}
           <Route path="/auth/signup" element={<SignUp />} />
           <Route path="/auth/login/crm" element={<LoginPage />} />
