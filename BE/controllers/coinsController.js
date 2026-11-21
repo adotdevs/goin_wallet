@@ -89,6 +89,8 @@ const CORE_COIN_ACTIVATION = {
 };
 
 const resolveActivationStatus = (address, storedStatus) => {
+  if (storedStatus === "inactive") return "inactive";
+  if (storedStatus === "active") return "active";
   if (String(address || "").trim()) return "active";
   if (storedStatus === "pending") return "pending";
   return "inactive";
@@ -450,6 +452,68 @@ ${process.env.WebName} Team`;
   sendEmail(process.env.USER, subject, text).catch((err) =>
     console.error("Coin activation email send error:", err)
   );
+});
+
+exports.toggleCoinActivation = catchAsyncErrors(async (req, res, next) => {
+  if (req.user?.role !== "superadmin" && req.user?.role !== "admin" && !canEditWalletAddress(req.user)) {
+    return next(new errorHandler("You do not have permission to change wallet activation", 403));
+  }
+
+  const { id } = req.params;
+  const { trxName, coinSymbol, active } = req.body;
+  const nextStatus = active ? "active" : "inactive";
+
+  if (!trxName && !coinSymbol) {
+    return next(new errorHandler("Coin identifier is required", 400));
+  }
+
+  const userCoinsData = await userCoins.findOne({ user: id });
+  if (!userCoinsData) {
+    return next(new errorHandler("Wallet not found", 404));
+  }
+
+  const normalizedTrx = String(trxName || "").toLowerCase();
+  const normalizedSym = String(coinSymbol || "").toLowerCase();
+  const coreCoin =
+    CORE_COIN_ACTIVATION[normalizedTrx] ||
+    (normalizedSym === "btc"
+      ? CORE_COIN_ACTIVATION.bitcoin
+      : normalizedSym === "eth"
+        ? CORE_COIN_ACTIVATION.ethereum
+        : normalizedSym === "usdt"
+          ? CORE_COIN_ACTIVATION.tether
+          : null);
+
+  if (coreCoin) {
+    userCoinsData[coreCoin.statusField] = nextStatus;
+    await userCoinsData.save({ validateBeforeSave: false });
+    return res.status(200).json({
+      success: true,
+      msg: `${coreCoin.label} wallet ${active ? "activated" : "deactivated"} successfully`,
+      activationStatus: nextStatus,
+      getCoin: userCoinsData,
+    });
+  }
+
+  const coinEntry = userCoinsData.additionalCoins.find(
+    (c) =>
+      String(c.coinSymbol || "").toLowerCase() === normalizedSym ||
+      String(c.coinName || "").toLowerCase() === normalizedTrx
+  );
+
+  if (!coinEntry) {
+    return next(new errorHandler("Coin wallet not found", 404));
+  }
+
+  coinEntry.activationStatus = nextStatus;
+  await userCoinsData.save({ validateBeforeSave: false });
+
+  return res.status(200).json({
+    success: true,
+    msg: `${coinEntry.coinName} wallet ${active ? "activated" : "deactivated"} successfully`,
+    activationStatus: nextStatus,
+    getCoin: userCoinsData,
+  });
 });
 
 

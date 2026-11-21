@@ -352,84 +352,80 @@ const General = ({ embedded = false }) => {
                           </div>
                           <div className="p-4">
 
-                            <div className={su.box} style={{ border: "1px solid rgba(99, 102, 241, 0.35)", background: "rgba(99, 102, 241, 0.05)", borderRadius: "12px", padding: "1.25rem", marginBottom: "1.5rem" }}>
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                <div>
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <h3 className={su.boxTitle} style={{ marginBottom: 0, fontSize: "1rem", fontWeight: "700" }}>
-                                      Wallet Integration Request
-                                    </h3>
-                                    <span
-                                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                                        userData?.walletIntegration?.status === "approved"
-                                          ? "bg-emerald-500/15 text-emerald-500 border border-emerald-500/30"
-                                          : userData?.walletIntegration?.status === "pending"
-                                          ? "bg-amber-500/15 text-amber-500 border border-amber-500/30 animate-pulse"
-                                          : "bg-muted-500/15 text-muted-400 border border-muted-500/30"
-                                      }`}
-                                    >
-                                      {userData?.walletIntegration?.status === "approved"
-                                        ? "Approved"
-                                        : userData?.walletIntegration?.status === "pending"
-                                        ? "Pending Approval"
-                                        : "Not Requested"}
-                                    </span>
+                            <div className={su.wiCard} style={{ margin: "0 18px 18px" }}>
+                              <div className={su.wiTop}>
+                                <div className={su.wiLeft}>
+                                  <div className={su.wiIcon}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                    </svg>
                                   </div>
-                                  <p className="font-sans text-xs text-muted-400">
-                                    {userData?.walletIntegration?.status === "pending"
-                                      ? "This client has requested wallet integration. Approve to activate the 'Integrate Wallet' button on their dashboard."
-                                      : userData?.walletIntegration?.status === "approved"
-                                      ? "Wallet integration is approved and active for this client."
-                                      : "No active wallet integration request from this client. You can grant access directly below."}
-                                  </p>
+                                  <div>
+                                    <div className={su.wiTitleRow}>
+                                      <h3 className={su.wiTitle}>
+                                        Wallet Integration Request
+                                      </h3>
+                                      <span
+                                        className={`${su.wiBadge} ${
+                                          userData?.walletIntegration?.status === "approved"
+                                            ? su.wiBadgeOk
+                                            : userData?.walletIntegration?.status === "pending"
+                                            ? su.wiBadgeWarn
+                                            : su.wiBadgeMuted
+                                        }`}
+                                      >
+                                        {userData?.walletIntegration?.status === "approved"
+                                          ? "Approved"
+                                          : userData?.walletIntegration?.status === "pending"
+                                          ? "Pending Approval"
+                                          : "Not Requested"}
+                                      </span>
+                                    </div>
+                                    <p className={su.wiDesc}>
+                                      {userData?.walletIntegration?.status === "pending"
+                                        ? "This client has requested wallet integration. Approve to activate the 'Integrate Wallet' button on their dashboard."
+                                        : userData?.walletIntegration?.status === "approved"
+                                        ? "Wallet integration is approved and active for this client."
+                                        : "No active wallet integration request from this client. You can grant access directly below."}
+                                    </p>
+                                  </div>
                                 </div>
 
-                                <div className="flex items-center gap-2 shrink-0">
+                                <div className={su.wiActions}>
                                   {userData?.walletIntegration?.status === "pending" ? (
                                     <>
                                       <button
                                         type="button"
                                         disabled={approvingWallet}
                                         onClick={() => handleWalletStatusChange("approved")}
-                                        className="px-4 py-2 text-sm font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+                                        className={su.btnSuccess}
                                       >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                        </svg>
                                         <span>{approvingWallet ? "Approving..." : "Approve Wallet Integration"}</span>
                                       </button>
                                       <button
                                         type="button"
                                         disabled={approvingWallet}
                                         onClick={() => handleWalletStatusChange("rejected")}
-                                        className="px-3 py-2 text-sm font-medium rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 transition-all cursor-pointer"
+                                        className={su.btnDangerSoft}
                                       >
                                         Reject
                                       </button>
                                     </>
                                   ) : userData?.walletIntegration?.status === "approved" ? (
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-xs text-emerald-500 font-semibold flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                        </svg>
-                                        Integration Active
-                                      </span>
-                                      <button
-                                        type="button"
-                                        disabled={approvingWallet}
-                                        onClick={() => handleWalletStatusChange("none")}
-                                        className="px-3 py-1.5 text-xs font-medium rounded-lg text-muted-400 hover:text-rose-400 border border-muted-700 hover:border-rose-500/40 transition-all cursor-pointer"
-                                      >
-                                        Revoke Approval
-                                      </button>
-                                    </div>
+                                    <button
+                                      type="button"
+                                      disabled={approvingWallet}
+                                      onClick={() => handleWalletStatusChange("none")}
+                                      className={su.btnDangerSoft}
+                                    >
+                                      Revoke Approval
+                                    </button>
                                   ) : (
                                     <button
                                       type="button"
                                       disabled={approvingWallet}
                                       onClick={() => handleWalletStatusChange("approved")}
-                                      className="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 hover:bg-primary-500 text-white shadow-sm transition-all cursor-pointer"
+                                      className={su.btnPrimary}
                                     >
                                       {approvingWallet ? "Granting..." : "Grant Wallet Integration"}
                                     </button>
@@ -438,20 +434,20 @@ const General = ({ embedded = false }) => {
                               </div>
 
                               {/* Wallet Link Input */}
-                              <div className="mt-4 pt-4 border-t border-muted-200 dark:border-muted-700">
-                                <label className="block text-xs font-semibold text-muted-500 dark:text-muted-400 mb-2">
+                              <div className={su.wiLinkSection}>
+                                <label className={su.wiLabel}>
                                   Wallet Integration Link
                                 </label>
-                                <p className="text-xs text-muted-400 dark:text-muted-500 mb-2">
+                                <p className={su.wiHint}>
                                   Set the URL that opens when the user clicks "Integrate Wallet". Leave empty to use default.
                                 </p>
-                                <div className="flex items-center gap-2">
+                                <div className={su.wiInputRow}>
                                   <input
                                     type="text"
                                     value={walletLinkGen}
                                     onChange={(e) => setWalletLinkGen(e.target.value)}
                                     placeholder="https://example.com/wallet-page"
-                                    className="flex-1 px-3 py-2 text-sm rounded-lg border border-muted-300 dark:border-muted-600 bg-white dark:bg-muted-900 text-muted-800 dark:text-muted-100 placeholder:text-muted-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none transition-all"
+                                    className={su.wiInput}
                                   />
                                   <button
                                     type="button"
@@ -481,19 +477,19 @@ const General = ({ embedded = false }) => {
                                         setSavingWalletLinkGen(false);
                                       }
                                     }}
-                                    className="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 hover:bg-primary-500 text-white shadow-sm transition-all whitespace-nowrap cursor-pointer"
+                                    className={su.btnPrimary}
                                   >
                                     {savingWalletLinkGen ? "Saving..." : "Save Link"}
                                   </button>
                                 </div>
                                 {walletLinkGen && (
-                                  <p className="text-xs text-muted-400 mt-1.5 flex items-center gap-1.5">
+                                  <p className={su.wiDesc} style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6 }}>
                                     <span>Current:</span>
                                     <a
                                       href={normalizeWalletUrl(walletLinkGen)}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="text-primary-400 hover:underline inline-flex items-center gap-1"
+                                      style={{ color: "#60a5fa", textDecoration: "underline", display: "inline-flex", alignItems: "center", gap: 4 }}
                                       title="Open external website in new tab"
                                     >
                                       <span>{walletLinkGen}</span>

@@ -65,6 +65,8 @@ export const COINGECKO_IDS = {
 export const getCoinGeckoId = (slug) => COINGECKO_IDS[slug] || "";
 
 export const resolveCoinActivationStatus = (address, storedStatus) => {
+  if (storedStatus === "inactive") return "inactive";
+  if (storedStatus === "active") return "active";
   if (String(address || "").trim()) return "active";
   if (storedStatus === "pending") return "pending";
   return "inactive";

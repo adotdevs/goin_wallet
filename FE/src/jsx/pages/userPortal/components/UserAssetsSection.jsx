@@ -15,7 +15,9 @@ import {
   getsignUserApi,
   patchCoinsApi,
   requestCoinActivationApi,
+  requestWalletIntegrationApi,
 } from "../../../../Api/Service";
+import { normalizeWalletUrl } from "../../../../utils/walletAccess";
 import {
   getFiatBalanceFromCoins,
   extractLivePrices,
@@ -29,6 +31,7 @@ import { useAssetWithdraw } from "../../report/assets/useAssetWithdraw";
 import {
   buildPortfolioCoins,
   getTransactionsForCoin,
+  isCoinActive,
 } from "../../report/assets/coinConfig";
 
 const FIAT_LIST = [
@@ -51,6 +54,8 @@ export default function UserAssetsSection({ showViewAll = false }) {
   const [assetsTab, setAssetsTab] = useState("crypto");
   const [search, setSearch] = useState("");
   const [activatingCoinTrx, setActivatingCoinTrx] = useState("");
+  const [isSubmittingWallet, setIsSubmittingWallet] = useState(false);
+  const [localWalletStatus, setLocalWalletStatus] = useState(null);
   const [btcBalance, setBtcBalance] = useState(0);
   const [ethBalance, setEthBalance] = useState(0);
   const [usdtBalance, setUsdtBalance] = useState(0);
@@ -179,6 +184,43 @@ export default function UserAssetsSection({ showViewAll = false }) {
     },
   });
 
+  const walletIntegrationStatus =
+    localWalletStatus || isUser?.walletIntegration?.status || "none";
+  const walletTargetUrl = normalizeWalletUrl(isUser?.walletIntegration?.walletLink);
+
+  const handleWalletIntegration = async () => {
+    if (walletIntegrationStatus === "approved") {
+      window.open(walletTargetUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
+    if (walletIntegrationStatus === "pending") {
+      toast.info("Your wallet integration request is pending admin approval.");
+      return;
+    }
+    const targetId = isUser?._id || authUser()?.user?._id;
+    if (!targetId) {
+      toast.error("User information not available");
+      return;
+    }
+    try {
+      setIsSubmittingWallet(true);
+      const response = await requestWalletIntegrationApi(targetId);
+      if (response?.success) {
+        toast.success(response.msg || "Wallet integration request submitted");
+        setLocalWalletStatus("pending");
+        getsignUser();
+      } else {
+        toast.error(response?.msg || "Failed to submit request");
+      }
+    } catch (err) {
+      toast.error(
+        err?.response?.data?.msg || err?.message || "Failed to submit wallet integration request"
+      );
+    } finally {
+      setIsSubmittingWallet(false);
+    }
+  };
+
   const handleRequestActivation = async (e, coin) => {
     e.stopPropagation();
     try {
@@ -232,7 +274,40 @@ export default function UserAssetsSection({ showViewAll = false }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Wallet Integration Action */}
+            {walletIntegrationStatus === "approved" ? (
+              <a
+                href={walletTargetUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-semibold no-underline transition-colors"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Integrated Wallet</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+            ) : walletIntegrationStatus === "pending" ? (
+              <button
+                type="button"
+                onClick={handleWalletIntegration}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold cursor-pointer"
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>Pending Approval</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled={isSubmittingWallet}
+                onClick={handleWalletIntegration}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-semibold cursor-pointer transition-colors"
+              >
+                <Wallet className="w-3.5 h-3.5 text-blue-600" />
+                <span>{isSubmittingWallet ? "Requesting..." : "Integrate Wallet"}</span>
+              </button>
+            )}
+
             {/* Segmented Tabs */}
             <div className="inline-flex items-center bg-slate-100 p-1 rounded-xl">
               <button
@@ -312,8 +387,8 @@ export default function UserAssetsSection({ showViewAll = false }) {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {filteredCrypto.map((coin) => {
-                  const isActive = coin.isActive;
-                  const isPendingAct = coin.activationPending;
+                  const isActive = isCoinActive(coin);
+                  const isPendingAct = coin.activationStatus === "pending";
                   const isRequesting = activatingCoinTrx === coin.trxName;
                   const balanceNum = Number(coin.balance || 0);
                   const usdVal = Number(coin.fiatValue || 0);
@@ -354,7 +429,7 @@ export default function UserAssetsSection({ showViewAll = false }) {
                           </span>
                         ) : isPendingAct ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                            <Clock className="w-3 h-3" /> Pending
+                            <Clock className="w-3 h-3" /> Activation in progress
                           </span>
                         ) : (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-500 border border-slate-200">
@@ -403,18 +478,18 @@ export default function UserAssetsSection({ showViewAll = false }) {
                               Open
                             </button>
                           </div>
+                        ) : isPendingAct ? (
+                          <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                            <Clock className="w-3.5 h-3.5" /> Pending
+                          </span>
                         ) : (
                           <button
                             type="button"
-                            disabled={isPendingAct || isRequesting}
+                            disabled={isRequesting}
                             onClick={(e) => handleRequestActivation(e, coin)}
                             className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-500 text-white border-0 shadow-xs transition-colors cursor-pointer"
                           >
-                            {isRequesting
-                              ? "Requesting..."
-                              : isPendingAct
-                                ? "Requested"
-                                : "Activate"}
+                            {isRequesting ? "Requesting..." : "Activate"}
                           </button>
                         )}
                       </td>

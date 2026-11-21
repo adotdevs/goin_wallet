@@ -192,23 +192,21 @@ const EditTokenModal = ({ show, onClose, token, onDelete, onUpdate }) => {
                             type="button"
                             onClick={handleDelete}
                             disabled={isDeleting}
-                            style={{ backgroundColor: "red" }}
-                            className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none border-info-500 text-info-50 bg-info-500 dark:bg-info-500 dark:border-info-500 text-white hover:enabled:bg-info-400 dark:hover:enabled:bg-info-400 hover:enabled:shadow-lg hover:enabled:shadow-info-500/50 dark:hover:enabled:shadow-info-800/20 focus-visible:outline-info-400/70 focus-within:outline-info-400/70 focus-visible:bg-info-500 active:enabled:bg-info-500 dark:focus-visible:outline-info-400/70 dark:focus-within:outline-info-400/70 dark:focus-visible:bg-info-500 dark:active:enabled:bg-info-500 rounded-md mr-2"
+                            className={su.btnDangerSoft}
                         >
                             {isDeleting ? 'Deleting...' : 'Delete Token'}
                         </button>
                         <button
                             type="button"
                             onClick={onClose}
-                            style={{ backgroundColor: "gray" }}
-                            className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none border-info-500 text-info-50 bg-info-500 dark:bg-info-500 dark:border-info-500 text-white hover:enabled:bg-info-400 dark:hover:enabled:bg-info-400 hover:enabled:shadow-lg hover:enabled:shadow-info-500/50 dark:hover:enabled:shadow-info-800/20 focus-visible:outline-info-400/70 focus-within:outline-info-400/70 focus-visible:bg-info-500 active:enabled:bg-info-500 dark:focus-visible:outline-info-400/70 dark:focus-within:outline-info-400/70 dark:focus-visible:bg-info-500 dark:active:enabled:bg-info-500 rounded-md mr-2"
+                            className={su.btnGhost}
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none border-info-500 text-info-50 bg-info-500 dark:bg-info-500 dark:border-info-500 text-white hover:enabled:bg-info-400 dark:hover:enabled:bg-info-400 hover:enabled:shadow-lg hover:enabled:shadow-info-500/50 dark:hover:enabled:shadow-info-800/20 focus-visible:outline-info-400/70 focus-within:outline-info-400/70 focus-visible:bg-info-500 active:enabled:bg-info-500 dark:focus-visible:outline-info-400/70 dark:focus-within:outline-info-400/70 dark:focus-visible:bg-info-500 dark:active:enabled:bg-info-500 rounded-md mr-2"
+                            className={su.btnPrimary}
                         >
                             {isLoading ? 'Updating...' : 'Update Token'}
                         </button>
@@ -407,11 +405,11 @@ const AddTokenModal = ({ show, onClose, onAdd }) => {
                         />
                     </div>
                     <div className="modal-actions">
-                        <button type="button" onClick={onClose} style={{ backgroundColor: "red" }} className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none border-info-500 text-info-50 bg-info-500 dark:bg-info-500 dark:border-info-500 text-white hover:enabled:bg-info-400 dark:hover:enabled:bg-info-400 hover:enabled:shadow-lg hover:enabled:shadow-info-500/50 dark:hover:enabled:shadow-info-800/20 focus-visible:outline-info-400/70 focus-within:outline-info-400/70 focus-visible:bg-info-500 active:enabled:bg-info-500 dark:focus-visible:outline-info-400/70 dark:focus-within:outline-info-400/70 dark:focus-visible:bg-info-500 dark:active:enabled:bg-info-500 rounded-md mr-2"
+                        <button type="button" onClick={onClose} className={su.btnGhost}
                         >
                             Cancel
                         </button>
-                        <button type="submit" disabled={isLoading} className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none border-info-500 text-info-50 bg-info-500 dark:bg-info-500 dark:border-info-500 text-white hover:enabled:bg-info-400 dark:hover:enabled:bg-info-400 hover:enabled:shadow-lg hover:enabled:shadow-info-500/50 dark:hover:enabled:shadow-info-800/20 focus-visible:outline-info-400/70 focus-within:outline-info-400/70 focus-visible:bg-info-500 active:enabled:bg-info-500 dark:focus-visible:outline-info-400/70 dark:focus-within:outline-info-400/70 dark:focus-visible:bg-info-500 dark:active:enabled:bg-info-500 rounded-md mr-2"
+                        <button type="submit" disabled={isLoading} className={su.btnPrimary}
                         >
                             {isLoading ? 'Adding...' : 'Add Token'}
                         </button>
@@ -739,26 +737,24 @@ const UserTokens = ({ embedded = false }) => {
                                                                             <td>{token.totalValue || 'N/A'}</td>
 
                                                                             <td>
-                                                                                <button
-                                                                                    onClick={() => deleteUserToken(token._id)} disabled={isDisableDelete} style={{ backgroundColor: "red" }} type="button" className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none border-info-500 text-info-50 bg-info-500 dark:bg-info-500 dark:border-info-500 text-white hover:enabled:bg-info-400 dark:hover:enabled:bg-info-400 hover:enabled:shadow-lg hover:enabled:shadow-info-500/50 dark:hover:enabled:shadow-info-800/20 focus-visible:outline-info-400/70 focus-within:outline-info-400/70 focus-visible:bg-info-500 active:enabled:bg-info-500 dark:focus-visible:outline-info-400/70 dark:focus-within:outline-info-400/70 dark:focus-visible:bg-info-500 dark:active:enabled:bg-info-500 rounded-md mr-2"> <span>
-                                                                                        {isDisableDelete ? (
-                                                                                            <div>
-                                                                                                <div className="nui-placeload animate-nui-placeload h-4 w-8 rounded mx-auto"></div>
-                                                                                            </div>
-                                                                                        ) : (
-                                                                                            "Delete"
-                                                                                        )}
-                                                                                    </span></button>
-                                                                                <button
-                                                                                    onClick={() => handleEditStock(token)} disabled={isDisableDelete} style={{ backgroundColor: "green" }} type="button" className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none border-info-500 text-info-50 bg-info-500 dark:bg-info-500 dark:border-info-500 text-white hover:enabled:bg-info-400 dark:hover:enabled:bg-info-400 hover:enabled:shadow-lg hover:enabled:shadow-info-500/50 dark:hover:enabled:shadow-info-800/20 focus-visible:outline-info-400/70 focus-within:outline-info-400/70 focus-visible:bg-info-500 active:enabled:bg-info-500 dark:focus-visible:outline-info-400/70 dark:focus-within:outline-info-400/70 dark:focus-visible:bg-info-500 dark:active:enabled:bg-info-500 rounded-md mr-2"> <span>
-                                                                                        {isDisableDelete ? (
-                                                                                            <div>
-                                                                                                <div className="nui-placeload animate-nui-placeload h-4 w-8 rounded mx-auto"></div>
-                                                                                            </div>
-                                                                                        ) : (
-                                                                                            "Edit"
-                                                                                        )}
-                                                                                    </span></button>
+                                                                                <div style={{ display: "inline-flex", gap: "8px", alignItems: "center" }}>
+                                                                                    <button
+                                                                                        onClick={() => handleEditStock(token)}
+                                                                                        disabled={isDisableDelete}
+                                                                                        type="button"
+                                                                                        className={su.btnGhost}
+                                                                                    >
+                                                                                        <span>{isDisableDelete ? "..." : "Edit"}</span>
+                                                                                    </button>
+                                                                                    <button
+                                                                                        onClick={() => deleteUserToken(token._id)}
+                                                                                        disabled={isDisableDelete}
+                                                                                        type="button"
+                                                                                        className={su.btnDangerSoft}
+                                                                                    >
+                                                                                        <span>{isDisableDelete ? "..." : "Delete"}</span>
+                                                                                    </button>
+                                                                                </div>
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>

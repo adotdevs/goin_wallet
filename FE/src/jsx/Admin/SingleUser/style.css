@@ -232,69 +232,81 @@ input::-webkit-outer-spin-button, .admin input::-webkit-inner-spin-button {
 
 /* Loan status action buttons — override global .admin button { color: inherit; background: transparent } */
 .admin .loan-status-actions .loan-status-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  border-radius: 9px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
   background-image: none !important;
-  -webkit-appearance: none;
-  appearance: none;
+  -webkit-appearance: none !important;
+  appearance: none !important;
 }
 
 .admin .loan-status-actions .loan-status-btn-inactive {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  color: #334155 !important;
+  background-color: #162032 !important;
+  border: 1px solid #334155 !important;
+  color: #cbd5e1 !important;
+  -webkit-text-fill-color: #cbd5e1 !important;
 }
 
 .admin .loan-status-actions .loan-status-btn-inactive:hover:not(:disabled) {
-  background-color: #f8fafc !important;
-  color: #1e293b !important;
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .admin .loan-status-actions .loan-status-btn-active {
   color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .admin .loan-status-actions .loan-status-btn-active--submitted {
-  background-color: #3b82f6 !important;
-  border-color: #3b82f6 !important;
+  background-color: #2563eb !important;
+  border: 1px solid #3b82f6 !important;
 }
 
 .admin .loan-status-actions .loan-status-btn-active--review {
-  background-color: #f59e0b !important;
-  border-color: #f59e0b !important;
+  background-color: #d97706 !important;
+  border: 1px solid #f59e0b !important;
 }
 
 .admin .loan-status-actions .loan-status-btn-active--approved {
-  background-color: #0ea5e9 !important;
-  border-color: #0ea5e9 !important;
+  background-color: #059669 !important;
+  border: 1px solid #10b981 !important;
 }
 
 .admin .loan-status-actions .loan-status-btn-active--rejected {
-  background-color: #ef4444 !important;
-  border-color: #ef4444 !important;
+  background-color: #e11d48 !important;
+  border: 1px solid #fb7185 !important;
 }
 
-.admin .loan-status-actions .loan-status-btn-delete {
-  background-color: #dc2626 !important;
-  border-color: #dc2626 !important;
-  color: #ffffff !important;
-}
-
-.admin .loan-status-actions .loan-status-btn-delete:hover:not(:disabled) {
-  background-color: #b91c1c !important;
-  border-color: #b91c1c !important;
-  color: #ffffff !important;
-}
-
+.admin .loan-status-actions .loan-status-btn-delete,
 .admin .loan-status-btn-delete {
-  background-color: #dc2626 !important;
-  border-color: #dc2626 !important;
-  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  border-radius: 9px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  background-color: #2a1219 !important;
+  border: 1px solid #7f1d1d !important;
+  color: #fda4af !important;
+  -webkit-text-fill-color: #fda4af !important;
   background-image: none !important;
 }
 
+.admin .loan-status-actions .loan-status-btn-delete:hover:not(:disabled),
 .admin .loan-status-btn-delete:hover:not(:disabled) {
-  background-color: #b91c1c !important;
-  border-color: #b91c1c !important;
+  background-color: #e11d48 !important;
+  border-color: #fb7185 !important;
   color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 /* Loan applications list page */

@@ -273,3 +273,342 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
 #kyc-portal .font-sig-alex {
   font-family: "Alex Brush", cursive;
 }
+
+/* =====================================================================
+   USER PORTAL DARK MODE (Strictly scoped to #kyc-portal.user-portal-dark)
+   Zero impact on Light Mode or Admin Dashboard.
+   ===================================================================== */
+html.user-portal-dark,
+html.user-portal-dark body {
+  background-color: #0b1120 !important;
+  color: #f1f5f9;
+  scrollbar-color: #334155 #0b1120;
+}
+
+html.user-portal-dark::-webkit-scrollbar-track,
+html.user-portal-dark body::-webkit-scrollbar-track {
+  background: #0b1120;
+}
+
+html.user-portal-dark::-webkit-scrollbar-thumb,
+html.user-portal-dark body::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-color: #0b1120;
+}
+
+#kyc-portal.user-portal-dark {
+  background-color: #0b1120 !important;
+  color: #f1f5f9 !important;
+}
+
+#kyc-portal.user-portal-dark * {
+  scrollbar-color: #334155 #0f172a;
+}
+
+#kyc-portal.user-portal-dark ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+#kyc-portal.user-portal-dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+#kyc-portal.user-portal-dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Canvas & Surfaces */
+#kyc-portal.user-portal-dark .bg-\[\#F8FAFC\] {
+  background-color: #0b1120 !important;
+}
+
+#kyc-portal.user-portal-dark .bg-white,
+#kyc-portal.user-portal-dark .bg-white\/95,
+#kyc-portal.user-portal-dark .bg-white\/90 {
+  background-color: #111827 !important;
+}
+
+#kyc-portal.user-portal-dark .bg-slate-50,
+#kyc-portal.user-portal-dark .bg-slate-50\/80,
+#kyc-portal.user-portal-dark .bg-slate-50\/70,
+#kyc-portal.user-portal-dark .bg-slate-50\/60,
+#kyc-portal.user-portal-dark .bg-slate-50\/50 {
+  background-color: #0f172a !important;
+}
+
+#kyc-portal.user-portal-dark .bg-slate-100,
+#kyc-portal.user-portal-dark .bg-slate-100\/80 {
+  background-color: #1e293b !important;
+}
+
+#kyc-portal.user-portal-dark .bg-slate-200 {
+  background-color: #334155 !important;
+}
+
+#kyc-portal.user-portal-dark .hover\:bg-slate-50:hover,
+#kyc-portal.user-portal-dark .hover\:bg-slate-50\/80:hover,
+#kyc-portal.user-portal-dark .hover\:bg-slate-50\/70:hover,
+#kyc-portal.user-portal-dark .hover\:bg-slate-100:hover,
+#kyc-portal.user-portal-dark .hover\:bg-slate-200:hover,
+#kyc-portal.user-portal-dark .hover\:bg-slate-200\/80:hover {
+  background-color: #1e293b !important;
+}
+
+/* Borders & Dividers */
+#kyc-portal.user-portal-dark .border-slate-100,
+#kyc-portal.user-portal-dark .border-slate-200,
+#kyc-portal.user-portal-dark .border-slate-200\/90,
+#kyc-portal.user-portal-dark .border-slate-200\/80,
+#kyc-portal.user-portal-dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1e293b !important;
+}
+
+#kyc-portal.user-portal-dark .border-slate-300 {
+  border-color: #334155 !important;
+}
+
+/* Typography */
+#kyc-portal.user-portal-dark .text-slate-900,
+#kyc-portal.user-portal-dark .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+#kyc-portal.user-portal-dark .text-slate-700,
+#kyc-portal.user-portal-dark .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+#kyc-portal.user-portal-dark .text-slate-500,
+#kyc-portal.user-portal-dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+/* Inputs, Selects, Textareas */
+#kyc-portal.user-portal-dark input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#kyc-portal.user-portal-dark select,
+#kyc-portal.user-portal-dark textarea {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+#kyc-portal.user-portal-dark input::placeholder,
+#kyc-portal.user-portal-dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+#kyc-portal.user-portal-dark input:focus,
+#kyc-portal.user-portal-dark select:focus,
+#kyc-portal.user-portal-dark textarea:focus {
+  background-color: #111827 !important;
+  border-color: #3b82f6 !important;
+}
+
+/* Tinted Status Badges & Soft Surfaces */
+#kyc-portal.user-portal-dark .bg-blue-50,
+#kyc-portal.user-portal-dark .bg-blue-50\/70,
+#kyc-portal.user-portal-dark .bg-blue-50\/60,
+#kyc-portal.user-portal-dark .bg-blue-50\/40 {
+  background-color: rgba(37, 99, 235, 0.16) !important;
+}
+#kyc-portal.user-portal-dark .border-blue-100,
+#kyc-portal.user-portal-dark .border-blue-200 {
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+#kyc-portal.user-portal-dark .text-blue-700,
+#kyc-portal.user-portal-dark .text-blue-600 {
+  color: #60a5fa !important;
+}
+
+#kyc-portal.user-portal-dark .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+#kyc-portal.user-portal-dark .border-emerald-200 {
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+#kyc-portal.user-portal-dark .text-emerald-700,
+#kyc-portal.user-portal-dark .text-emerald-600,
+#kyc-portal.user-portal-dark .text-emerald-800,
+#kyc-portal.user-portal-dark .text-emerald-950 {
+  color: #34d399 !important;
+}
+
+#kyc-portal.user-portal-dark .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+}
+#kyc-portal.user-portal-dark .border-amber-200 {
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+#kyc-portal.user-portal-dark .text-amber-900,
+#kyc-portal.user-portal-dark .text-amber-800,
+#kyc-portal.user-portal-dark .text-amber-700,
+#kyc-portal.user-portal-dark .text-amber-950 {
+  color: #fbbf24 !important;
+}
+
+#kyc-portal.user-portal-dark .bg-rose-50 {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+}
+#kyc-portal.user-portal-dark .border-rose-200 {
+  border-color: rgba(244, 63, 94, 0.3) !important;
+}
+#kyc-portal.user-portal-dark .text-rose-700,
+#kyc-portal.user-portal-dark .text-rose-600,
+#kyc-portal.user-portal-dark .text-rose-800 {
+  color: #fb7185 !important;
+}
+
+#kyc-portal.user-portal-dark .bg-indigo-50,
+#kyc-portal.user-portal-dark .bg-indigo-50\/70 {
+  background-color: rgba(99, 102, 241, 0.16) !important;
+}
+#kyc-portal.user-portal-dark .border-indigo-100,
+#kyc-portal.user-portal-dark .border-indigo-200 {
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+#kyc-portal.user-portal-dark .text-indigo-700,
+#kyc-portal.user-portal-dark .text-indigo-600 {
+  color: #818cf8 !important;
+}
+
+/* Preserve white buttons inside solid blue/emerald hero banners */
+#kyc-portal.user-portal-dark .from-blue-600 .bg-white,
+#kyc-portal.user-portal-dark .from-emerald-600 .bg-white,
+#kyc-portal.user-portal-dark .user-blue-hero a.MuiButton-contained {
+  background-color: #ffffff !important;
+  color: #1d4ed8 !important;
+}
+
+/* Crypto News Ticker in Dark Mode */
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_shell"] {
+  background-color: #0b1120 !important;
+  border-top-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_ticker"] {
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_brand"] {
+  background-color: rgba(37, 99, 235, 0.18) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_brandText"] {
+  color: #f8fafc !important;
+}
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_chip"],
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_article"] {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+/* Apply Loan Spacing & Dark Mode Polish */
+#kyc-portal .apply-loan-wrapper [class*="formGrid"] {
+  gap: 1.25rem !important;
+}
+#kyc-portal .apply-loan-wrapper [class*="main"] {
+  padding: 1.75rem 2rem !important;
+}
+#kyc-portal .apply-loan-wrapper [class*="field"] label {
+  display: block !important;
+  margin-bottom: 0.45rem !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+}
+
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarCard"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="contentCol"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="formCard"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="card"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="panel"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="statusShell"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="main"] {
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="title"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="statusTitle"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarProgressValue"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="summaryValue"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="stepTitle"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper h1,
+#kyc-portal.user-portal-dark .apply-loan-wrapper h2,
+#kyc-portal.user-portal-dark .apply-loan-wrapper h3,
+#kyc-portal.user-portal-dark .apply-loan-wrapper label {
+  color: #f8fafc !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="subtitle"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="statusMessage"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="summaryLabel"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarProgressLabel"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarProgressStep"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="stepDesc"] {
+  color: #94a3b8 !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="summaryItem"] {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="infoPanelBlue"] {
+  background-color: rgba(37, 99, 235, 0.16) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+  color: #bfdbfe !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="infoPanelGreen"] {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  color: #a7f3d0 !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="infoPanelRed"] {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
+  color: #fecaca !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="stepBadge"] {
+  background-color: rgba(37, 99, 235, 0.2) !important;
+  border-color: rgba(59, 130, 246, 0.35) !important;
+  color: #93c5fd !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarStepIndex"] {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarStepActive"] [class*="sidebarStepIndex"] {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarProgressHead"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="statusHero"] {
+  border-bottom-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="actionsBar"] {
+  background-color: #0f172a !important;
+  border-top-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="btnGhost"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="btnSecondary"] {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+/* MUI Papers/Cards/Tables on Affiliate page in Dark Mode */
+#kyc-portal.user-portal-dark .MuiPaper-root:not(.user-blue-hero),
+#kyc-portal.user-portal-dark .MuiCard-root {
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+#kyc-portal.user-portal-dark .MuiTableCell-root {
+  color: #e2e8f0 !important;
+  border-bottom-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark .MuiTab-root {
+  color: #94a3b8 !important;
+}
+#kyc-portal.user-portal-dark .MuiTab-root.Mui-selected {
+  color: #60a5fa !important;
+}

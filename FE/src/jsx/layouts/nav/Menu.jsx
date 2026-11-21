@@ -318,8 +318,7 @@ const useMenuList = () => {
         {
             title: 'Support tickets',
             classsChange: 'mm-active',
-            to: 'https://www.betabase.pro/support',
-            external: true,
+            to: '/support', 
             iconStyle: <i className="material-symbols-outlined">support_agent</i>,
 
         },

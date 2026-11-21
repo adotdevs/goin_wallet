@@ -49,6 +49,8 @@ import {
   ChevronDown,
   Menu,
   X,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 function getMenuIcon(title = "") {
@@ -110,10 +112,87 @@ export default function UserPortalShell({ children, title, noPadding = false, sh
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    try {
+      return localStorage.getItem("userPortalTheme") === "dark";
+    } catch {
+      return false;
+    }
+  });
+  const [themeAlertDismissed, setThemeAlertDismissed] = useState(() => {
+    try {
+      return localStorage.getItem("userPortalThemeAlertDismissed") === "true";
+    } catch {
+      return false;
+    }
+  });
+  const [systemPrefersDark, setSystemPrefersDark] = useState(() => {
+    try {
+      return Boolean(
+        window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+      );
+    } catch {
+      return false;
+    }
+  });
   const [userProfile, setUserProfile] = useState(null);
   const [availableFunds, setAvailableFunds] = useState(null);
   const [pendingFunds, setPendingFunds] = useState(null);
   const profileRef = useRef(null);
+
+  useEffect(() => {
+    if (!window.matchMedia) return undefined;
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = (e) => setSystemPrefersDark(e.matches);
+    if (mq.addEventListener) {
+      mq.addEventListener("change", onChange);
+      return () => mq.removeEventListener("change", onChange);
+    }
+    return undefined;
+  }, []);
+
+  const toggleTheme = () => {
+    setIsDark((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("userPortalTheme", next ? "dark" : "light");
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
+
+  const enableDarkModeFromAlert = () => {
+    setIsDark(true);
+    setThemeAlertDismissed(true);
+    try {
+      localStorage.setItem("userPortalTheme", "dark");
+      localStorage.setItem("userPortalThemeAlertDismissed", "true");
+    } catch {
+      // ignore
+    }
+  };
+
+  const dismissThemeAlert = () => {
+    setThemeAlertDismissed(true);
+    try {
+      localStorage.setItem("userPortalThemeAlertDismissed", "true");
+    } catch {
+      // ignore
+    }
+  };
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("user-portal-dark");
+    } else {
+      document.documentElement.classList.remove("user-portal-dark");
+    }
+    return () => {
+      document.documentElement.classList.remove("user-portal-dark");
+    };
+  }, [isDark]);
 
   const sessionUser = authUser()?.user || {};
 
@@ -285,7 +364,7 @@ export default function UserPortalShell({ children, title, noPadding = false, sh
       {/* Logo */}
       <div className="h-16 px-5 border-b border-slate-200/80 flex items-center justify-between shrink-0">
         <Link to="/dashboard" onClick={onNavigate} className="inline-flex items-center">
-          <GoinLogo height={32} width={128} theme="light" />
+          <GoinLogo height={32} width={128} theme={isDark ? "dark" : "light"} />
         </Link>
         <button
           type="button"
@@ -439,8 +518,8 @@ export default function UserPortalShell({ children, title, noPadding = false, sh
               <User className="w-4 h-4 shrink-0" />
               <span className="truncate">Profile &amp; Signature</span>
             </Link>
-
-            <Link
+{/* dont remove or uncomment it */}
+            {/* <Link
               to="/support"
               onClick={onNavigate}
               className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-semibold transition-colors ${
@@ -451,7 +530,7 @@ export default function UserPortalShell({ children, title, noPadding = false, sh
             >
               <Headphones className="w-4 h-4 shrink-0" />
               <span className="truncate">Support Desk</span>
-            </Link>
+            </Link> */}
           </nav>
         </div>
       </div>
@@ -518,7 +597,7 @@ export default function UserPortalShell({ children, title, noPadding = false, sh
   );
 
   return (
-    <div id="kyc-portal">
+    <div id="kyc-portal" className={isDark ? "user-portal-dark" : ""}>
       <div className="min-h-screen bg-[#F8FAFC] flex">
         {/* Desktop Sidebar (Fixed, independent of body scroll) */}
         <aside className="hidden lg:block fixed inset-y-0 left-0 z-40 w-64 border-r border-slate-200/80 bg-white h-screen">
@@ -563,6 +642,21 @@ export default function UserPortalShell({ children, title, noPadding = false, sh
               </div>
 
               <div className="flex items-center gap-2.5 shrink-0">
+                {/* Light / Dark Mode Toggle */}
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                  title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                  className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200/80 border border-slate-200 text-slate-700 transition-colors cursor-pointer"
+                >
+                  {isDark ? (
+                    <Sun className="w-4 h-4 text-amber-400" />
+                  ) : (
+                    <Moon className="w-4 h-4 text-slate-600" />
+                  )}
+                </button>
+
                 {/* Live KYC Status Pill */}
                 <Link
                   to="/flows/kyc"
@@ -702,6 +796,50 @@ export default function UserPortalShell({ children, title, noPadding = false, sh
             {children}
           </main>
         </div>
+
+        {/* Floating Bottom Popup suggesting Dark Mode when device uses Dark Mode */}
+        {!isDark && systemPrefersDark && !themeAlertDismissed && (
+          <div
+            role="status"
+            style={{
+              position: "fixed",
+              bottom: "24px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 9999,
+              width: "calc(100% - 2rem)",
+              maxWidth: "560px",
+            }}
+          >
+            <div className="flex items-center justify-between gap-3 px-4 py-3.5 rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl text-slate-100">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-400/30 text-blue-400 flex items-center justify-center shrink-0">
+                  <Moon className="w-4 h-4" />
+                </div>
+                <p className="text-xs sm:text-sm text-slate-200 leading-snug m-0">
+                  <strong className="text-white">Your device is in Dark Mode.</strong> Switch the portal to Dark Mode for a more comfortable view.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={enableDarkModeFromAlert}
+                  className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold border-0 shadow-sm transition-colors cursor-pointer whitespace-nowrap"
+                >
+                  Use Dark Mode
+                </button>
+                <button
+                  type="button"
+                  onClick={dismissThemeAlert}
+                  aria-label="Dismiss dark mode suggestion"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 border-0 bg-transparent transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

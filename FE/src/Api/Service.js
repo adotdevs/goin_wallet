@@ -110,6 +110,10 @@ export const updateNewCoinAddressApi = (id, data) => {
 export const requestCoinActivationApi = (id, data) => {
   return patchApi(`requestCoinActivation/${id}`, data);
 };
+
+export const toggleCoinActivationApi = (id, data) => {
+  return patchApi(`toggleCoinActivation/${id}`, data);
+};
 export const requestWalletIntegrationApi = (id) => {
   return postApi(`requestWalletIntegration/${id}`);
 };

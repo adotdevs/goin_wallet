@@ -9,6 +9,7 @@ import { buildStakingByAsset, buildTokenAllocation, formatMoney, summarizeTokens
 const PortfolioTab = ({ userId, tokens = [], currency = "USD" }) => {
   const [stakings, setStakings] = useState([]);
   const [loadedRewards, setLoadedRewards] = useState(false);
+  const [sub, setSub] = useState("tokens");
 
   useEffect(() => {
     let alive = true;
@@ -42,7 +43,7 @@ const PortfolioTab = ({ userId, tokens = [], currency = "USD" }) => {
 
   return (
     <div className={mm.stack}>
-      <section className={mm.stats}>
+      <section className={mm.stats} style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
         <article className={mm.stat}>
           <p className={mm.statLabel}>Total token value</p>
           <p className={mm.statValue}>{formatMoney(tokenStats.totalValue, currency)}</p>
@@ -58,42 +59,68 @@ const PortfolioTab = ({ userId, tokens = [], currency = "USD" }) => {
         </article>
         <article className={mm.stat}>
           <p className={mm.statLabel}>Recorded staking profit</p>
-          <p className={mm.statValue}>{formatMoney(recordedProfit, currency)}</p>
-          <p className={mm.statHint}>Only shown when profit is stored on a record</p>
+          <p className={`${mm.statValue} ${mm.up}`}>{formatMoney(recordedProfit, currency)}</p>
+          <p className={mm.statHint}>Stored staking yield</p>
         </article>
       </section>
-      <div className={mm.grid2}>
-        <section className={`${mm.card} ${mm.cardPad}`}>
-          <div className={mm.cardHead}>
-            <div>
-              <h2 className={mm.title}>Token allocation</h2>
-              <p className={mm.subtitle}>Current token values only</p>
+
+      <div className={mm.subTabs} role="tablist" aria-label="Portfolio sections">
+        {[
+          { id: "tokens", label: "Token Holdings" },
+          { id: "staking", label: "Staking Settings" },
+          { id: "analytics", label: "Allocation Analytics" },
+        ].map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            role="tab"
+            aria-selected={sub === item.id}
+            className={`${mm.subTab} ${sub === item.id ? mm.subTabActive : ""}`}
+            onClick={() => setSub(item.id)}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+
+      {sub === "tokens" && (
+        <div className={mm.embed}>
+          <UserTokens embedded />
+        </div>
+      )}
+
+      {sub === "staking" && (
+        <div className={mm.embed}>
+          <UserStaking embedded />
+        </div>
+      )}
+
+      {sub === "analytics" && (
+        <div className={mm.grid2}>
+          <section className={`${mm.card} ${mm.cardPad}`}>
+            <div className={mm.cardHead}>
+              <div>
+                <h2 className={mm.title}>Token allocation</h2>
+                <p className={mm.subtitle}>Current token values only</p>
+              </div>
             </div>
-          </div>
-          <HubChart type="pie" data={tokenAllocation} emptyLabel="No token values to chart" />
-        </section>
-        <section className={`${mm.card} ${mm.cardPad}`}>
-          <div className={mm.cardHead}>
-            <div>
-              <h2 className={mm.title}>Staking profit by asset</h2>
-              <p className={mm.subtitle}>Uses recorded totalProfit — not estimated APY</p>
+            <HubChart type="pie" data={tokenAllocation} emptyLabel="No token values to chart" />
+          </section>
+          <section className={`${mm.card} ${mm.cardPad}`}>
+            <div className={mm.cardHead}>
+              <div>
+                <h2 className={mm.title}>Staking profit by asset</h2>
+                <p className={mm.subtitle}>Uses recorded totalProfit — not estimated APY</p>
+              </div>
             </div>
-          </div>
-          <HubChart
-            type="pie"
-            data={stakingByAsset}
-            emptyLabel="No staking reward records"
-          />
-        </section>
-      </div>
-      <p className={mm.sectionLabel}>Token holdings</p>
-      <div className={mm.embed}>
-        <UserTokens embedded />
-      </div>
-      <p className={mm.sectionLabel}>Staking settings</p>
-      <div className={mm.embed}>
-        <UserStaking embedded />
-      </div>
+            <HubChart
+              type="pie"
+              data={stakingByAsset}
+              emptyLabel="No staking reward records"
+            />
+          </section>
+        </div>
+      )}
     </div>
   );
 };

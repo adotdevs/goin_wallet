@@ -126,41 +126,67 @@
 }
 
 .btn {
-  min-height: 40px !important;
-  padding: 0 14px !important;
-  border-radius: 12px !important;
-  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  margin: 0 !important;
+  border-radius: 9px !important;
+  border: 1px solid transparent !important;
+  background-image: none !important;
   font-size: 13px !important;
-  font-weight: 750 !important;
+  font-weight: 700 !important;
   cursor: pointer !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  transition: all 0.15s ease !important;
 }
 
 .btnPrimary {
-  background: var(--admin-accent) !important;
-  color: #fff !important;
+  background: #2563eb !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .btnSuccess {
-  background: var(--admin-success) !important;
-  color: #fff !important;
+  background: #059669 !important;
+  border-color: #10b981 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .btnDanger {
-  background: var(--admin-danger) !important;
-  color: #fff !important;
+  background: #2a1219 !important;
+  border-color: #7f1d1d !important;
+  color: #fda4af !important;
+  -webkit-text-fill-color: #fda4af !important;
+}
+
+.btnDanger:hover:not(:disabled) {
+  background: #e11d48 !important;
+  border-color: #fb7185 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .btnInfo {
-  background: var(--admin-info) !important;
-  color: #fff !important;
+  background: #162032 !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+  -webkit-text-fill-color: #e2e8f0 !important;
 }
 
 .btnReset {
-  width: 100%;
+  width: 100% !important;
   min-height: 36px !important;
-  background: var(--admin-surface-2) !important;
-  color: var(--admin-text-secondary) !important;
-  border: 1px solid var(--admin-border-strong) !important;
+  margin-top: 8px !important;
+  background: #162032 !important;
+  color: #cbd5e1 !important;
+  -webkit-text-fill-color: #cbd5e1 !important;
+  border: 1px solid #334155 !important;
 }
 
 .toggle {

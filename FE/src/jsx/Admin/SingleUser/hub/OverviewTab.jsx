@@ -1,5 +1,14 @@
 import React, { useMemo, useState } from "react";
 import { toast } from "react-toastify";
+import {
+  Wallet,
+  ArrowDownLeft,
+  ArrowUpDown,
+  ShieldCheck,
+  Layers,
+  TrendingUp,
+  PieChart,
+} from "lucide-react";
 import HubChart from "./HubChart";
 import mm from "./MemberHub.module.css";
 import {
@@ -26,6 +35,7 @@ const OverviewTab = ({
   tokens,
   loading,
   canEdit,
+  hideMemberCard = false,
   onEdit,
   onOpenTab,
 }) => {
@@ -156,7 +166,8 @@ const OverviewTab = ({
 
   return (
     <div className={mm.stack}>
-      <section className={`${mm.card} ${mm.memberCard}`}>
+      {!hideMemberCard && (
+        <section className={`${mm.card} ${mm.memberCard}`}>
         <div className={mm.identity}>
           <div className={mm.avatar} aria-hidden="true">{initials(user)}</div>
           <div>
@@ -272,25 +283,38 @@ const OverviewTab = ({
             <span className={mm.metaValue}>{formatDateTime(user?.lastActivity || user?.lastOnline)}</span>
           </div>
         </div>
-      </section>
+        </section>
+      )}
 
       <section className={mm.stats}>
-        <article className={mm.stat}>
-          <p className={mm.statLabel}>Total balance</p>
+        <article className={`${mm.stat} ${mm.statHighlight}`}>
+          <div className={`${mm.statIcon} ${mm.statIconBlue}`}>
+            <Wallet size={17} />
+          </div>
+          <p className={mm.statLabel}>Total Balance</p>
           <p className={mm.statValue}>{formatMoney(totalBalance, currency)}</p>
           <p className={mm.statHint}>{activeAssets} funded assets</p>
         </article>
         <article className={mm.stat}>
-          <p className={mm.statLabel}>Total deposited</p>
+          <div className={`${mm.statIcon} ${mm.statIconGreen}`}>
+            <ArrowDownLeft size={17} />
+          </div>
+          <p className={mm.statLabel}>Total Deposited</p>
           <p className={mm.statValue}>{formatMoney(totals.deposits, currency)}</p>
           {trend(compared.depositTrend)}
         </article>
         <article className={mm.stat}>
-          <p className={mm.statLabel}>Total withdrawn</p>
+          <div className={`${mm.statIcon} ${mm.statIconRose}`}>
+            <ArrowUpDown size={17} />
+          </div>
+          <p className={mm.statLabel}>Total Withdrawn</p>
           <p className={mm.statValue}>{formatMoney(totals.withdrawals, currency)}</p>
           {trend(compared.withdrawTrend)}
         </article>
         <article className={mm.stat}>
+          <div className={`${mm.statIcon} ${mm.statIconEmerald}`}>
+            <Wallet size={17} />
+          </div>
           <p className={mm.statLabel}>Wallet Integration</p>
           <p className={mm.statValue}>
             {walletStatus === "approved" ? "Approved" : walletStatus === "pending" ? "Pending" : "None"}
@@ -322,12 +346,18 @@ const OverviewTab = ({
           )}
         </article>
         <article className={mm.stat}>
-          <p className={mm.statLabel}>KYC status</p>
+          <div className={`${mm.statIcon} ${mm.statIconAmber}`}>
+            <ShieldCheck size={17} />
+          </div>
+          <p className={mm.statLabel}>KYC Status</p>
           <p className={mm.statValue}>{kycOn ? "Approved" : "Pending"}</p>
-          <p className={mm.statHint}>{user?.submitDoc?.status || "No submission state"}</p>
+          <p className={mm.statHint}>{user?.submitDoc?.status || "Verification in progress"}</p>
         </article>
         <article className={mm.stat}>
-          <p className={mm.statLabel}>Active assets</p>
+          <div className={`${mm.statIcon} ${mm.statIconIndigo}`}>
+            <Layers size={17} />
+          </div>
+          <p className={mm.statLabel}>Active Assets</p>
           <p className={mm.statValue}>{activeAssets}</p>
           <p className={mm.statHint}>{tokens?.length || 0} custom tokens</p>
         </article>
@@ -336,18 +366,23 @@ const OverviewTab = ({
       <div className={mm.grid2}>
         <section className={`${mm.card} ${mm.cardPad}`}>
           <div className={mm.cardHead}>
-            <div>
-              <h2 className={mm.title}>Portfolio value</h2>
-              <p className={mm.subtitle}>
-                Daily holdings × that day&apos;s market price
-                {markToMarket.changePct != null ? (
-                  <span className={markToMarket.changePct >= 0 ? mm.up : mm.down}>
-                    {" "}
-                    {markToMarket.changePct >= 0 ? "+" : ""}
-                    {markToMarket.changePct.toFixed(1)}%
-                  </span>
-                ) : null}
-              </p>
+            <div className={mm.docCardTitleWrap}>
+              <div className={mm.iconTile}>
+                <TrendingUp size={17} />
+              </div>
+              <div>
+                <h2 className={mm.title}>Portfolio value</h2>
+                <p className={mm.subtitle}>
+                  Daily holdings × that day&apos;s market price
+                  {markToMarket.changePct != null ? (
+                    <span className={markToMarket.changePct >= 0 ? mm.up : mm.down}>
+                      {" "}
+                      {markToMarket.changePct >= 0 ? "+" : ""}
+                      {markToMarket.changePct.toFixed(1)}%
+                    </span>
+                  ) : null}
+                </p>
+              </div>
             </div>
             <div className={mm.periods}>
               {["7d", "30d", "90d", "1y"].map((key) => (
@@ -375,9 +410,14 @@ const OverviewTab = ({
         </section>
         <section className={`${mm.card} ${mm.cardPad}`}>
           <div className={mm.cardHead}>
-            <div>
-              <h2 className={mm.title}>Asset allocation</h2>
-              <p className={mm.subtitle}>Current balances only</p>
+            <div className={mm.docCardTitleWrap}>
+              <div className={mm.iconTile}>
+                <PieChart size={17} />
+              </div>
+              <div>
+                <h2 className={mm.title}>Asset allocation</h2>
+                <p className={mm.subtitle}>Current balances only</p>
+              </div>
             </div>
           </div>
           <HubChart type="pie" data={allocation} emptyLabel="No funded assets to chart" />

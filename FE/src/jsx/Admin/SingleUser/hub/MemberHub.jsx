@@ -2,28 +2,79 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuthUser } from "react-auth-kit";
 import { toast } from "react-toastify";
-import { signleUsersApi } from "../../../../Api/Service";
-import { extractLivePrices } from "../../../../utils/euroCoinUtils";
+import {
+  LayoutDashboard,
+  Wallet,
+  ReceiptText,
+  Landmark,
+  CreditCard,
+  ShieldCheck,
+  FolderOpen,
+  FileText,
+  Coins,
+  UserCog,
+  Mail,
+  Phone,
+  MapPin,
+  Copy,
+  Check,
+  ArrowLeft,
+  Clock,
+  CheckCircle2,
+  Ban,
+  Activity,
+  Calendar,
+} from "lucide-react";
+import { signleUsersApi, updateWalletIntegrationStatusApi } from "../../../../Api/Service";
+import { extractLivePrices, normalizeWalletUrl as _unused } from "../../../../utils/euroCoinUtils";
+import { normalizeWalletUrl } from "../../../../utils/walletAccess";
 import { buildAdminPriceMap } from "../../assets/adminTxDisplay";
 import MemberPageChrome from "./MemberPageChrome";
 import OverviewTab from "./OverviewTab";
-import HubChart from "./HubChart";
+import HubKycTab from "./tabs/HubKycTab";
+import HubDocumentsTab from "./tabs/HubDocumentsTab";
+import HubCryptoCardTab from "./tabs/HubCryptoCardTab";
 import mm from "./MemberHub.module.css";
-import { HUB_TABS, buildAllocation, collectAssetRows, isStaffProfile } from "./hubData";
-import useHubMarkToMarket from "./useHubMarkToMarket";
-import { loadHubOverviewOnce, loadLoanOnce } from "./hubCache";
+import { formatDate, formatDateTime, initials, isStaffProfile } from "./hubData";
+import { clearHubCache, loadHubOverviewOnce, loadLoanOnce } from "./hubCache";
 
 const UserAssets = React.lazy(() => import("../UserAssets"));
 const UserBankAccounts = React.lazy(() => import("../UserBankAccounts"));
-const UserCryptoCard = React.lazy(() => import("../UserCryptoCard"));
-const UserDocs = React.lazy(() => import("../UserDocs"));
-const UserVerifications = React.lazy(() => import("../UserVerificatons"));
 const UserLoanApplication = React.lazy(() => import("../UserLoanApplication"));
 const General = React.lazy(() => import("../General"));
-const TransactionsTab = React.lazy(() => import("./TransactionsTab"));
-const PortfolioTab = React.lazy(() => import("./PortfolioTab"));
+const UserTransactions = React.lazy(() => import("../UserTransactions"));
+const UserTokens = React.lazy(() => import("../userTokens"));
+const UserStaking = React.lazy(() => import("../userStaking"));
 
-const validTab = (value) => (HUB_TABS.some((tab) => tab.id === value) ? value : "overview");
+const BINANCE_TABS = [
+  { key: "overview", tab: "overview", sub: "", label: "Overview", icon: LayoutDashboard },
+  { key: "wallets", tab: "assets", sub: "wallets", label: "Wallets", icon: Wallet },
+  { key: "transactions", tab: "transactions", sub: "", label: "Transactions", icon: ReceiptText },
+  { key: "banking", tab: "assets", sub: "banking", label: "Bank Accounts", icon: Landmark },
+  { key: "card", tab: "assets", sub: "card", label: "Crypto Card", icon: CreditCard },
+  { key: "kyc", tab: "compliance", sub: "kyc", label: "KYC", icon: ShieldCheck },
+  { key: "documents", tab: "compliance", sub: "documents", label: "Documents", icon: FolderOpen },
+  { key: "loan", tab: "compliance", sub: "loan", label: "Loan", icon: FileText },
+  { key: "portfolio", tab: "portfolio", sub: "", label: "Tokens & Staking", icon: Coins },
+];
+
+const resolveActiveKey = (tab, sub, editing) => {
+  if (editing) return "edit";
+  if (tab === "overview") return "overview";
+  if (tab === "transactions") return "transactions";
+  if (tab === "portfolio") return "portfolio";
+  if (tab === "assets") {
+    if (sub === "banking") return "banking";
+    if (sub === "card") return "card";
+    return "wallets";
+  }
+  if (tab === "compliance") {
+    if (sub === "documents") return "documents";
+    if (sub === "loan") return "loan";
+    return "kyc";
+  }
+  return "overview";
+};
 
 const TabFallback = () => (
   <div className={`${mm.card} ${mm.cardPad}`}>
@@ -31,78 +82,16 @@ const TabFallback = () => (
   </div>
 );
 
-const AssetsAllocation = ({ coinDoc, prices, currency = "USD" }) => {
-  const [period, setPeriod] = React.useState("30d");
-  const rows = collectAssetRows(coinDoc, prices);
-  const allocation = buildAllocation(rows);
-  const markToMarket = useHubMarkToMarket({
-    transactions: coinDoc?.transactions || [],
-    period,
-    currency,
-    livePrices: prices,
-  });
-
-  return (
-    <div className={mm.grid2}>
-      <section className={`${mm.card} ${mm.cardPad}`}>
-        <div className={mm.cardHead}>
-          <div>
-            <h2 className={mm.title}>Wallet value</h2>
-            <p className={mm.subtitle}>
-              Daily coin balances × that day&apos;s market price
-              {markToMarket.changePct != null ? (
-                <span className={markToMarket.changePct >= 0 ? mm.up : mm.down}>
-                  {" "}
-                  {markToMarket.changePct >= 0 ? "+" : ""}
-                  {markToMarket.changePct.toFixed(1)}%
-                </span>
-              ) : null}
-            </p>
-          </div>
-          <div className={mm.periods}>
-            {["7d", "30d", "90d", "1y"].map((key) => (
-              <button
-                key={key}
-                type="button"
-                className={`${mm.period} ${period === key ? mm.periodOn : ""}`}
-                onClick={() => setPeriod(key)}
-              >
-                {key}
-              </button>
-            ))}
-          </div>
-        </div>
-        {markToMarket.loading ? (
-          <span className={mm.skel} style={{ width: "100%", height: 220, display: "block" }} />
-        ) : (
-          <HubChart
-            type="value"
-            currency={currency}
-            data={markToMarket.hasData ? markToMarket.points : []}
-            emptyLabel="No holdings to mark to market"
-          />
-        )}
-      </section>
-      <section className={`${mm.card} ${mm.cardPad}`}>
-        <div className={mm.cardHead}>
-          <div>
-            <h2 className={mm.title}>Asset allocation</h2>
-            <p className={mm.subtitle}>Current wallet balances only</p>
-          </div>
-        </div>
-        <HubChart type="pie" data={allocation} emptyLabel="No funded assets to chart" />
-      </section>
-    </div>
-  );
-};
-
 const MemberHub = () => {
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const Navigate = useNavigate();
   const authUser = useAuthUser();
-  const tab = validTab(searchParams.get("tab"));
+
+  const rawTab = searchParams.get("tab") || "overview";
+  const rawSub = searchParams.get("sub") || "";
   const editing = searchParams.get("edit") === "1";
+  const activeKey = resolveActiveKey(rawTab, rawSub, editing);
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -111,12 +100,18 @@ const MemberHub = () => {
   const [loan, setLoan] = useState(null);
   const [tokens, setTokens] = useState([]);
   const [canEdit, setCanEdit] = useState(true);
+  const [copiedId, setCopiedId] = useState(false);
+  const [approvingWallet, setApprovingWallet] = useState(false);
+  const [localWalletStatus, setLocalWalletStatus] = useState(null);
+  const [portfolioSub, setPortfolioSub] = useState("tokens");
 
-  const setTab = (next, extra = {}) => {
+  const goSection = (tab, extra = {}) => {
     const params = new URLSearchParams(searchParams);
-    params.set("tab", next);
-    if (!extra.edit) params.delete("edit");
-    else params.set("edit", "1");
+    params.set("tab", tab);
+    if (extra.sub) params.set("sub", extra.sub);
+    else params.delete("sub");
+    if (extra.edit) params.set("edit", "1");
+    else params.delete("edit");
     setSearchParams(params, { replace: true });
   };
 
@@ -161,12 +156,7 @@ const MemberHub = () => {
             setCanEdit(canChange);
             if (!canView) {
               toast.error("You do not have permission to view client personal details");
-              setSearchParams((prev) => {
-                const next = new URLSearchParams(prev);
-                next.set("tab", "assets");
-                next.delete("edit");
-                return next;
-              }, { replace: true });
+              goSection("assets", { sub: "wallets" });
             }
           } else {
             setCanEdit(true);
@@ -223,135 +213,332 @@ const MemberHub = () => {
     return () => {
       cancelled = true;
     };
-    // Only reload when the member id changes. authUser/navigate identities are unstable.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  const walletStatus = localWalletStatus || user?.walletIntegration?.status || "none";
+
+  const handleWalletIntegrationAction = async (targetStatus) => {
+    if (!user?._id) return;
+    try {
+      setApprovingWallet(true);
+      const existingLink = normalizeWalletUrl(user?.walletIntegration?.walletLink || "", "");
+      const res = await updateWalletIntegrationStatusApi(user._id, {
+        status: targetStatus,
+        walletLink: existingLink,
+      });
+      if (res?.success) {
+        toast.success(
+          targetStatus === "approved"
+            ? "Wallet integration approved!"
+            : targetStatus === "rejected"
+              ? "Wallet integration rejected!"
+              : "Wallet integration approval revoked!"
+        );
+        setLocalWalletStatus(targetStatus);
+        clearHubCache(user._id);
+      } else {
+        toast.error(res?.msg || "Failed to update wallet integration");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.msg || err?.message || "Failed to update wallet integration");
+    } finally {
+      setApprovingWallet(false);
+    }
+  };
+
+  const handleCopyMemberId = () => {
+    if (!user?._id) return;
+    navigator.clipboard.writeText(user._id);
+    setCopiedId(true);
+    toast.success("Member ID copied");
+    setTimeout(() => setCopiedId(false), 1500);
+  };
+
   const currency = user?.currency === "EUR" ? "EUR" : "USD";
-  const memberName = `${user?.firstName || ""} ${user?.lastName || ""}`.trim() || user?.email || "Member";
+  const memberName =
+    `${user?.firstName || ""} ${user?.lastName || ""}`.trim() ||
+    user?.email ||
+    "Member";
   const staffProfile = isStaffProfile(user);
   const pageName = staffProfile
     ? user?.role === "subadmin"
       ? "Subadmin Profile"
       : "Admin Profile"
     : "Member Management Hub";
+  const kycOn = user?.kyc === true;
 
   return (
-    <MemberPageChrome pageName={pageName}>
+    <MemberPageChrome pageName={pageName} hideHeader>
       <div className={`${mm.root} member-management-v2`}>
-        <div className={mm.stack}>
-          <header className={mm.pageHead}>
-            <p className={mm.kicker}>{staffProfile ? pageName : "Member Management Hub"}</p>
-            <h1 className={mm.pageTitle}>{loading ? "Loading member" : memberName}</h1>
-          </header>
+        {loading ? (
+          <TabFallback />
+        ) : staffProfile ? (
+          <React.Suspense fallback={<TabFallback />}>
+            <div className={mm.embed}>
+              <General embedded />
+            </div>
+          </React.Suspense>
+        ) : (
+          <div className={mm.stack}>
+            {/* Minimal Back + Title Bar (No Top Navbar) */}
+            <div className={mm.minimalTopBar}>
+              <button
+                type="button"
+                onClick={() => Navigate(-1)}
+                className={mm.backIconBtn}
+                aria-label="Go back"
+              >
+                <ArrowLeft size={16} />
+              </button>
+              <span className={mm.topDivider} />
+              <span className={mm.minimalTitle}>{pageName}</span>
+            </div>
 
-          {loading ? (
-            <TabFallback />
-          ) : staffProfile ? (
-            <React.Suspense fallback={<TabFallback />}>
-              <div className={mm.embed}>
-                <General embedded />
-              </div>
-            </React.Suspense>
-          ) : (
-            <nav className={mm.tabs} aria-label="Member hub">
-              {HUB_TABS.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  className={`${mm.tab} ${tab === item.id ? mm.tabActive : ""}`}
-                  onClick={() => setTab(item.id)}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-          )}
+            {/* Flat Institutional Member Banner */}
+            <section className={mm.memberBanner}>
+              <div className={mm.bhLeft}>
+                <div className={mm.bhAvatar}>{initials(user)}</div>
+                <div className={mm.bhIdentity}>
+                  <div className={mm.nameRow}>
+                    <h1 className={mm.bhName}>{memberName}</h1>
+                    <span className={`${mm.pillBadge} ${kycOn ? mm.pillOk : mm.pillWarn}`}>
+                      {kycOn ? <CheckCircle2 size={12} /> : <Clock size={12} />}
+                      {kycOn ? "KYC Verified" : "KYC Pending"}
+                    </span>
+                    <span
+                      className={`${mm.pillBadge} ${
+                        walletStatus === "approved"
+                          ? mm.pillOk
+                          : walletStatus === "pending"
+                            ? mm.pillWarn
+                            : mm.pillMuted
+                      }`}
+                    >
+                      <CheckCircle2 size={12} />
+                      {walletStatus === "approved"
+                        ? "Wallet Approved"
+                        : walletStatus === "pending"
+                          ? "Wallet Pending"
+                          : "Wallet Not Requested"}
+                    </span>
+                    {user?.verified && (
+                      <span className={`${mm.pillBadge} ${mm.pillInfo}`}>
+                        <Mail size={12} /> Email Verified
+                      </span>
+                    )}
+                    {user?.online && (
+                      <span className={`${mm.pillBadge} ${mm.pillOk}`}>
+                        <span className={mm.onlineDot} /> Online
+                      </span>
+                    )}
+                  </div>
 
-          {!loading && !staffProfile && tab === "overview" && !editing && (
-            <OverviewTab
-              user={user}
-              coinDoc={coinDoc}
-              prices={prices}
-              loan={loan}
-              tokens={tokens}
-              loading={loading}
-              canEdit={canEdit}
-              onEdit={() => setTab("overview", { edit: true })}
-              onOpenTab={setTab}
-            />
-          )}
+                  <div className={mm.bhMetaRow}>
+                    <span className={mm.bhMetaItem}>
+                      <Mail size={13} /> {user?.email || "—"}
+                    </span>
+                    <span className={mm.bhSep}>|</span>
+                    <span className={mm.bhMetaItem}>
+                      <Phone size={13} /> {user?.phone || "—"}
+                    </span>
+                    <span className={mm.bhSep}>|</span>
+                    <span className={mm.bhMetaItem}>
+                      <MapPin size={13} />{" "}
+                      {[user?.city, user?.country].filter(Boolean).join(", ") || "—"}
+                    </span>
+                    <span className={mm.bhSep}>|</span>
+                    <button
+                      type="button"
+                      onClick={handleCopyMemberId}
+                      className={mm.bhIdBtn}
+                      title="Copy full Member ID"
+                    >
+                      Member ID: {String(user?._id || "").slice(0, 7)}…{String(user?._id || "").slice(-4)}
+                      {copiedId ? <Check size={12} /> : <Copy size={12} />}
+                    </button>
+                  </div>
 
-          {!loading && !staffProfile && tab === "overview" && editing && (
-            <React.Suspense fallback={<TabFallback />}>
-              <div className={mm.stack}>
-                <div className={mm.actions}>
-                  <button type="button" className={mm.btnGhost} onClick={() => setTab("overview")}>
-                    Back to overview
-                  </button>
+                  <div className={mm.bhMetaRow}>
+                    <span className={mm.bhMetaItem}>
+                      <Calendar size={13} /> Joined: {formatDate(user?.createdAt)}
+                    </span>
+                    <span className={mm.bhSep}>|</span>
+                    <span className={mm.bhMetaItem}>
+                      <Activity size={13} /> Last activity: {formatDateTime(user?.lastActivity || user?.lastOnline)}
+                    </span>
+                  </div>
                 </div>
+              </div>
+
+              <div className={mm.bhActionsCol}>
+                {walletStatus === "pending" && (
+                  <>
+                    <button
+                      type="button"
+                      disabled={approvingWallet}
+                      onClick={() => handleWalletIntegrationAction("approved")}
+                      className={mm.btnSuccess}
+                    >
+                      <CheckCircle2 size={14} />
+                      {approvingWallet ? "Approving..." : "Approve Wallet"}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={approvingWallet}
+                      onClick={() => handleWalletIntegrationAction("rejected")}
+                      className={mm.btnDangerSoft}
+                    >
+                      Reject Wallet
+                    </button>
+                  </>
+                )}
+                {walletStatus === "approved" && (
+                  <button
+                    type="button"
+                    disabled={approvingWallet}
+                    onClick={() => handleWalletIntegrationAction("none")}
+                    className={mm.btnDangerSoft}
+                  >
+                    <Ban size={14} />
+                    {approvingWallet ? "Revoking..." : "Revoke Wallet"}
+                  </button>
+                )}
+                {canEdit && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      goSection("overview", { edit: activeKey !== "edit" })
+                    }
+                    className={activeKey === "edit" ? mm.btnGhost : mm.btn}
+                  >
+                    <UserCog size={14} />
+                    {activeKey === "edit" ? "Back to Overview" : "Edit Profile"}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => goSection("transactions")}
+                  className={mm.btnGhost}
+                >
+                  <ReceiptText size={14} />
+                  Transactions
+                </button>
+              </div>
+            </section>
+
+            {/* Pill Tab Bar */}
+            <nav className={mm.pillTabsWrap} aria-label="Member Hub Navigation">
+              {BINANCE_TABS.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeKey === item.key;
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onClick={() => goSection(item.tab, { sub: item.sub })}
+                    className={`${mm.pillTab} ${isActive ? mm.pillTabActive : ""}`}
+                  >
+                    <Icon size={15} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Tab Content */}
+            {activeKey === "overview" && (
+              <OverviewTab
+                user={user}
+                coinDoc={coinDoc}
+                prices={prices}
+                loan={loan}
+                tokens={tokens}
+                loading={loading}
+                canEdit={canEdit}
+                hideMemberCard
+                onEdit={() => goSection("overview", { edit: true })}
+                onOpenTab={(nextTab) => goSection(nextTab)}
+              />
+            )}
+
+            {activeKey === "edit" && (
+              <React.Suspense fallback={<TabFallback />}>
                 <div className={mm.embed}>
                   <General embedded />
                 </div>
-              </div>
-            </React.Suspense>
-          )}
+              </React.Suspense>
+            )}
 
-          {!loading && !staffProfile && tab === "assets" && (
-            <React.Suspense fallback={<TabFallback />}>
-              <div className={mm.stack}>
-                <AssetsAllocation coinDoc={coinDoc} prices={prices} currency={currency} />
-                <p className={mm.sectionLabel}>Crypto & fiat wallets</p>
+            {activeKey === "wallets" && (
+              <React.Suspense fallback={<TabFallback />}>
                 <div className={mm.embed}>
                   <UserAssets embedded />
                 </div>
-                <p className={mm.sectionLabel}>Bank accounts</p>
+              </React.Suspense>
+            )}
+
+            {activeKey === "transactions" && (
+              <React.Suspense fallback={<TabFallback />}>
+                <div className={mm.embed}>
+                  <UserTransactions embedded />
+                </div>
+              </React.Suspense>
+            )}
+
+            {activeKey === "banking" && (
+              <React.Suspense fallback={<TabFallback />}>
                 <div className={mm.embed}>
                   <UserBankAccounts embedded />
                 </div>
-                <p className={mm.sectionLabel}>Crypto card</p>
-                <div className={mm.embed}>
-                  <UserCryptoCard embedded />
-                </div>
-              </div>
-            </React.Suspense>
-          )}
+              </React.Suspense>
+            )}
 
-          {!loading && !staffProfile && tab === "transactions" && (
-            <React.Suspense fallback={<TabFallback />}>
-              <TransactionsTab
-                transactions={coinDoc?.transactions || []}
-                prices={prices}
-                currency={currency}
-              />
-            </React.Suspense>
-          )}
+            {activeKey === "card" && <HubCryptoCardTab />}
 
-          {!loading && !staffProfile && tab === "compliance" && (
-            <React.Suspense fallback={<TabFallback />}>
-              <div className={mm.stack}>
-                <p className={mm.sectionLabel}>KYC & verifications</p>
-                <div className={mm.embed}>
-                  <UserVerifications embedded />
-                </div>
-                <p className={mm.sectionLabel}>Documents</p>
-                <div className={mm.embed}>
-                  <UserDocs embedded />
-                </div>
-                <p className={mm.sectionLabel}>Loan application</p>
+            {activeKey === "kyc" && <HubKycTab />}
+
+            {activeKey === "documents" && <HubDocumentsTab />}
+
+            {activeKey === "loan" && (
+              <React.Suspense fallback={<TabFallback />}>
                 <div className={mm.embed}>
                   <UserLoanApplication embedded />
                 </div>
-              </div>
-            </React.Suspense>
-          )}
+              </React.Suspense>
+            )}
 
-          {!loading && !staffProfile && tab === "portfolio" && (
-            <React.Suspense fallback={<TabFallback />}>
-              <PortfolioTab userId={id} tokens={tokens} currency={currency} />
-            </React.Suspense>
-          )}
-        </div>
+            {activeKey === "portfolio" && (
+              <React.Suspense fallback={<TabFallback />}>
+                <div className={mm.stack}>
+                  <div className={mm.subTabs}>
+                    <button
+                      type="button"
+                      className={`${mm.subTab} ${portfolioSub === "tokens" ? mm.subTabActive : ""}`}
+                      onClick={() => setPortfolioSub("tokens")}
+                    >
+                      Custom Tokens ({tokens.length})
+                    </button>
+                    <button
+                      type="button"
+                      className={`${mm.subTab} ${portfolioSub === "staking" ? mm.subTabActive : ""}`}
+                      onClick={() => setPortfolioSub("staking")}
+                    >
+                      Staking &amp; Yield
+                    </button>
+                  </div>
+                  <div className={mm.embed}>
+                    {portfolioSub === "tokens" ? (
+                      <UserTokens embedded />
+                    ) : (
+                      <UserStaking embedded />
+                    )}
+                  </div>
+                </div>
+              </React.Suspense>
+            )}
+          </div>
+        )}
       </div>
     </MemberPageChrome>
   );

@@ -19,25 +19,31 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(2, 6, 23, 0.82);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 12000;
 }
 .modal-content{
   width: 100% !important;
 }
 .ASMD .modal-content{
   min-width: 400px !important;
-  max-width:70% !important;
-
+  max-width: 520px !important;
+  background-color: #0f172a !important;
+  border: 1px solid #26334d !important;
+  color: #f8fafc !important;
+  border-radius: 14px !important;
+  padding: 24px !important;
 }
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
+  background-color: #0f172a;
+  color: #f8fafc;
+  padding: 24px;
+  border-radius: 14px;
+  border: 1px solid #26334d;
+  width: 420px;
   max-width: 90%;
 }
 
@@ -54,14 +60,19 @@
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #cbd5e1;
 }
 
 .form-group input {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 10px 12px;
+  border: 1px solid #334155;
+  background: #0b1120;
+  color: #f8fafc;
+  border-radius: 8px;
 }.admin-new.comp
 
 .layout-container {

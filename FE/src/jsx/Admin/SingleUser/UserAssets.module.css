@@ -139,21 +139,37 @@
 }
 
 .dialog :global(.is-button-default) {
-  min-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 38px !important;
   padding: 0 16px !important;
-  border-radius: 10px !important;
-  border: 1px solid var(--admin-border-strong) !important;
-  background: var(--admin-surface-3) !important;
-  color: var(--admin-text-primary) !important;
+  border-radius: 9px !important;
+  border: 1px solid #334155 !important;
+  background: #162032 !important;
+  background-image: none !important;
+  color: #e2e8f0 !important;
+  -webkit-text-fill-color: #e2e8f0 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
 }
 
 .dialog :global(.is-button.bg-primary-500) {
-  min-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 38px !important;
   padding: 0 16px !important;
-  border-radius: 10px !important;
-  border: 0 !important;
-  background: var(--admin-accent) !important;
-  color: #fff !important;
+  border-radius: 9px !important;
+  border: 1px solid #3b82f6 !important;
+  background: #2563eb !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
 }
 
 .dialog > div:nth-child(2) {
@@ -186,26 +202,29 @@
 .btnGhost,
 .btnPrimary {
   display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 38px !important;
   padding: 0 16px !important;
-  border-radius: 10px !important;
+  border-radius: 9px !important;
   font-size: 13px !important;
-  font-weight: 750 !important;
+  font-weight: 700 !important;
   cursor: pointer !important;
+  background-image: none !important;
 }
 
 .btnGhost {
-  border: 1px solid var(--admin-border-strong) !important;
-  background: var(--admin-surface-3) !important;
-  color: var(--admin-text-primary) !important;
+  border: 1px solid #334155 !important;
+  background: #162032 !important;
+  color: #e2e8f0 !important;
+  -webkit-text-fill-color: #e2e8f0 !important;
 }
 
 .btnPrimary {
-  border: 0 !important;
-  background: var(--admin-accent) !important;
-  color: #fff !important;
+  border: 1px solid #3b82f6 !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .btnPrimary:disabled,

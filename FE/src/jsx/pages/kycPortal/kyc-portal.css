@@ -606,6 +606,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .right-3{
   right: 0.75rem !important;
 }
+#kyc-portal .right-3\.5{
+  right: 0.875rem !important;
+}
 #kyc-portal .right-4{
   right: 1rem !important;
 }
@@ -1306,6 +1309,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-border-opacity: 1 !important;
   border-color: rgb(147 197 253 / var(--tw-border-opacity, 1)) !important;
 }
+#kyc-portal .border-blue-400\/30{
+  border-color: rgb(96 165 250 / 0.3) !important;
+}
 #kyc-portal .border-blue-500{
   --tw-border-opacity: 1 !important;
   border-color: rgb(59 130 246 / var(--tw-border-opacity, 1)) !important;
@@ -1383,6 +1389,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .border-slate-300\/90{
   border-color: rgb(203 213 225 / 0.9) !important;
+}
+#kyc-portal .border-slate-700{
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(51 65 85 / var(--tw-border-opacity, 1)) !important;
 }
 #kyc-portal .border-transparent{
   border-color: transparent !important;
@@ -1894,6 +1904,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .pl-3\.5{
   padding-left: 0.875rem !important;
 }
+#kyc-portal .pl-4{
+  padding-left: 1rem !important;
+}
 #kyc-portal .pl-5{
   padding-left: 1.25rem !important;
 }
@@ -2037,6 +2050,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .leading-tight{
   line-height: 1.25 !important;
 }
+#kyc-portal .tracking-\[0\.4em\]{
+  letter-spacing: 0.4em !important;
+}
 #kyc-portal .tracking-tight{
   letter-spacing: -0.025em !important;
 }
@@ -2048,6 +2064,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .tracking-widest{
   letter-spacing: 0.1em !important;
+}
+#kyc-portal .text-amber-400{
+  --tw-text-opacity: 1 !important;
+  color: rgb(251 191 36 / var(--tw-text-opacity, 1)) !important;
 }
 #kyc-portal .text-amber-600{
   --tw-text-opacity: 1 !important;
@@ -2176,6 +2196,14 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .text-rose-950{
   --tw-text-opacity: 1 !important;
   color: rgb(76 5 25 / var(--tw-text-opacity, 1)) !important;
+}
+#kyc-portal .text-slate-100{
+  --tw-text-opacity: 1 !important;
+  color: rgb(241 245 249 / var(--tw-text-opacity, 1)) !important;
+}
+#kyc-portal .text-slate-200{
+  --tw-text-opacity: 1 !important;
+  color: rgb(226 232 240 / var(--tw-text-opacity, 1)) !important;
 }
 #kyc-portal .text-slate-300{
   --tw-text-opacity: 1 !important;
@@ -2643,342 +2671,614 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
   font-family: "Alex Brush", cursive;
 }
 
+/* =====================================================================
+   USER PORTAL DARK MODE (Strictly scoped to #kyc-portal.user-portal-dark)
+   Zero impact on Light Mode or Admin Dashboard.
+   ===================================================================== */
+#kyc-portal html.user-portal-dark,
+#kyc-portal html.user-portal-dark body {
+  background-color: #0b1120 !important;
+  color: #f1f5f9;
+  scrollbar-color: #334155 #0b1120;
+}
+
+#kyc-portal html.user-portal-dark::-webkit-scrollbar-track,
+#kyc-portal html.user-portal-dark body::-webkit-scrollbar-track {
+  background: #0b1120;
+}
+
+#kyc-portal html.user-portal-dark::-webkit-scrollbar-thumb,
+#kyc-portal html.user-portal-dark body::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-color: #0b1120;
+}
+
+#kyc-portal.user-portal-dark {
+  background-color: #0b1120 !important;
+  color: #f1f5f9 !important;
+}
+
+#kyc-portal.user-portal-dark * {
+  scrollbar-color: #334155 #0f172a;
+}
+
+#kyc-portal.user-portal-dark ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+#kyc-portal.user-portal-dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+#kyc-portal.user-portal-dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Canvas & Surfaces */
+#kyc-portal.user-portal-dark .bg-\[\#F8FAFC\] {
+  background-color: #0b1120 !important;
+}
+
+#kyc-portal.user-portal-dark .bg-white,
+#kyc-portal.user-portal-dark .bg-white\/95,
+#kyc-portal.user-portal-dark .bg-white\/90 {
+  background-color: #111827 !important;
+}
+
+#kyc-portal.user-portal-dark .bg-slate-50,
+#kyc-portal.user-portal-dark .bg-slate-50\/80,
+#kyc-portal.user-portal-dark .bg-slate-50\/70,
+#kyc-portal.user-portal-dark .bg-slate-50\/60,
+#kyc-portal.user-portal-dark .bg-slate-50\/50 {
+  background-color: #0f172a !important;
+}
+
+#kyc-portal.user-portal-dark .bg-slate-100,
+#kyc-portal.user-portal-dark .bg-slate-100\/80 {
+  background-color: #1e293b !important;
+}
+
+#kyc-portal.user-portal-dark .bg-slate-200 {
+  background-color: #334155 !important;
+}
+
+#kyc-portal.user-portal-dark .hover\:bg-slate-50:hover,
+#kyc-portal.user-portal-dark .hover\:bg-slate-50\/80:hover,
+#kyc-portal.user-portal-dark .hover\:bg-slate-50\/70:hover,
+#kyc-portal.user-portal-dark .hover\:bg-slate-100:hover,
+#kyc-portal.user-portal-dark .hover\:bg-slate-200:hover,
+#kyc-portal.user-portal-dark .hover\:bg-slate-200\/80:hover {
+  background-color: #1e293b !important;
+}
+
+/* Borders & Dividers */
+#kyc-portal.user-portal-dark .border-slate-100,
+#kyc-portal.user-portal-dark .border-slate-200,
+#kyc-portal.user-portal-dark .border-slate-200\/90,
+#kyc-portal.user-portal-dark .border-slate-200\/80,
+#kyc-portal.user-portal-dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1e293b !important;
+}
+
+#kyc-portal.user-portal-dark .border-slate-300 {
+  border-color: #334155 !important;
+}
+
+/* Typography */
+#kyc-portal.user-portal-dark .text-slate-900,
+#kyc-portal.user-portal-dark .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+#kyc-portal.user-portal-dark .text-slate-700,
+#kyc-portal.user-portal-dark .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+#kyc-portal.user-portal-dark .text-slate-500,
+#kyc-portal.user-portal-dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+/* Inputs, Selects, Textareas */
+#kyc-portal.user-portal-dark input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#kyc-portal.user-portal-dark select,
+#kyc-portal.user-portal-dark textarea {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+#kyc-portal.user-portal-dark input::placeholder,
+#kyc-portal.user-portal-dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+#kyc-portal.user-portal-dark input:focus,
+#kyc-portal.user-portal-dark select:focus,
+#kyc-portal.user-portal-dark textarea:focus {
+  background-color: #111827 !important;
+  border-color: #3b82f6 !important;
+}
+
+/* Tinted Status Badges & Soft Surfaces */
+#kyc-portal.user-portal-dark .bg-blue-50,
+#kyc-portal.user-portal-dark .bg-blue-50\/70,
+#kyc-portal.user-portal-dark .bg-blue-50\/60,
+#kyc-portal.user-portal-dark .bg-blue-50\/40 {
+  background-color: rgba(37, 99, 235, 0.16) !important;
+}
+#kyc-portal.user-portal-dark .border-blue-100,
+#kyc-portal.user-portal-dark .border-blue-200 {
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+#kyc-portal.user-portal-dark .text-blue-700,
+#kyc-portal.user-portal-dark .text-blue-600 {
+  color: #60a5fa !important;
+}
+
+#kyc-portal.user-portal-dark .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+#kyc-portal.user-portal-dark .border-emerald-200 {
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+#kyc-portal.user-portal-dark .text-emerald-700,
+#kyc-portal.user-portal-dark .text-emerald-600,
+#kyc-portal.user-portal-dark .text-emerald-800,
+#kyc-portal.user-portal-dark .text-emerald-950 {
+  color: #34d399 !important;
+}
+
+#kyc-portal.user-portal-dark .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+}
+#kyc-portal.user-portal-dark .border-amber-200 {
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+#kyc-portal.user-portal-dark .text-amber-900,
+#kyc-portal.user-portal-dark .text-amber-800,
+#kyc-portal.user-portal-dark .text-amber-700,
+#kyc-portal.user-portal-dark .text-amber-950 {
+  color: #fbbf24 !important;
+}
+
+#kyc-portal.user-portal-dark .bg-rose-50 {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+}
+#kyc-portal.user-portal-dark .border-rose-200 {
+  border-color: rgba(244, 63, 94, 0.3) !important;
+}
+#kyc-portal.user-portal-dark .text-rose-700,
+#kyc-portal.user-portal-dark .text-rose-600,
+#kyc-portal.user-portal-dark .text-rose-800 {
+  color: #fb7185 !important;
+}
+
+#kyc-portal.user-portal-dark .bg-indigo-50,
+#kyc-portal.user-portal-dark .bg-indigo-50\/70 {
+  background-color: rgba(99, 102, 241, 0.16) !important;
+}
+#kyc-portal.user-portal-dark .border-indigo-100,
+#kyc-portal.user-portal-dark .border-indigo-200 {
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+#kyc-portal.user-portal-dark .text-indigo-700,
+#kyc-portal.user-portal-dark .text-indigo-600 {
+  color: #818cf8 !important;
+}
+
+/* Preserve white buttons inside solid blue/emerald hero banners */
+#kyc-portal.user-portal-dark .from-blue-600 .bg-white,
+#kyc-portal.user-portal-dark .from-emerald-600 .bg-white,
+#kyc-portal.user-portal-dark .user-blue-hero a.MuiButton-contained {
+  background-color: #ffffff !important;
+  color: #1d4ed8 !important;
+}
+
+/* Crypto News Ticker in Dark Mode */
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_shell"] {
+  background-color: #0b1120 !important;
+  border-top-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_ticker"] {
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_brand"] {
+  background-color: rgba(37, 99, 235, 0.18) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_brandText"] {
+  color: #f8fafc !important;
+}
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_chip"],
+#kyc-portal.user-portal-dark [class*="CryptoNewsTicker_article"] {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+/* Apply Loan Spacing & Dark Mode Polish */
+#kyc-portal .apply-loan-wrapper [class*="formGrid"] {
+  gap: 1.25rem !important;
+}
+#kyc-portal .apply-loan-wrapper [class*="main"] {
+  padding: 1.75rem 2rem !important;
+}
+#kyc-portal .apply-loan-wrapper [class*="field"] label {
+  display: block !important;
+  margin-bottom: 0.45rem !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+}
+
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarCard"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="contentCol"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="formCard"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="card"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="panel"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="statusShell"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="main"] {
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="title"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="statusTitle"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarProgressValue"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="summaryValue"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="stepTitle"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper h1,
+#kyc-portal.user-portal-dark .apply-loan-wrapper h2,
+#kyc-portal.user-portal-dark .apply-loan-wrapper h3,
+#kyc-portal.user-portal-dark .apply-loan-wrapper label {
+  color: #f8fafc !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="subtitle"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="statusMessage"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="summaryLabel"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarProgressLabel"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarProgressStep"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="stepDesc"] {
+  color: #94a3b8 !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="summaryItem"] {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="infoPanelBlue"] {
+  background-color: rgba(37, 99, 235, 0.16) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+  color: #bfdbfe !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="infoPanelGreen"] {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  color: #a7f3d0 !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="infoPanelRed"] {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
+  color: #fecaca !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="stepBadge"] {
+  background-color: rgba(37, 99, 235, 0.2) !important;
+  border-color: rgba(59, 130, 246, 0.35) !important;
+  color: #93c5fd !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarStepIndex"] {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarStepActive"] [class*="sidebarStepIndex"] {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="sidebarProgressHead"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="statusHero"] {
+  border-bottom-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="actionsBar"] {
+  background-color: #0f172a !important;
+  border-top-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="btnGhost"],
+#kyc-portal.user-portal-dark .apply-loan-wrapper [class*="btnSecondary"] {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+/* MUI Papers/Cards/Tables on Affiliate page in Dark Mode */
+#kyc-portal.user-portal-dark .MuiPaper-root:not(.user-blue-hero),
+#kyc-portal.user-portal-dark .MuiCard-root {
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+#kyc-portal.user-portal-dark .MuiTableCell-root {
+  color: #e2e8f0 !important;
+  border-bottom-color: #1e293b !important;
+}
+#kyc-portal.user-portal-dark .MuiTab-root {
+  color: #94a3b8 !important;
+}
+#kyc-portal.user-portal-dark .MuiTab-root.Mui-selected {
+  color: #60a5fa !important;
+}
 #kyc-portal .placeholder\:text-slate-300::placeholder{
   --tw-text-opacity: 1 !important;
   color: rgb(203 213 225 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .placeholder\:text-slate-400::placeholder{
   --tw-text-opacity: 1 !important;
   color: rgb(148 163 184 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:border-blue-200:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(191 219 254 / var(--tw-border-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:border-blue-300:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(147 197 253 / var(--tw-border-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:border-blue-400:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(96 165 250 / var(--tw-border-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:border-blue-500:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(59 130 246 / var(--tw-border-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:border-blue-600:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(37 99 235 / var(--tw-border-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:border-slate-200:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(226 232 240 / var(--tw-border-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:border-slate-300:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(203 213 225 / var(--tw-border-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-amber-100:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(254 243 199 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-amber-100\/70:hover{
   background-color: rgb(254 243 199 / 0.7) !important;
 }
-
 #kyc-portal .hover\:bg-blue-100:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(219 234 254 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-blue-50:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-blue-50\/30:hover{
   background-color: rgb(239 246 255 / 0.3) !important;
 }
-
 #kyc-portal .hover\:bg-blue-600:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-blue-700:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(29 78 216 / var(--tw-bg-opacity, 1)) !important;
 }
-
+#kyc-portal .hover\:bg-emerald-100:hover{
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(209 250 229 / var(--tw-bg-opacity, 1)) !important;
+}
 #kyc-portal .hover\:bg-emerald-100\/80:hover{
   background-color: rgb(209 250 229 / 0.8) !important;
 }
-
 #kyc-portal .hover\:bg-emerald-50:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(236 253 245 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-emerald-600:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(5 150 105 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-emerald-700:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(4 120 87 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-indigo-100:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(224 231 255 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-rose-100:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 228 230 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-rose-50:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 241 242 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-rose-500\/30:hover{
   background-color: rgb(244 63 94 / 0.3) !important;
 }
-
 #kyc-portal .hover\:bg-rose-600:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(225 29 72 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-rose-700:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(190 18 60 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-slate-100:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-slate-200:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-slate-200\/60:hover{
   background-color: rgb(226 232 240 / 0.6) !important;
 }
-
 #kyc-portal .hover\:bg-slate-200\/80:hover{
   background-color: rgb(226 232 240 / 0.8) !important;
 }
-
 #kyc-portal .hover\:bg-slate-50:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(248 250 252 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-slate-50\/70:hover{
   background-color: rgb(248 250 252 / 0.7) !important;
 }
-
 #kyc-portal .hover\:bg-slate-50\/80:hover{
   background-color: rgb(248 250 252 / 0.8) !important;
 }
-
 #kyc-portal .hover\:bg-slate-800:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-white:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:bg-white\/10:hover{
   background-color: rgb(255 255 255 / 0.1) !important;
 }
-
 #kyc-portal .hover\:bg-white\/25:hover{
   background-color: rgb(255 255 255 / 0.25) !important;
 }
-
 #kyc-portal .hover\:bg-white\/70:hover{
   background-color: rgb(255 255 255 / 0.7) !important;
 }
-
 #kyc-portal .hover\:text-blue-100:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(219 234 254 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:text-blue-600:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(37 99 235 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:text-blue-700:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(29 78 216 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:text-rose-600:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(225 29 72 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:text-rose-700:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(190 18 60 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:text-slate-600:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(71 85 105 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:text-slate-700:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(51 65 85 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:text-slate-800:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(30 41 59 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:text-slate-900:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(15 23 42 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:text-white:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .hover\:underline:hover{
   -webkit-text-decoration-line: underline !important;
           text-decoration-line: underline !important;
 }
-
 #kyc-portal .hover\:shadow-card-hover:hover{
   --tw-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
   --tw-shadow-colored: 0 10px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color) !important;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
 }
-
 #kyc-portal .hover\:shadow-md:hover{
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
   --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color) !important;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
 }
-
 #kyc-portal .focus\:border-blue-500:focus{
   --tw-border-opacity: 1 !important;
   border-color: rgb(59 130 246 / var(--tw-border-opacity, 1)) !important;
 }
-
 #kyc-portal .focus\:border-transparent:focus{
   border-color: transparent !important;
 }
-
 #kyc-portal .focus\:bg-white:focus{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .focus\:outline-none:focus{
   outline: 2px solid transparent !important;
   outline-offset: 2px !important;
 }
-
 #kyc-portal .focus\:ring-2:focus{
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000) !important;
 }
-
 #kyc-portal .focus\:ring-blue-500:focus{
   --tw-ring-opacity: 1 !important;
   --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity, 1)) !important;
 }
-
 #kyc-portal .focus\:ring-blue-500\/15:focus{
   --tw-ring-color: rgb(59 130 246 / 0.15) !important;
 }
-
 #kyc-portal .focus\:ring-blue-500\/20:focus{
   --tw-ring-color: rgb(59 130 246 / 0.2) !important;
 }
-
 #kyc-portal .focus\:ring-rose-500:focus{
   --tw-ring-opacity: 1 !important;
   --tw-ring-color: rgb(244 63 94 / var(--tw-ring-opacity, 1)) !important;
 }
-
 #kyc-portal .disabled\:bg-slate-200:disabled{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .disabled\:text-slate-400:disabled{
   --tw-text-opacity: 1 !important;
   color: rgb(148 163 184 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .disabled\:text-slate-500:disabled{
   --tw-text-opacity: 1 !important;
   color: rgb(100 116 139 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .disabled\:opacity-40:disabled{
   opacity: 0.4 !important;
 }
-
 #kyc-portal .disabled\:opacity-50:disabled{
   opacity: 0.5 !important;
 }
-
 #kyc-portal .disabled\:opacity-60:disabled{
   opacity: 0.6 !important;
 }
-
 #kyc-portal .group:hover .group-hover\:border-blue-400{
   --tw-border-opacity: 1 !important;
   border-color: rgb(96 165 250 / var(--tw-border-opacity, 1)) !important;
 }
-
 #kyc-portal .group:hover .group-hover\:bg-blue-600{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1)) !important;
 }
-
 #kyc-portal .group:hover .group-hover\:text-blue-600{
   --tw-text-opacity: 1 !important;
   color: rgb(37 99 235 / var(--tw-text-opacity, 1)) !important;
 }
-
 #kyc-portal .group:hover .group-hover\:text-white{
   --tw-text-opacity: 1 !important;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1)) !important;
 }
-
 @media (min-width: 640px){
 
   #kyc-portal .sm\:col-span-1{
@@ -3140,7 +3440,6 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     line-height: 1.75rem !important;
   }
 }
-
 @media (min-width: 768px){
 
   #kyc-portal .md\:col-span-2{
@@ -3175,7 +3474,6 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     align-items: center !important;
   }
 }
-
 @media (min-width: 1024px){
 
   #kyc-portal .lg\:col-span-2{
@@ -3271,7 +3569,6 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     padding-left: 16rem !important;
   }
 }
-
 @media (min-width: 1280px){
 
   #kyc-portal .xl\:col-span-5{

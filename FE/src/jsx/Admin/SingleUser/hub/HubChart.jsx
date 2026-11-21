@@ -53,18 +53,53 @@ const HubChart = ({
   };
 
   if (type === "pie") {
+    const totalVal = data.reduce((sum, item) => sum + (Number(item.value) || 0), 0);
     return (
-      <div className={mm.chart}>
-        <ResponsiveContainer width="100%" height={260}>
-          <PieChart>
-            <Pie data={data} dataKey="value" nameKey="name" innerRadius={48} outerRadius={80} paddingAngle={2}>
-              {data.map((entry, index) => (
-                <Cell key={entry.name || index} fill={palette[index % palette.length]} />
-              ))}
-            </Pie>
-            <Tooltip {...tooltip} />
-          </PieChart>
-        </ResponsiveContainer>
+      <div className={mm.pieWrap}>
+        <div className={mm.pieChartBox}>
+          <ResponsiveContainer width="100%" height={220}>
+            <PieChart>
+              <Pie
+                data={data}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={56}
+                outerRadius={86}
+                paddingAngle={2}
+                stroke="none"
+              >
+                {data.map((entry, index) => (
+                  <Cell key={entry.name || index} fill={palette[index % palette.length]} />
+                ))}
+              </Pie>
+              <Tooltip
+                {...tooltip}
+                formatter={(val) => [formatMoney(val, currency), "Value"]}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className={mm.pieCenter}>
+            <span className={mm.pieCenterCount}>{data.length}</span>
+            <span className={mm.pieCenterLabel}>Assets</span>
+          </div>
+        </div>
+        <div className={mm.pieLegend}>
+          {data.slice(0, 6).map((entry, index) => {
+            const pct = totalVal > 0 ? ((Number(entry.value) || 0) / totalVal) * 100 : 0;
+            return (
+              <div key={entry.name || index} className={mm.pieLegendRow}>
+                <span className={mm.pieLegendLeft}>
+                  <span
+                    className={mm.pieDot}
+                    style={{ background: palette[index % palette.length] }}
+                  />
+                  <span className={mm.pieName}>{entry.name}</span>
+                </span>
+                <span className={mm.piePct}>{pct.toFixed(1)}%</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }

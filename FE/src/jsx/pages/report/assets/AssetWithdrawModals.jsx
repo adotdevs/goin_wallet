@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Button,
-  Col,
-  DropdownDivider,
-  Form,
-  InputGroup,
-  Modal,
-  Row,
-} from "react-bootstrap";
+import { X, Wallet, Landmark, ShieldCheck, ArrowUpRight, RefreshCw } from "lucide-react";
 import {
   convertFiatToUserCurrency,
   getFiatCurrencyByKey,
@@ -18,15 +10,18 @@ import {
 import { formatBankPaymentOptionLabel } from "./paymentDisplayUtils";
 
 const AvailableBalance = ({ label, amount, onSelect }) => (
-  <p
-    onClick={() => onSelect(amount)}
-    className="text-muted-500 cursor-pointer dark:text-muted-400 mt-2 font-sans text-sm"
-    role="button"
-    tabIndex={0}
-    onKeyDown={(e) => e.key === "Enter" && onSelect(amount)}
-  >
-    Available: {label}
-  </p>
+  <div className="flex items-center justify-between mt-2 text-xs">
+    <span className="text-slate-500">
+      Available: <strong className="text-slate-800 tabular-nums">{label}</strong>
+    </span>
+    <button
+      type="button"
+      onClick={() => onSelect(amount)}
+      className="px-2 py-0.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[11px] border border-blue-200 cursor-pointer transition-colors"
+    >
+      MAX
+    </button>
+  </div>
 );
 
 const AssetWithdrawModals = ({
@@ -138,7 +133,7 @@ const AssetWithdrawModals = ({
       const converted = `${(Number(transactionDetail.amountMinus || 0) * (liveBtc || 0)).toFixed(2)} ${displayCurrency}`;
       return (
         <span>
-          BTC {transactionDetail.amountMinus} ({converted})
+          BTC {transactionDetail.amountMinus || "0"} ({converted})
         </span>
       );
     }
@@ -146,7 +141,7 @@ const AssetWithdrawModals = ({
       const converted = `${(Number(transactionDetail.amountMinus || 0) * (liveEth || 0)).toFixed(2)} ${displayCurrency}`;
       return (
         <span>
-          ETH {transactionDetail.amountMinus} ({converted})
+          ETH {transactionDetail.amountMinus || "0"} ({converted})
         </span>
       );
     }
@@ -154,7 +149,7 @@ const AssetWithdrawModals = ({
       const converted = `${(Number(transactionDetail.amountMinus || 0) * (liveUsdt || 1)).toFixed(2)} ${displayCurrency}`;
       return (
         <span>
-          USDT {transactionDetail.amountMinus} ({converted})
+          USDT {transactionDetail.amountMinus || "0"} ({converted})
         </span>
       );
     }
@@ -181,8 +176,8 @@ const AssetWithdrawModals = ({
     const converted = `${(Number(transactionDetail.amountMinus || 0) * getCoinPrice(newCoin.coinSymbol)).toFixed(2)} ${getUserDisplayCurrency(isUser?.currency)}`;
     return (
       <span className="uppercase">
-        <span style={{ textTransform: "uppercase" }}>{newCoin.coinSymbol} </span>
-        {transactionDetail.amountMinus} ({converted})
+        <span>{newCoin.coinSymbol} </span>
+        {transactionDetail.amountMinus || "0"} ({converted})
       </span>
     );
   };
@@ -190,48 +185,87 @@ const AssetWithdrawModals = ({
   return (
     <>
       {modal3 && (
-        <Modal className="fade modal89" show={modal3} onHide={closeDeposit} centered>
-          <Modal.Header className="d-block">
-            <div className="d-flex justify-content-between align-items-center">
-              <Modal.Title>Create new Withdrawal</Modal.Title>
-              <Button variant="" onClick={closeDeposit} className="btn-close" />
+        <div
+          className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={closeDeposit}
+        >
+          <div
+            className="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-slate-100 space-y-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <ArrowUpRight className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 m-0">
+                      Create New Withdrawal
+                    </h3>
+                    <p className="text-xs text-slate-500 m-0">
+                      Transfer funds securely to your wallet or linked bank
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeDeposit}
+                  aria-label="Close"
+                  className="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center border-0 bg-transparent cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Segmented Method Toggle */}
+              <div className="grid grid-cols-2 gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button
+                  type="button"
+                  onClick={activeCrypto}
+                  className={`inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold border-0 cursor-pointer transition-all ${
+                    !activeBank
+                      ? "bg-blue-600 text-white shadow-xs"
+                      : "bg-transparent text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <Wallet className="w-3.5 h-3.5" /> Crypto Withdraw
+                </button>
+                <button
+                  type="button"
+                  onClick={activeBankOne}
+                  className={`inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold border-0 cursor-pointer transition-all ${
+                    activeBank
+                      ? "bg-blue-600 text-white shadow-xs"
+                      : "bg-transparent text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <Landmark className="w-3.5 h-3.5" /> Bank / Card Withdraw
+                </button>
+              </div>
             </div>
-            <div className="mt-3 axs text-center">
-              <button
-                type="button"
-                className={
-                  activeBank
-                    ? "btn btn-outline-primary me-2"
-                    : "btn btn-primary btn me-2"
-                }
-                onClick={activeCrypto}
-              >
-                Crypto Withdraw
-              </button>
-              <button
-                type="button"
-                className={
-                  activeBank ? "btn btn-primary" : "btn btn-outline-primary"
-                }
-                onClick={activeBankOne}
-              >
-                Bank/Card Withdraw
-              </button>
-            </div>
-          </Modal.Header>
-          <Modal.Body>
-            <h6 className="font-heading text-muted-400 text-sm font-medium leading-6">
-              Selected Currency:{" "}
-              <span
-                className="inline-block px-3 bgact font-sans transition-shadow duration-300 py-1.5 text-xs rounded-md bg-info-500 dark:bg-info-500 text-white"
-                style={{ textTransform: "capitalize" }}
-              >
-                {depositName}
-              </span>
-            </h6>
-            <div className="pt-3">
-              <div className="mb-3">
-                <label htmlFor="withdraw-amount">Amount</label>
+
+            {/* Body */}
+            <div className="p-6 overflow-y-auto space-y-5">
+              {/* Selected Currency */}
+              <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                <span className="text-xs font-semibold text-slate-500">
+                  Selected Asset
+                </span>
+                <span className="inline-flex items-center px-3 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold capitalize">
+                  {depositName}
+                </span>
+              </div>
+
+              {/* Amount Input */}
+              <div>
+                <label
+                  htmlFor="withdraw-amount"
+                  className="block text-xs font-semibold text-slate-700 mb-1.5"
+                >
+                  Withdrawal Amount
+                </label>
                 <input
                   id="withdraw-amount"
                   type="number"
@@ -242,28 +276,29 @@ const AssetWithdrawModals = ({
                     window.onwheel = null;
                   }}
                   onKeyDown={(e) =>
-                    ["ArrowUp", "ArrowDown", "e", "E", "+", "-", "*", ""].includes(
-                      e.key
-                    ) && e.preventDefault()
+                    ["ArrowUp", "ArrowDown", "e", "E", "+", "-", "*", ""].includes(e.key) &&
+                    e.preventDefault()
                   }
                   onChange={handleTransaction}
                   value={transactionDetail.amountMinus}
                   name="amountMinus"
                   placeholder="Ex: 0.00000000"
-                  className="form-control"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 tabular-nums"
                 />
                 {renderAvailableBalance()}
               </div>
-            </div>
-            <DropdownDivider />
-            <div className="border-top pt-4 mt-2">
-              {activeBank ? (
-                <>
-                  <h3 className="text-muted-400 font-heading text-base font-medium">
-                    Payment Method
-                  </h3>
-                  <Form.Group className="mt-3">
-                    <Form.Control as="select" onChange={handlePaymentSelection}>
+
+              {/* Destination Details */}
+              <div className="pt-4 border-t border-slate-100 space-y-3">
+                {activeBank ? (
+                  <>
+                    <h4 className="text-sm font-bold text-slate-900 m-0">
+                      Payment Method
+                    </h4>
+                    <select
+                      onChange={handlePaymentSelection}
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:bg-white focus:border-blue-500"
+                    >
                       <option>Select a Payment Method</option>
                       {isUser?.payments?.length > 0 ? (
                         isUser.payments.map((item, index) => (
@@ -283,137 +318,157 @@ const AssetWithdrawModals = ({
                       ) : (
                         <option disabled>No payment methods available</option>
                       )}
-                    </Form.Control>
-                  </Form.Group>
-                </>
-              ) : (
-                <>
-                  <h3 className="text-muted-400 font-heading text-base font-medium">
-                    Transaction details
-                  </h3>
-                  <Row className="mt-4">
-                    <Form.Group controlId="formGridReceivingAddress">
-                      <Form.Label>Receiving Address</Form.Label>
-                      <InputGroup>
-                        <Form.Control
+                    </select>
+                  </>
+                ) : (
+                  <>
+                    <h4 className="text-sm font-bold text-slate-900 m-0">
+                      Transaction Details
+                    </h4>
+                    <div>
+                      <label
+                        htmlFor="formGridReceivingAddress"
+                        className="block text-xs font-semibold text-slate-700 mb-1.5"
+                      >
+                        Receiving Wallet Address
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="formGridReceivingAddress"
                           type="text"
                           onChange={handleTransactionId}
                           value={transactionDetailId.txId}
                           name="txId"
-                          placeholder="Ex: 0x1234567890"
+                          placeholder="Ex: 0x1234567890..."
+                          className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm font-mono text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
                         />
-                        <InputGroup.Text>
-                          <i className="fas fa-wallet" />
-                        </InputGroup.Text>
-                      </InputGroup>
-                    </Form.Group>
-                  </Row>
-                </>
-              )}
-              <Row className="mt-4">
-                <Col>
-                  <h5 className="text-muted-400 font-heading text-base font-medium">
-                    Total Amount
-                  </h5>
-                </Col>
-                <Col>
-                  <p className="mb-0 nui-label text-sm lks">{renderTotalAmount()}</p>
-                </Col>
-              </Row>
+                        <Wallet className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Summary Strip */}
+              <div className="flex items-center justify-between px-4 py-3.5 rounded-xl bg-blue-50/70 border border-blue-100">
+                <span className="text-xs font-bold text-slate-700">Total Amount</span>
+                <span className="text-sm font-extrabold text-blue-700 tabular-nums">
+                  {renderTotalAmount()}
+                </span>
+              </div>
             </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={closeDeposit} variant="danger light">
-              Cancel
-            </Button>
-            {activeBank ? (
-              <Button
-                onClick={() => postUserTransaction("bank", true)}
-                disabled={isDisable}
-                variant="primary"
+
+            {/* Footer */}
+            <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={closeDeposit}
+                className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 cursor-pointer transition-colors"
               >
-                Create
-              </Button>
-            ) : (
-              <Button
-                onClick={() => postUserTransaction("crypto", true)}
+                Cancel
+              </button>
+              <button
+                type="button"
                 disabled={isDisable}
-                variant="primary"
+                onClick={() => postUserTransaction(activeBank ? "bank" : "crypto", true)}
+                className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold border-0 shadow-sm cursor-pointer transition-colors"
               >
-                Create
-              </Button>
-            )}
-          </Modal.Footer>
-        </Modal>
+                {isDisable ? "Processing..." : "Create Withdrawal"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {otpModal && (
-        <Modal className="fade modal89" show={otpModal} onHide={closeDeposit} centered>
-          <Modal.Header className="d-block">
-            <div className="d-flex justify-content-between align-items-center w-100">
-              <Modal.Title>Two-Factor Authentication</Modal.Title>
-              <Button variant="" onClick={closeDeposit} className="btn-close" />
-            </div>
-          </Modal.Header>
-          <Modal.Body>
-            <h6 className="font-heading text-muted-400 text-sm mb-3">
-              For your security, we&apos;ve sent a <strong>6-digit verification code </strong>
-              to your registered email address. Please enter the code below to continue with
-              your withdrawal.
-            </h6>
-            <div className="mb-3">
-              <input
-                type="text"
-                maxLength={6}
-                className="form-control text-center fw-semibold fs-5"
-                placeholder="Enter 6-digit OTP"
-                value={otp}
-                onChange={(e) => {
-                  setOtp(e.target.value.replace(/\D/g, ""));
-                  setIsError({ show: false, type: "" });
-                }}
-              />
-              {isError.show && (
-                <small className="text-danger d-block mt-1 fw-semibold">
-                  {isError.type}
-                </small>
-              )}
-            </div>
-            <div className="text-center">
-              <Button
-                variant="outline-primary"
-                size="sm"
-                disabled={isDisable2 || counterDisable}
-                onClick={reSend}
+        <div
+          className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={closeDeposit}
+        >
+          <div
+            className="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-md overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <h3 className="text-base font-bold text-slate-900 m-0">
+                  Two-Factor Authentication
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={closeDeposit}
+                aria-label="Close"
+                className="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center border-0 bg-transparent cursor-pointer"
               >
-                {counterDisable ? `Resend in ${counter}s` : "Resend OTP"}
-              </Button>
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <DropdownDivider />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={closeDeposit} variant="danger light">
-              Cancel
-            </Button>
-            {activeBank ? (
-              <Button
-                onClick={() => verifyOtp("bank")}
+
+            {/* Body */}
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-slate-600 leading-relaxed m-0">
+                For your security, we&apos;ve sent a{" "}
+                <strong className="text-slate-900">6-digit verification code</strong> to your
+                registered email address. Enter it below to confirm your withdrawal.
+              </p>
+
+              <div>
+                <input
+                  type="text"
+                  maxLength={6}
+                  placeholder="• • • • • •"
+                  value={otp}
+                  onChange={(e) => {
+                    setOtp(e.target.value.replace(/\D/g, ""));
+                    setIsError({ show: false, type: "" });
+                  }}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-center text-xl font-mono font-bold tracking-[0.4em] text-slate-900 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
+                />
+                {isError.show && (
+                  <p className="text-xs font-semibold text-rose-600 mt-1.5 mb-0 text-center">
+                    {isError.type}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  disabled={isDisable2 || counterDisable}
+                  onClick={reSend}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-50 text-slate-700 text-xs font-semibold border-0 cursor-pointer transition-colors"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  {counterDisable ? `Resend in ${counter}s` : "Resend OTP"}
+                </button>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={closeDeposit}
+                className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 cursor-pointer transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
                 disabled={isDisable || otp.length !== 6}
-                variant="primary"
+                onClick={() => verifyOtp(activeBank ? "bank" : "crypto")}
+                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold border-0 shadow-sm cursor-pointer transition-colors"
               >
-                Verify & Withdraw
-              </Button>
-            ) : (
-              <Button
-                onClick={() => verifyOtp("crypto")}
-                disabled={isDisable || otp.length !== 6}
-                variant="primary"
-              >
-                Verify & Withdraw
-              </Button>
-            )}
-          </Modal.Footer>
-        </Modal>
+                {isDisable ? "Verifying..." : "Verify & Withdraw"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

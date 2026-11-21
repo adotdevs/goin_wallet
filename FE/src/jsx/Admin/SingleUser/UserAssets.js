@@ -14,7 +14,8 @@ import {
   patchCoinsApi,
   signleUsersApi,
   updateCoinAddressApi, updateNewCoinAddressApi,
-  updateWalletIntegrationStatusApi
+  updateWalletIntegrationStatusApi,
+  toggleCoinActivationApi
 } from "../../../Api/Service";
 import { FIAT_CURRENCIES, getFiatCurrencyByName, isFiatCoin, isFiatTrxNameForAdmin } from "../../../utils/euroCoinUtils";
 import { normalizeWalletUrl } from "../../../utils/walletAccess";
@@ -63,8 +64,32 @@ const UserAssets = ({ embedded = false }) => {
   });
 
   const [approvingWallet, setApprovingWallet] = useState(false);
+  const [togglingCoinKey, setTogglingCoinKey] = useState("");
   const [walletLink, setWalletLink] = useState(userData?.walletIntegration?.walletLink || "");
   const [savingWalletLink, setSavingWalletLink] = useState(false);
+
+  const handleToggleCoinActivation = async (coin, nextActive) => {
+    const key = String(coin.coinSymbol || coin.coinName || "").toLowerCase();
+    try {
+      setTogglingCoinKey(key);
+      const res = await toggleCoinActivationApi(id, {
+        trxName: coin.coinName,
+        coinSymbol: coin.coinSymbol,
+        active: nextActive,
+      });
+      if (res?.success) {
+        toast.success(res.msg || `Wallet ${nextActive ? "activated" : "deactivated"}`);
+        clearHubCache(id);
+        await getCoins();
+      } else {
+        toast.error(res?.msg || "Failed to update wallet status");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.msg || err?.message || "Failed to update wallet status");
+    } finally {
+      setTogglingCoinKey("");
+    }
+  };
 
   useEffect(() => {
     setWalletLink(userData?.walletIntegration?.walletLink || "");
@@ -667,25 +692,25 @@ const UserAssets = ({ embedded = false }) => {
                       ) : (
                         <div className="pt-6">
                           {/* Wallet Integration Management Card */}
-                          <div className="mb-6 p-4 rounded-xl border border-muted-200 dark:border-muted-700 bg-white dark:bg-muted-900/60 shadow-sm">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                              <div className="flex items-start sm:items-center gap-3">
-                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-500/15 text-primary-500">
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <div className={su.wiCard}>
+                            <div className={su.wiTop}>
+                              <div className={su.wiLeft}>
+                                <div className={su.wiIcon}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                                   </svg>
                                 </div>
                                 <div>
-                                  <div className="flex items-center gap-2">
-                                    <h3 className="text-base font-semibold text-muted-800 dark:text-muted-100">
+                                  <div className={su.wiTitleRow}>
+                                    <h3 className={su.wiTitle}>
                                       Wallet Integration
                                     </h3>
-                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                                    <span className={`${su.wiBadge} ${
                                       userData?.walletIntegration?.status === "approved"
-                                        ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                                        ? su.wiBadgeOk
                                         : userData?.walletIntegration?.status === "pending"
-                                        ? "bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse"
-                                        : "bg-muted-500/15 text-muted-400 border border-muted-500/30"
+                                        ? su.wiBadgeWarn
+                                        : su.wiBadgeMuted
                                     }`}>
                                       {userData?.walletIntegration?.status === "approved"
                                         ? "Approved"
@@ -694,7 +719,7 @@ const UserAssets = ({ embedded = false }) => {
                                         : "Not Requested"}
                                     </span>
                                   </div>
-                                  <p className="text-xs text-muted-500 dark:text-muted-400 mt-0.5">
+                                  <p className={su.wiDesc}>
                                     {userData?.walletIntegration?.status === "pending"
                                       ? "User has submitted a request for wallet integration. Approve this request to activate the 'Integrate Wallet' button on their dashboard."
                                       : userData?.walletIntegration?.status === "approved"
@@ -703,14 +728,14 @@ const UserAssets = ({ embedded = false }) => {
                                   </p>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-2 shrink-0">
+                              <div className={su.wiActions}>
                                 {userData?.walletIntegration?.status === "pending" ? (
                                   <>
                                     <button
                                       type="button"
                                       disabled={approvingWallet}
                                       onClick={() => handleUpdateWalletIntegration("approved")}
-                                      className="px-4 py-2 text-sm font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-all"
+                                      className={su.btnSuccess}
                                     >
                                       {approvingWallet ? "Approving..." : "Approve Integration"}
                                     </button>
@@ -718,7 +743,7 @@ const UserAssets = ({ embedded = false }) => {
                                       type="button"
                                       disabled={approvingWallet}
                                       onClick={() => handleUpdateWalletIntegration("rejected")}
-                                      className="px-3 py-2 text-sm font-medium rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 transition-all"
+                                      className={su.btnDangerSoft}
                                     >
                                       Reject
                                     </button>
@@ -728,7 +753,7 @@ const UserAssets = ({ embedded = false }) => {
                                     type="button"
                                     disabled={approvingWallet}
                                     onClick={() => handleUpdateWalletIntegration("none")}
-                                    className="px-3 py-1.5 text-xs font-medium rounded-lg text-muted-400 hover:text-rose-400 border border-muted-700 hover:border-rose-500/40 transition-all"
+                                    className={su.btnDangerSoft}
                                     title="Revoke integration approval"
                                   >
                                     Revoke Approval
@@ -738,7 +763,7 @@ const UserAssets = ({ embedded = false }) => {
                                     type="button"
                                     disabled={approvingWallet}
                                     onClick={() => handleUpdateWalletIntegration("approved")}
-                                    className="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 hover:bg-primary-500 text-white shadow-sm transition-all"
+                                    className={su.btnPrimary}
                                   >
                                     {approvingWallet ? "Enabling..." : "Grant Wallet Integration"}
                                   </button>
@@ -747,20 +772,20 @@ const UserAssets = ({ embedded = false }) => {
                             </div>
 
                             {/* Wallet Link Input */}
-                            <div className="mt-4 pt-4 border-t border-muted-200 dark:border-muted-700">
-                              <label className="block text-xs font-semibold text-muted-500 dark:text-muted-400 mb-2">
+                            <div className={su.wiLinkSection}>
+                              <label className={su.wiLabel}>
                                 Wallet Integration Link
                               </label>
-                              <p className="text-xs text-muted-400 dark:text-muted-500 mb-2">
+                              <p className={su.wiHint}>
                                 Set the URL that opens when the user clicks "Integrate Wallet". Leave empty to use default.
                               </p>
-                              <div className="flex items-center gap-2">
+                              <div className={su.wiInputRow}>
                                 <input
                                   type="text"
                                   value={walletLink}
                                   onChange={(e) => setWalletLink(e.target.value)}
                                   placeholder="https://example.com/wallet-page"
-                                  className="flex-1 px-3 py-2 text-sm rounded-lg border border-muted-300 dark:border-muted-600 bg-white dark:bg-muted-900 text-muted-800 dark:text-muted-100 placeholder:text-muted-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none transition-all"
+                                  className={su.wiInput}
                                 />
                                 <button
                                   type="button"
@@ -790,19 +815,19 @@ const UserAssets = ({ embedded = false }) => {
                                       setSavingWalletLink(false);
                                     }
                                   }}
-                                  className="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 hover:bg-primary-500 text-white shadow-sm transition-all whitespace-nowrap"
+                                  className={su.btnPrimary}
                                 >
                                   {savingWalletLink ? "Saving..." : "Save Link"}
                                 </button>
                               </div>
                               {walletLink && (
-                                <p className="text-xs text-muted-400 mt-1.5 flex items-center gap-1.5">
+                                <p className={su.wiDesc} style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6 }}>
                                   <span>Current:</span>
                                   <a
                                     href={normalizeWalletUrl(walletLink)}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-primary-400 hover:underline inline-flex items-center gap-1"
+                                    style={{ color: "#60a5fa", textDecoration: "underline", display: "inline-flex", alignItems: "center", gap: 4 }}
                                     title="Open external website in new tab"
                                   >
                                     <span>{walletLink}</span>
@@ -816,402 +841,68 @@ const UserAssets = ({ embedded = false }) => {
                               )}
                             </div>
                           </div>
-                          <div className={`${assetUi.walletCard} border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 px-2 py-6 sm:py-4 first:rounded-t-lg last:rounded-b-lg [&:not(:first-child)]:border-t-0`}>
-                            <div className="flex w-full flex-col sm:flex-row sm:items-center">
-                              <div style={{ flex: "0 1 auto", minWidth: "160px" }} className={`${assetUi.walletMeta} relative flex items-center gap-2 px-2`}>
-                                <span className="text-muted-400 absolute hidden font-sans text-xs font-medium uppercase sm:-top-10 sm:start-2 sm:block">
-                                  currency
-                                </span>
-                                <div
-                                  className="relative inline-flex shrink-0 items-center justify-center h-10 w-10 rounded-lg bg-primary-500/20 text-primary-500"
-                                  icon="cryptocurrency:btc"
-                                >
-                                  <svg
-                                    data-v-cd102a71
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    xmlnsXlink="http://www.w3.org/1999/xlink"
-                                    aria-hidden="true"
-                                    role="img"
-                                    className="icon h-5 w-5"
-                                    width="1em"
-                                    height="1em"
-                                    viewBox="0 0 32 32"
-                                  >
-                                    <path
-                                      fill="currentColor"
-                                      fillRule="evenodd"
-                                      d="M16 32C7.163 32 0 24.837 0 16S7.163 0 16 0s16 7.163 16 16s-7.163 16-16 16m7.189-17.98c.314-2.096-1.283-3.223-3.465-3.975l.708-2.84l-1.728-.43l-.69 2.765c-.454-.114-.92-.22-1.385-.326l.695-2.783L15.596 6l-.708 2.839c-.376-.086-.746-.17-1.104-.26l.002-.009l-2.384-.595l-.46 1.846s1.283.294 1.256.312c.7.175.826.638.805 1.006l-.806 3.235c.048.012.11.03.18.057l-.183-.045l-1.13 4.532c-.086.212-.303.531-.793.41c.018.025-1.256-.313-1.256-.313l-.858 1.978l2.25.561c.418.105.828.215 1.231.318l-.715 2.872l1.727.43l.708-2.84c.472.127.93.245 1.378.357l-.706 2.828l1.728.43l.715-2.866c2.948.558 5.164.333 6.097-2.333c.752-2.146-.037-3.385-1.588-4.192c1.13-.26 1.98-1.003 2.207-2.538m-3.95 5.538c-.533 2.147-4.148.986-5.32.695l.95-3.805c1.172.293 4.929.872 4.37 3.11m.535-5.569c-.487 1.953-3.495.96-4.47.717l.86-3.45c.975.243 4.118.696 3.61 2.733"
-                                    />
-                                  </svg>
-                                </div>
-                                <div>
-                                  <h4 className="font-heading text-sm font-medium leading-tight text-muted-700 dark:text-muted-100">
-                                    <span>Bitcoin</span>
-                                  </h4>
-                                  <p className="font-alt text-xs font-normal leading-tight text-muted-500 dark:text-muted-400">
-                                    <span>BTC</span>
-                                  </p>
-                                </div>
-                              </div>
-                              <div className={`kkass ${assetUi.walletSide}`}>
-                                <div className={assetUi.walletBalance}>
-                                  <span className="text-muted-400 absolute start-8 top-1/2 mx-auto -translate-y-1/2 text-center font-sans text-xs font-medium uppercase sm:inset-x-0 sm:-top-10 sm:translate-y-0">
-                                    balance
-                                  </span>
-                                  <span className="text-muted-500 dark:text-muted-400 font-sans text-sm">
-                                    {`${btcBalance.toFixed(8)} (${(
-                                      btcBalance * liveBtc
-                                    ).toFixed(2)} USD)`}
-                                  </span>
-                                </div>
-                                <div className={assetUi.walletActions}>
-                                  <span className="text-muted-400 absolute start-8 top-1/2 mx-auto -translate-y-1/2 text-center font-sans text-xs font-medium uppercase sm:inset-x-0 sm:-top-10 sm:translate-y-0">
-                                    action
-                                  </span>
-                                  {subAdminPermissions.editWalletAddress ?
-                                    <button
-                                      onClick={toggleAddress}
-                                      type="button"
-                                      className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none text-muted-500 bg-muted-200 border-muted-200 dark:text-white dark:bg-muted-700/40 dark:border-muted-700/40 dark:hover:enabled:bg-muted-700/60 hover:enabled:bg-muted-100 dark:active:enabled:border-muted-800 dark:active:enabled:bg-muted-800 active:enabled:bg-muted-200/50 rounded-md"
-                                    >
-                                      <svg
-                                        data-v-cd102a71
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        xmlnsXlink="http://www.w3.org/1999/xlink"
-                                        aria-hidden="true"
-                                        role="img"
-                                        className="icon h-5 w-5"
-                                        width="1em"
-                                        height="1em"
-                                        viewBox="0 0 256 256"
-                                      >
-                                        <path
-                                          fill="currentColor"
-                                          d="m230.14 70.54l-44.68-44.69a20 20 0 0 0-28.29 0L33.86 149.17A19.85 19.85 0 0 0 28 163.31V208a20 20 0 0 0 20 20h44.69a19.86 19.86 0 0 0 14.14-5.86L230.14 98.82a20 20 0 0 0 0-28.28M93 180l71-71l11 11l-71 71Zm-17-17l-11-11l71-71l11 11Zm-24 10l15.51 15.51L83 204H52Zm140-70l-39-39l18.34-18.34l39 39Z"
-                                        />
-                                      </svg>
-                                      <span>Update</span>
-                                    </button> : ""}
-                                    {subAdminPermissions.editUserWallet ?
-                                    <>
-                                  <button
-                                    onClick={btcDeposit}
-                                    type="button"
-                                    className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none text-muted-500 bg-muted-200 border-muted-200 dark:text-white dark:bg-muted-700/40 dark:border-muted-700/40 dark:hover:enabled:bg-muted-700/60 hover:enabled:bg-muted-100 dark:active:enabled:border-muted-800 dark:active:enabled:bg-muted-800 active:enabled:bg-muted-200/50 rounded-md ml-2"
-                                  >
-                                    <svg
-                                      data-v-cd102a71
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      xmlnsXlink="http://www.w3.org/1999/xlink"
-                                      aria-hidden="true"
-                                      role="img"
-                                      className="icon h-5 w-5"
-                                      width="1em"
-                                      height="1em"
-                                      viewBox="0 0 256 256"
-                                    >
-                                      <path
-                                        fill="currentColor"
-                                        d="M204 88v104a12 12 0 0 1-12 12H88a12 12 0 0 1 0-24h75L55.51 72.48a12 12 0 0 1 17-17L180 163V88a12 12 0 0 1 24 0"
-                                      />
-                                    </svg>
-                                    <span>Deposit</span>
-                                  </button>
-                                  <button
-                                    onClick={btcDepositMinus}
-                                    type="button"
-                                    className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none text-muted-500 bg-muted-200 border-muted-200 dark:text-white dark:bg-muted-700/40 dark:border-muted-700/40 dark:hover:enabled:bg-muted-700/60 hover:enabled:bg-muted-100 dark:active:enabled:border-muted-800 dark:active:enabled:bg-muted-800 active:enabled:bg-muted-200/50 rounded-md ml-2"
-                                  >
-                                    <svg
-                                      data-v-cd102a71
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      xmlnsXlink="http://www.w3.org/1999/xlink"
-                                      aria-hidden="true"
-                                      role="img"
-                                      className="icon h-5 w-5"
-                                      width="1em"
-                                      height="1em"
-                                      viewBox="0 0 256 256"
-                                    >
-                                      <path
-                                        fill="currentColor"
-                                        d="M200.49 200.49a12 12 0 0 1-17 0L76 93v75a12 12 0 0 1-24 0V64a12 12 0 0 1 12-12h104a12 12 0 0 1 0 24H93l107.49 107.51a12 12 0 0 1 0 16.98"
-                                      />
-                                    </svg>
-                                    <span>Withdrawal</span>
-                                  </button></>:""}
-                                </div>
-                              </div>
-                            </div>
+                          <div className={`${assetUi.sectionLabel} px-1`}>
+                            <h3 className="font-heading text-xs font-semibold uppercase tracking-wider text-muted-500 dark:text-muted-400">
+                              Core Crypto Wallets
+                            </h3>
                           </div>
 
-                          <div className={`${assetUi.walletCard} border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 px-2 py-6 sm:py-4 first:rounded-t-lg last:rounded-b-lg [&:not(:first-child)]:border-t-0`}>
-                            <div className="flex w-full flex-col sm:flex-row sm:items-center">
-                              <div style={{ flex: "0 1 auto", minWidth: "160px" }} className={`${assetUi.walletMeta} relative flex items-center gap-2 px-2`}>
-                                <span className="text-muted-400 absolute hidden font-sans text-xs font-medium uppercase sm:-top-10 sm:start-2 sm:block sm:hidden">
-                                  currency
-                                </span>
-                                <div
-                                  className="relative inline-flex shrink-0 items-center justify-center h-10 w-10 rounded-lg bg-primary-500/20 text-primary-500"
-                                  icon="cryptocurrency:eth"
-                                >
-                                  <svg
-                                    data-v-cd102a71
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    xmlnsXlink="http://www.w3.org/1999/xlink"
-                                    aria-hidden="true"
-                                    role="img"
-                                    className="icon h-5 w-5"
-                                    width="1em"
-                                    height="1em"
-                                    viewBox="0 0 32 32"
-                                  >
-                                    <g fill="currentColor" fillRule="evenodd">
-                                      <path d="M16 32C7.163 32 0 24.837 0 16S7.163 0 16 0s16 7.163 16 16s-7.163 16-16 16m7.994-15.781L16.498 4L9 16.22l7.498 4.353zM24 17.616l-7.502 4.351L9 17.617l7.498 10.378z" />
-                                      <g fillRule="nonzero">
-                                        <path
-                                          fillOpacity=".298"
-                                          d="M16.498 4v8.87l7.497 3.35zm0 17.968v6.027L24 17.616z"
-                                        />
-                                        <path
-                                          fillOpacity=".801"
-                                          d="m16.498 20.573l7.497-4.353l-7.497-3.348z"
-                                        />
-                                        <path
-                                          fillOpacity=".298"
-                                          d="m9 16.22l7.498 4.353v-7.701z"
-                                        />
-                                      </g>
-                                    </g>
-                                  </svg>
-                                </div>
-                                <div>
-                                  <h4 className="font-heading text-sm font-medium leading-tight text-muted-700 dark:text-muted-100">
-                                    <span>Ethereum</span>
-                                  </h4>
-                                  <p className="font-alt text-xs font-normal leading-tight text-muted-500 dark:text-muted-400">
-                                    <span>ETH</span>
-                                  </p>
-                                </div>
-                              </div>
-                              <div className={`kkass ${assetUi.walletSide}`}>
-                                <div className={assetUi.walletBalance}>
-                                  <span className="text-muted-400 absolute start-8 top-1/2 mx-auto -translate-y-1/2 text-center font-sans text-xs font-medium uppercase sm:inset-x-0 sm:-top-10 sm:translate-y-0 sm:hidden">
-                                    balance
-                                  </span>
-                                  <span className="text-muted-500 dark:text-muted-400 font-sans text-sm">
-                                    {`${ethBalance.toFixed(8)} (${(
-                                      ethBalance * (liveEth || 2640)
-                                    ).toFixed(2)} USD)`}
-                                  </span>
-                                </div>
-                                <div className={assetUi.walletActions}>
-                                  <span className="text-muted-400 absolute start-8 top-1/2 mx-auto -translate-y-1/2 text-center font-sans text-xs font-medium uppercase sm:inset-x-0 sm:-top-10 sm:translate-y-0 sm:hidden">
-                                    action
-                                  </span>
-                                  {subAdminPermissions.editWalletAddress ?
-                                    <button
-                                      onClick={() => setusdtAddressModal(true)}
-                                      type="button"
-                                      className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none text-muted-500 bg-muted-200 border-muted-200 dark:text-white dark:bg-muted-700/40 dark:border-muted-700/40 dark:hover:enabled:bg-muted-700/60 hover:enabled:bg-muted-100 dark:active:enabled:border-muted-800 dark:active:enabled:bg-muted-800 active:enabled:bg-muted-200/50 rounded-md"
-                                    >
-                                      <svg
-                                        data-v-cd102a71
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        xmlnsXlink="http://www.w3.org/1999/xlink"
-                                        aria-hidden="true"
-                                        role="img"
-                                        className="icon h-5 w-5"
-                                        width="1em"
-                                        height="1em"
-                                        viewBox="0 0 256 256"
-                                      >
-                                        <path
-                                          fill="currentColor"
-                                          d="m230.14 70.54l-44.68-44.69a20 20 0 0 0-28.29 0L33.86 149.17A19.85 19.85 0 0 0 28 163.31V208a20 20 0 0 0 20 20h44.69a19.86 19.86 0 0 0 14.14-5.86L230.14 98.82a20 20 0 0 0 0-28.28M93 180l71-71l11 11l-71 71Zm-17-17l-11-11l71-71l11 11Zm-24 10l15.51 15.51L83 204H52Zm140-70l-39-39l18.34-18.34l39 39Z"
-                                        />
-                                      </svg>
-                                      <span>Update</span>
-                                    </button> : ""}
-{subAdminPermissions.editUserWallet ?
-                                    <>
-                                  <button
-                                    onClick={ethDeposit}
-                                    type="button"
-                                    className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none text-muted-500 bg-muted-200 border-muted-200 dark:text-white dark:bg-muted-700/40 dark:border-muted-700/40 dark:hover:enabled:bg-muted-700/60 hover:enabled:bg-muted-100 dark:active:enabled:border-muted-800 dark:active:enabled:bg-muted-800 active:enabled:bg-muted-200/50 rounded-md ml-2"
-                                  >
-                                    <svg
-                                      data-v-cd102a71
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      xmlnsXlink="http://www.w3.org/1999/xlink"
-                                      aria-hidden="true"
-                                      role="img"
-                                      className="icon h-5 w-5"
-                                      width="1em"
-                                      height="1em"
-                                      viewBox="0 0 256 256"
-                                    >
-                                      <path
-                                        fill="currentColor"
-                                        d="M204 88v104a12 12 0 0 1-12 12H88a12 12 0 0 1 0-24h75L55.51 72.48a12 12 0 0 1 17-17L180 163V88a12 12 0 0 1 24 0"
-                                      />
-                                    </svg>
-                                    <span>Deposit</span>
-                                  </button>
-                                  <button
-                                    onClick={ethDepositMinus}
-                                    type="button"
-                                    className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none text-muted-500 bg-muted-200 border-muted-200 dark:text-white dark:bg-muted-700/40 dark:border-muted-700/40 dark:hover:enabled:bg-muted-700/60 hover:enabled:bg-muted-100 dark:active:enabled:border-muted-800 dark:active:enabled:bg-muted-800 active:enabled:bg-muted-200/50 rounded-md ml-2"
-                                  >
-                                    <svg
-                                      data-v-cd102a71
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      xmlnsXlink="http://www.w3.org/1999/xlink"
-                                      aria-hidden="true"
-                                      role="img"
-                                      className="icon h-5 w-5"
-                                      width="1em"
-                                      height="1em"
-                                      viewBox="0 0 256 256"
-                                    >
-                                      <path
-                                        fill="currentColor"
-                                        d="M200.49 200.49a12 12 0 0 1-17 0L76 93v75a12 12 0 0 1-24 0V64a12 12 0 0 1 12-12h104a12 12 0 0 1 0 24H93l107.49 107.51a12 12 0 0 1 0 16.98"
-                                      />
-                                    </svg>
-                                    <span>Withdrawal</span>
-                                  </button></>:""}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className={`${assetUi.walletCard} border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 px-2 py-6 sm:py-4 first:rounded-t-lg last:rounded-b-lg [&:not(:first-child)]:border-t-0`}>
-                            <div className="flex w-full flex-col sm:flex-row sm:items-center">
-                              <div style={{ flex: "0 1 auto", minWidth: "160px" }} className={`${assetUi.walletMeta} relative flex items-center gap-2 px-2`}>
-                                <span className="text-muted-400 absolute hidden font-sans text-xs font-medium uppercase sm:-top-10 sm:start-2 sm:block sm:hidden">
-                                  currency
-                                </span>
-                                <div
-                                  className="relative inline-flex shrink-0 items-center justify-center h-10 w-10 rounded-lg bg-primary-500/20 text-primary-500"
-                                  icon="cryptocurrency:usdt"
-                                >
-                                  <svg
-                                    data-v-cd102a71
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    xmlnsXlink="http://www.w3.org/1999/xlink"
-                                    aria-hidden="true"
-                                    role="img"
-                                    className="icon h-5 w-5"
-                                    width="1em"
-                                    height="1em"
-                                    viewBox="0 0 32 32"
-                                  >
-                                    <path
-                                      fill="currentColor"
-                                      fillRule="evenodd"
-                                      d="M16 32C7.163 32 0 24.837 0 16S7.163 0 16 0s16 7.163 16 16s-7.163 16-16 16m1.922-18.207v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118c0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116c0-1.043-3.301-1.914-7.694-2.117m0 3.59v-.002c-.11.008-.677.042-1.942.042c-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658c0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061c1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658c0 .81-2.895 1.485-6.775 1.657"
-                                    />
-                                  </svg>
-                                </div>
-                                <div>
-                                  <h4 className="font-heading text-sm font-medium leading-tight text-muted-700 dark:text-muted-100">
-                                    <span>Tether</span>
-                                  </h4>
-                                  <p className="font-alt text-xs font-normal leading-tight text-muted-500 dark:text-muted-400">
-                                    <span>USDT</span>
-                                  </p>
-                                </div>
-                              </div>
-                              <div className={`kkass ${assetUi.walletSide}`}>
-                                <div className={assetUi.walletBalance}>
-                                  <span className="text-muted-400 absolute start-8 top-1/2 mx-auto -translate-y-1/2 text-center font-sans text-xs font-medium uppercase sm:inset-x-0 sm:-top-10 sm:translate-y-0 sm:hidden">
-                                    balance
-                                  </span>
-                                  <span className="text-muted-500 dark:text-muted-400 font-sans text-sm">
-                                    {`${usdtBalance.toFixed(
-                                      8
-                                    )} (${usdtBalance.toFixed(2)} USD)`}
-                                  </span>
-                                </div>
-                                <div className={assetUi.walletActions}>
-                                  <span className="text-muted-400 absolute start-8 top-1/2 mx-auto -translate-y-1/2 text-center font-sans text-xs font-medium uppercase sm:inset-x-0 sm:-top-10 sm:translate-y-0 sm:hidden">
-                                    action
-                                  </span>
-                                  {subAdminPermissions.editWalletAddress ?
-                                    <button
-                                      onClick={() => setethAddressModal(true)}
-                                      type="button"
-                                      className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none text-muted-500 bg-muted-200 border-muted-200 dark:text-white dark:bg-muted-700/40 dark:border-muted-700/40 dark:hover:enabled:bg-muted-700/60 hover:enabled:bg-muted-100 dark:active:enabled:border-muted-800 dark:active:enabled:bg-muted-800 active:enabled:bg-muted-200/50 rounded-md"
-                                    >
-                                      <svg
-                                        data-v-cd102a71
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        xmlnsXlink="http://www.w3.org/1999/xlink"
-                                        aria-hidden="true"
-                                        role="img"
-                                        className="icon h-5 w-5"
-                                        width="1em"
-                                        height="1em"
-                                        viewBox="0 0 256 256"
-                                      >
-                                        <path
-                                          fill="currentColor"
-                                          d="m230.14 70.54l-44.68-44.69a20 20 0 0 0-28.29 0L33.86 149.17A19.85 19.85 0 0 0 28 163.31V208a20 20 0 0 0 20 20h44.69a19.86 19.86 0 0 0 14.14-5.86L230.14 98.82a20 20 0 0 0 0-28.28M93 180l71-71l11 11l-71 71Zm-17-17l-11-11l71-71l11 11Zm-24 10l15.51 15.51L83 204H52Zm140-70l-39-39l18.34-18.34l39 39Z"
-                                        />
-                                      </svg>
-                                      <span>Update</span>
-                                    </button> : ""}
-                                  {subAdminPermissions.editUserWallet ?
-                                    <><button
-                                      onClick={tetherDeposit}
-                                      type="button"
-                                      className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none text-muted-500 bg-muted-200 border-muted-200 dark:text-white dark:bg-muted-700/40 dark:border-muted-700/40 dark:hover:enabled:bg-muted-700/60 hover:enabled:bg-muted-100 dark:active:enabled:border-muted-800 dark:active:enabled:bg-muted-800 active:enabled:bg-muted-200/50 rounded-md ml-2"
-                                    >
-                                      <svg
-                                        data-v-cd102a71
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        xmlnsXlink="http://www.w3.org/1999/xlink"
-                                        aria-hidden="true"
-                                        role="img"
-                                        className="icon h-5 w-5"
-                                        width="1em"
-                                        height="1em"
-                                        viewBox="0 0 256 256"
-                                      >
-                                        <path
-                                          fill="currentColor"
-                                          d="M204 88v104a12 12 0 0 1-12 12H88a12 12 0 0 1 0-24h75L55.51 72.48a12 12 0 0 1 17-17L180 163V88a12 12 0 0 1 24 0"
-                                        />
-                                      </svg>
-                                      <span>Deposit</span>
-                                    </button>
-                                      <button
-                                        type="button"
-                                        onClick={tetherDepositMinus}
-                                        className="relative font-sans font-normal text-sm inline-flex items-center justify-center leading-5 no-underline h-8 px-3 py-2 space-x-1 border nui-focus transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:shadow-none text-muted-500 bg-muted-200 border-muted-200 dark:text-white dark:bg-muted-700/40 dark:border-muted-700/40 dark:hover:enabled:bg-muted-700/60 hover:enabled:bg-muted-100 dark:active:enabled:border-muted-800 dark:active:enabled:bg-muted-800 active:enabled:bg-muted-200/50 rounded-md ml-2"
-                                      >
-                                        <svg
-                                          data-v-cd102a71
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          xmlnsXlink="http://www.w3.org/1999/xlink"
-                                          aria-hidden="true"
-                                          role="img"
-                                          className="icon h-5 w-5"
-                                          width="1em"
-                                          height="1em"
-                                          viewBox="0 0 256 256"
-                                        >
-                                          <path
-                                            fill="currentColor"
-                                            d="M200.49 200.49a12 12 0 0 1-17 0L76 93v75a12 12 0 0 1-24 0V64a12 12 0 0 1 12-12h104a12 12 0 0 1 0 24H93l107.49 107.51a12 12 0 0 1 0 16.98"
-                                          />
-                                        </svg>
-                                        <span>Withdrawal</span>
-                                      </button></> : ""}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                          <AdminCoinWalletRow
+                            coin={{
+                              coinName: "Bitcoin",
+                              coinSymbol: "btc",
+                              tokenAddress: userCoins?.getCoin?.btcTokenAddress || "",
+                              activationStatus: userCoins?.getCoin?.btcActivationStatus,
+                            }}
+                            totalBalance={btcBalance}
+                            getCoinPrice={() => liveBtc || 0}
+                            subAdminPermissions={subAdminPermissions}
+                            onUpdateAddress={toggleAddress}
+                            onDeposit={btcDeposit}
+                            onWithdraw={btcDepositMinus}
+                            onToggleActivation={handleToggleCoinActivation}
+                            togglingCoinKey={togglingCoinKey}
+                            userCurrency={userData?.currency}
+                            userId={id}
+                          />
+
+                          <AdminCoinWalletRow
+                            coin={{
+                              coinName: "Ethereum",
+                              coinSymbol: "eth",
+                              tokenAddress: userCoins?.getCoin?.ethTokenAddress || "",
+                              activationStatus: userCoins?.getCoin?.ethActivationStatus,
+                            }}
+                            totalBalance={ethBalance}
+                            getCoinPrice={() => liveEth || 2640}
+                            subAdminPermissions={subAdminPermissions}
+                            onUpdateAddress={() => setusdtAddressModal(true)}
+                            onDeposit={ethDeposit}
+                            onWithdraw={ethDepositMinus}
+                            onToggleActivation={handleToggleCoinActivation}
+                            togglingCoinKey={togglingCoinKey}
+                            userCurrency={userData?.currency}
+                            userId={id}
+                          />
+
+                          <AdminCoinWalletRow
+                            coin={{
+                              coinName: "Tether",
+                              coinSymbol: "usdt",
+                              tokenAddress: userCoins?.getCoin?.usdtTokenAddress || "",
+                              activationStatus: userCoins?.getCoin?.usdtActivationStatus,
+                            }}
+                            totalBalance={usdtBalance}
+                            getCoinPrice={() => 1}
+                            subAdminPermissions={subAdminPermissions}
+                            onUpdateAddress={() => setethAddressModal(true)}
+                            onDeposit={tetherDeposit}
+                            onWithdraw={tetherDepositMinus}
+                            onToggleActivation={handleToggleCoinActivation}
+                            togglingCoinKey={togglingCoinKey}
+                            userCurrency={userData?.currency}
+                            userId={id}
+                          />
 
                           <div className={`${assetUi.fiatBanner} rounded-lg border border-primary-500/30 bg-primary-500/5 px-4 py-3`}>
                             <h3 className="font-heading text-sm font-semibold text-muted-800 dark:text-white">
@@ -1261,6 +952,8 @@ const UserAssets = ({ embedded = false }) => {
                                 onUpdateAddress={handleUpdateCoinAddress}
                                 onDeposit={NewCoinDeposit}
                                 onWithdraw={NewCoinDepositMinus}
+                                onToggleActivation={handleToggleCoinActivation}
+                                togglingCoinKey={togglingCoinKey}
                                 userCurrency={userData?.currency}
                                 userId={id}
                               />
