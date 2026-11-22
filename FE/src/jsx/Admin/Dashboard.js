@@ -271,6 +271,7 @@ const Dashboard = () => {
   const [requireEmailVerification, setRequireEmailVerification] = useState(true);
   const [walletEnabled, setWalletEnabled] = useState(true);
   const [requireSignupKyc, setRequireSignupKyc] = useState(true);
+  const [signupCryptoIdCode, setSignupCryptoIdCode] = useState("CG-2024-ALPHA");
   const [isLoadingNew, setisLoadingNew] = useState(false);
   const [getLoading, setgetLoading] = useState(true);
 
@@ -382,6 +383,11 @@ const Dashboard = () => {
         setRequireEmailVerification(data?.data?.requireEmailVerification ?? true);
         setWalletEnabled(data?.data?.walletEnabled !== false); // Default to true if not set
         setRequireSignupKyc(data?.data?.requireSignupKyc !== false); // Default to true if not set
+        setSignupCryptoIdCode(
+          data?.data?.signupCryptoIdCode !== undefined
+            ? data.data.signupCryptoIdCode
+            : "CG-2024-ALPHA"
+        );
         return;
       } else {
         toast.dismiss();
@@ -620,9 +626,52 @@ const Dashboard = () => {
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-300" style={{ color: '#6b7280' }}>
                       {requireSignupKyc
-                        ? 'Enabled: Newly registered users must complete the Fiscal Profile, submit KYC documents (ID & Selfie), and finish 100% of the international banking/regulatory database check before accessing their dashboard.'
+                        ? 'Enabled: Newly registered users must complete the Fiscal Profile, submit KYC documents (ID & Selfie), enter the Crypto Identification Number, and finish 100% of the international banking/regulatory database check before accessing their dashboard.'
                         : 'Disabled: Newly registered users can proceed without the mandatory signup KYC & banking verification flow.'}
                     </p>
+
+                    <div
+                      style={{
+                        marginTop: 14,
+                        paddingTop: 14,
+                        borderTop: "1px solid var(--admin-border, rgba(255,255,255,0.08))",
+                      }}
+                    >
+                      <label className={dash.smtpLabel} style={{ display: "block", marginBottom: 6 }}>
+                        Crypto Identification Number (CIN) Required on Signup KYC
+                      </label>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <input
+                          type="text"
+                          value={signupCryptoIdCode}
+                          onChange={(e) =>
+                            setSignupCryptoIdCode(e.target.value.toUpperCase())
+                          }
+                          placeholder="Ex: CG-2024-ALPHA"
+                          className={dash.smtpInput}
+                          style={{
+                            fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+                            letterSpacing: "0.06em",
+                            textTransform: "uppercase",
+                          }}
+                        />
+                        <button
+                          type="button"
+                          disabled={isLoadingNew}
+                          onClick={() =>
+                            updateRestrictions({
+                              signupCryptoIdCode: signupCryptoIdCode
+                                .trim()
+                                .toUpperCase(),
+                            })
+                          }
+                          className={dash.smtpBtnPrimary}
+                          style={{ whiteSpace: "nowrap" }}
+                        >
+                          Save Code
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
 

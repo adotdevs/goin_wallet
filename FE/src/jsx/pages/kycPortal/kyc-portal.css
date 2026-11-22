@@ -1431,6 +1431,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-border-opacity: 1 !important;
   border-color: rgb(251 113 133 / var(--tw-border-opacity, 1)) !important;
 }
+#kyc-portal .border-rose-500{
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(244 63 94 / var(--tw-border-opacity, 1)) !important;
+}
 #kyc-portal .border-slate-100{
   --tw-border-opacity: 1 !important;
   border-color: rgb(241 245 249 / var(--tw-border-opacity, 1)) !important;

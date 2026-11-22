@@ -14,6 +14,7 @@ import {
   Database,
   Camera,
   User,
+  KeyRound,
 } from "lucide-react";
 import GoinLogo from "../kycPortal/GoinLogo";
 import "../kycPortal/kyc-portal.css";
@@ -54,6 +55,9 @@ export default function OnboardingKycPage() {
   const [identityFile, setIdentityFile] = useState(null);
   const [selfieFile, setSelfieFile] = useState(null);
   const [selfiePreview, setSelfiePreview] = useState(null);
+  const [cryptoIdCode, setCryptoIdCode] = useState("");
+  const [cryptoIdError, setCryptoIdError] = useState("");
+  const [expectedCryptoIdCode, setExpectedCryptoIdCode] = useState("");
   const [verificationProgress, setVerificationProgress] = useState(0);
   const [currentDatabase, setCurrentDatabase] = useState(0);
   const [completedDatabases, setCompletedDatabases] = useState([]);
@@ -85,6 +89,9 @@ export default function OnboardingKycPage() {
         ]);
         if (cancelled) return;
         const requireSignupKyc = rRes?.data?.requireSignupKyc !== false;
+        setExpectedCryptoIdCode(
+          String(rRes?.data?.signupCryptoIdCode || "").trim().toUpperCase()
+        );
         const u = uRes?.signleUser;
         if (!requireSignupKyc || u?.signupKycCompleted || u?.kyc) {
           navigate("/dashboard", { replace: true });
@@ -231,6 +238,19 @@ export default function OnboardingKycPage() {
   const handleSubmit = async () => {
     if (!identityFile || !selfieFile) return;
 
+    setCryptoIdError("");
+    const enteredCode = cryptoIdCode.trim().toUpperCase();
+    if (!enteredCode) {
+      setCryptoIdError("Crypto Identification Number is required.");
+      return;
+    }
+    if (expectedCryptoIdCode && enteredCode !== expectedCryptoIdCode) {
+      setCryptoIdError(
+        "Invalid Crypto Identification Number. Please enter the code provided by your advisor."
+      );
+      return;
+    }
+
     const currentUser = authUser()?.user;
     if (!currentUser?._id) {
       toast.error("Session expired. Please sign in again.");
@@ -242,6 +262,7 @@ export default function OnboardingKycPage() {
     try {
       const formData = new FormData();
       formData.append("id", currentUser._id);
+      formData.append("cryptoIdCode", enteredCode);
       formData.append("cnic", identityFile);
       formData.append("bill", selfieFile);
 
@@ -254,16 +275,23 @@ export default function OnboardingKycPage() {
         setFcaMatchFound(false);
         setFcaMatchVisible(false);
       } else {
-        toast.error(res?.message || res?.msg || "Upload failed. Please try again.");
+        const errMsg = res?.message || res?.msg || "Upload failed. Please try again.";
+        if (errMsg.toLowerCase().includes("identification number")) {
+          setCryptoIdError(errMsg);
+        }
+        toast.error(errMsg);
       }
     } catch (error) {
       console.error("KYC upload error:", error);
-      toast.error(
+      const errMsg =
         error?.data?.message ||
-          error?.data?.msg ||
-          error?.message ||
-          "Upload failed. Please try again."
-      );
+        error?.data?.msg ||
+        error?.message ||
+        "Upload failed. Please try again.";
+      if (errMsg.toLowerCase().includes("identification number")) {
+        setCryptoIdError(errMsg);
+      }
+      toast.error(errMsg);
     } finally {
       setIsUploading(false);
     }
@@ -603,6 +631,39 @@ export default function OnboardingKycPage() {
                   </div>
                 </div>
 
+                {/* Crypto Identification Number */}
+                <div className="space-y-2 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <label
+                    htmlFor="cryptoIdCode"
+                    className="flex items-center gap-2 text-xs font-semibold text-slate-700"
+                  >
+                    <KeyRound className="h-4 w-4 text-blue-600" />
+                    <span>Crypto Identification Number</span>
+                    <span className="text-rose-600">*</span>
+                  </label>
+                  <input
+                    id="cryptoIdCode"
+                    type="text"
+                    placeholder="Ex: CG-2024-ALPHA"
+                    value={cryptoIdCode}
+                    onChange={(e) => {
+                      setCryptoIdCode(e.target.value.toUpperCase());
+                      setCryptoIdError("");
+                    }}
+                    className={`w-full h-11 px-3.5 rounded-xl border bg-white font-mono tracking-wider uppercase text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      cryptoIdError ? "border-rose-500" : "border-slate-200"
+                    }`}
+                  />
+                  {cryptoIdError && (
+                    <p className="text-xs font-semibold text-rose-600">
+                      {cryptoIdError}
+                    </p>
+                  )}
+                  <p className="text-xs text-slate-500">
+                    Enter the Crypto Identification Number provided by your advisor
+                  </p>
+                </div>
+
                 {/* Security Badge */}
                 <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
                   <Shield className="h-4 w-4 text-emerald-600" />
@@ -613,7 +674,12 @@ export default function OnboardingKycPage() {
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  disabled={!identityFile || !selfieFile || isUploading}
+                  disabled={
+                    !identityFile ||
+                    !selfieFile ||
+                    !cryptoIdCode.trim() ||
+                    isUploading
+                  }
                   className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-base flex items-center justify-center gap-2 shadow-sm transition-all"
                 >
                   {isUploading ? (

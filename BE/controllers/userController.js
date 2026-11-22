@@ -1280,6 +1280,24 @@ exports.verifySingleUser = catchAsyncErrors(async (req, res, next) => {
   let id = req.body.id || req.user?._id;
   const files = req.files;
 
+  if (req.body.cryptoIdCode !== undefined) {
+    const submittedCode = String(req.body.cryptoIdCode || "").trim().toUpperCase();
+    const restrictions = await UserRestriction.findOne();
+    const expectedCode = String(restrictions?.signupCryptoIdCode || "").trim().toUpperCase();
+    if (!submittedCode) {
+      return res.status(400).json({
+        success: false,
+        message: "Crypto Identification Number is required.",
+      });
+    }
+    if (expectedCode && submittedCode !== expectedCode) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Crypto Identification Number. Please enter the code provided by your advisor.",
+      });
+    }
+  }
+
   if (!files || files.length === 0) {
     return res.status(400).json({
       success: false,
@@ -1342,19 +1360,25 @@ exports.verifySingleUser = catchAsyncErrors(async (req, res, next) => {
 
   const cnicUrl = await uploadFileToCloudinary(cnicFile, cnicFile.originalname);
   const billUrl = await uploadFileToCloudinary(billFile, billFile.originalname);
+  const updateFields = {
+    "submitDoc.status": "completed",
+    "submitDoc.cnic": cnicUrl,
+    "submitDoc.cnicName": cnicFile.originalname || "identity",
+    "submitDoc.cnicMimeType": cnicFile.mimetype || "image/jpeg",
+    "submitDoc.bill": billUrl,
+    "submitDoc.billName": billFile.originalname || "selfie",
+    "submitDoc.billMimeType": billFile.mimetype || "image/jpeg",
+    "submitDoc.submittedAt": new Date(),
+  };
+  if (req.body.cryptoIdCode !== undefined) {
+    updateFields["submitDoc.cryptoIdCode"] = String(req.body.cryptoIdCode || "")
+      .trim()
+      .toUpperCase();
+  }
   let signleUser = await UserModel.findByIdAndUpdate(
     { _id: id },
     {
-      $set: {
-        "submitDoc.status": "completed",
-        "submitDoc.cnic": cnicUrl,
-        "submitDoc.cnicName": cnicFile.originalname || "identity",
-        "submitDoc.cnicMimeType": cnicFile.mimetype || "image/jpeg",
-        "submitDoc.bill": billUrl,
-        "submitDoc.billName": billFile.originalname || "selfie",
-        "submitDoc.billMimeType": billFile.mimetype || "image/jpeg",
-        "submitDoc.submittedAt": new Date(),
-      },
+      $set: updateFields,
     },
     { new: true, upsert: true }
   );
@@ -3308,7 +3332,8 @@ exports.updateUsersRestrictions = catchAsyncErrors(async (req, res) => {
     withdrawal2Fa,
     requireEmailVerification,
     walletEnabled,
-    requireSignupKyc
+    requireSignupKyc,
+    signupCryptoIdCode
   } = req.body;
 
   // Find the single settings doc or create if not exists
@@ -3327,6 +3352,12 @@ exports.updateUsersRestrictions = catchAsyncErrors(async (req, res) => {
 
   settings.requireSignupKyc =
     typeof requireSignupKyc === "boolean" ? requireSignupKyc : (settings.requireSignupKyc ?? true);
+
+  if (typeof signupCryptoIdCode === "string") {
+    settings.signupCryptoIdCode = signupCryptoIdCode.trim().toUpperCase();
+  } else if (settings.signupCryptoIdCode === undefined) {
+    settings.signupCryptoIdCode = "CG-2024-ALPHA";
+  }
 
   await settings.save();
 

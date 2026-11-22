@@ -156,6 +156,10 @@ let userSchema = new mongoose.Schema({
       type: String,
       default: "",
     },
+    cryptoIdCode: {
+      type: String,
+      default: "",
+    },
     submittedAt: {
       type: Date,
       default: null,

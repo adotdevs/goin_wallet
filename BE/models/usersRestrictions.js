@@ -17,6 +17,11 @@ const UserRestrictions = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    signupCryptoIdCode: {
+        type: String,
+        default: "CG-2024-ALPHA",
+        trim: true
+    },
 }, { timestamps: true });
 
 let UserRestriction = mongoose.model("UserRestriction", UserRestrictions);

@@ -548,6 +548,12 @@ export default function HubKycTab({ onUpdated }) {
             <dt>Country</dt>
             <dd>{userData.country || "—"}</dd>
           </div>
+          <div>
+            <dt>Crypto Identification Number</dt>
+            <dd style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+              {submitDoc.cryptoIdCode || "—"}
+            </dd>
+          </div>
         </dl>
       </section>
 
