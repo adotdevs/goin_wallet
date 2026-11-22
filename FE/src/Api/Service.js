@@ -305,6 +305,15 @@ export const getMyTokensApi = (id) => {
 export const getRestrictionsApi = () => {
   return getApi(`/restrictions`);
 };
+export const getSignupRestrictionsApi = () => {
+  return getApi(`/signup-restrictions`);
+};
+export const saveMyFiscalProfileApi = (data) => {
+  return patchApi(`/my/fiscal-profile`, data);
+};
+export const completeMySignupKycApi = () => {
+  return patchApi(`/my/complete-signup-kyc`, {});
+};
 export const UpdateRestrictionsApi = (data) => {
   return patchApi(`/restrictionsUpdate`, data);
 };

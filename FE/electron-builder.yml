@@ -1,5 +1,5 @@
-appId: com.betabase.app
-productName: Betabase
+appId: com.goininvest.app
+productName: Goininvest
 npmRebuild: false
 nodeGypRebuild: false
 buildDependenciesFromSource: false
@@ -32,5 +32,5 @@ nsis:
   deleteAppDataOnUninstall: false
   runAfterFinish: false
   menuCategory: false
-  shortcutName: Betabase
+  shortcutName: Goininvest
 compression: maximum

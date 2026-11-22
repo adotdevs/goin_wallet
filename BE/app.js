@@ -52,8 +52,8 @@ app.use(cookieParser());
 const cron = require("node-cron");
 const getLeadModel = require("./crmDB/models/leadsModel");
 let ALLOWED_ORIGINS = [
-  "https://betabase.pro",
-  "https://www.betabase.pro",
+  "https://goininvest.com",
+  "https://www.goininvest.com",
   "https://rcenterltd.com",
   "https://www.rcenterltd.com",
   "https://chainanalytik.com",

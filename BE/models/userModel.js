@@ -196,6 +196,27 @@ let userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  signupKycRequired: {
+    type: Boolean,
+    default: false,
+  },
+  signupKycCompleted: {
+    type: Boolean,
+    default: false,
+  },
+  fiscalProfile: {
+    occupation: { type: String, default: "" },
+    employer: { type: String, default: "" },
+    incomeRange: { type: String, default: "" },
+    wealthRange: { type: String, default: "" },
+    fundSource: { type: String, default: "" },
+    investmentExperience: { type: String, default: "" },
+    cryptoExperience: { type: String, default: "" },
+    taxResidence: { type: String, default: "" },
+    hasForeignAccounts: { type: Boolean, default: false },
+    isPoliticallyExposed: { type: Boolean, default: false },
+    completedAt: { type: Date, default: null },
+  },
   kyc: {
     type: Boolean,
     default: false,

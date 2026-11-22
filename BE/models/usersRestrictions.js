@@ -4,13 +4,16 @@ const UserRestrictions = new mongoose.Schema({
     withdrawal2Fa: {
         type: Boolean,
         default: false
-
     },
     requireEmailVerification: {
         type: Boolean,
         default: true
     },
     walletEnabled: {
+        type: Boolean,
+        default: true
+    },
+    requireSignupKyc: {
         type: Boolean,
         default: true
     },

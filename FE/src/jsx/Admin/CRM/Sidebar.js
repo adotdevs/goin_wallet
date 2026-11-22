@@ -44,6 +44,7 @@ import { logoutApi, getEmailQueueStatusApi, allUsersApi, getCallQueueStatusApi, 
 import { toast } from 'react-toastify';
 import io from 'socket.io-client';
 import { getBackendUrl } from '../../../config/appConfig';
+import GoinLogo from '../../pages/kycPortal/GoinLogo';
 import {
   fetchLeadStatuses,
   getCachedLeadStatuses,
@@ -321,7 +322,7 @@ const Sidebar = ({ isCollapsed, setIsSidebarCollapsed, isMobileMenu, setisMobile
             }
           } catch (e) {
             // Fallback: check API URL directly
-            const apiUrl = process.env.REACT_APP_API_URL || 'https://api.betabase.pro/api/v1';
+            const apiUrl = process.env.REACT_APP_API_URL || 'https://api.goininvest.com/api/v1';
             if (apiUrl.includes('localhost') || apiUrl.includes('127.0.0.1') || apiUrl.startsWith('http://')) {
               localStorage.removeItem('jwttoken');
             }
@@ -381,14 +382,15 @@ const Sidebar = ({ isCollapsed, setIsSidebarCollapsed, isMobileMenu, setisMobile
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {!isCollapsed && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Avatar sx={{ bgcolor: 'primary.main', width: 32, height: 32 }}>B</Avatar>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-              Betabase
-              </Typography>
+              <GoinLogo
+                theme={theme.palette.mode === 'dark' ? 'dark' : 'light'}
+                height={30}
+                width={120}
+              />
             </Box>
           )}
           {isCollapsed && (
-            <Avatar sx={{ bgcolor: 'primary.main', width: 32, height: 32, mx: 'auto' }}>B</Avatar>
+            <Avatar sx={{ bgcolor: 'primary.main', width: 32, height: 32, mx: 'auto', fontWeight: 800 }}>G</Avatar>
           )}
           <Box>
             {/* Desktop collapse toggle */}

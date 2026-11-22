@@ -24,7 +24,7 @@ const Menu = () => {
     <LandingMenuWrap active={active}>
       <LandingMenuContainer>
         <LandingMenuLogoWrap as={Link} to="/">
-          <img src={LogoNew} alt="Betabase Logo"  />
+          <img src={LogoNew} alt="Goininvest Logo"  />
         </LandingMenuLogoWrap>
         <LandingMenuNav>
           <LandingNavButton as={Link} to="/auth/signup">

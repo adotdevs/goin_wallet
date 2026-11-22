@@ -4,9 +4,9 @@ After building on the VPS:
   npm run electron:pack:win
 
 Publish once (or after each new build):
-  mkdir -p /var/www/betabase/downloads
-  cp "/var/www/betabase/FE/dist-electron/Betabase Setup 0.1.0.exe" \
-     /var/www/betabase/downloads/Betabase-Setup.exe
+  mkdir -p /var/www/goininvest/downloads
+  cp "/var/www/goininvest/FE/dist-electron/Goininvest Setup 0.1.0.exe" \
+     /var/www/goininvest/downloads/Goininvest-Setup.exe
 
 Every deploy.sh run copies that file into FE/build/downloads/ for the website.
-Download URL: https://www.betabase.pro/downloads/Betabase-Setup.exe
+Download URL: https://www.goininvest.com/downloads/Goininvest-Setup.exe

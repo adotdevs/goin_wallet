@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="GOin SAS">
+  <rect width="64" height="64" rx="15" fill="#0C1A2E"/>
+  <rect x="1" y="1" width="62" height="62" rx="14" fill="none" stroke="#1E3A5F" stroke-width="1.5"/>
+  <g fill="none" stroke="#159BFA" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 18 C27 18 27 32 32 32 C37 32 37 46 46 46"/>
+    <path d="M18 46 C27 46 27 32 32 32"/>
+  </g>
+  <g fill="#159BFA">
+    <circle cx="18" cy="18" r="7.5"/>
+    <circle cx="18" cy="46" r="7.5"/>
+    <circle cx="46" cy="46" r="7.5"/>
+  </g>
+</svg>

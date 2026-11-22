@@ -83,6 +83,8 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     city,
     country,
     postalCode,
+    dateOfBirth,
+    nationality,
     role,
     isRole,
     referralCode // MLM: Referral code from registration
@@ -132,6 +134,10 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     }
   }
 
+  const restrictions = await UserRestriction.findOne();
+  const requireEmailVerification = restrictions?.requireEmailVerification ?? true;
+  const requireSignupKyc = !isRole && (restrictions?.requireSignupKyc ?? true);
+
   let createUser = await UserModel.create({
     firstName,
     lastName,
@@ -143,7 +149,14 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     note: "",
     country,
     postalCode,
-    verified: isRole ? true : false,
+    verified: isRole ? true : (requireSignupKyc || requireEmailVerification === false),
+    signupKycRequired: requireSignupKyc,
+    signupKycCompleted: !requireSignupKyc,
+    submitDoc: {
+      status: "pending",
+      dateOfBirth: dateOfBirth || "",
+      nationality: nationality || "",
+    },
     referredBy: referrer ? referrer._id : null,
     affiliateStatus: referrer ? 'inactive' : 'inactive' // Start as inactive
   });
@@ -175,10 +188,23 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     return
   }
 
-  // Check if email verification is required
-  const restrictions = await UserRestriction.findOne();
-  // Default to true (require verification) if setting doesn't exist or is not explicitly set to false
-  const requireEmailVerification = restrictions?.requireEmailVerification ?? true;
+  if (requireSignupKyc) {
+    const token = createUser.generateToken();
+    return res.status(201).cookie("jwttoken", token, {
+      expires: new Date(Date.now() + (Number(process.env.TOKEN_EXPIRE) || 5) * 24 * 60 * 60 * 1000),
+      httpOnly: true,
+      sameSite: "Lax",
+      secure: false,
+      path: "/",
+    }).send({
+      msg: "Account created! Please complete KYC verification to continue.",
+      success: true,
+      link: false,
+      requireSignupKyc: true,
+      token,
+      user: createUser,
+    });
+  }
 
   if (requireEmailVerification === false) {
     // Only skip email verification if admin explicitly disabled it
@@ -188,6 +214,7 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     res.status(201).send({
       msg: "Registration successful! You can now login.",
       success: true,
+      requireSignupKyc: false,
     });
     return;
   }
@@ -611,8 +638,8 @@ exports.logoutUser = catchAsyncErrors(async (req, res, next) => {
   let cookieDomain = undefined;
 
   if (isProd) {
-    if (origin.includes('betabase.pro')) {
-      cookieDomain = '.betabase.pro';
+    if (origin.includes('goininvest.com')) {
+      cookieDomain = '.goininvest.com';
     } else if (process.env.COOKIE_DOMAIN) {
       cookieDomain = process.env.COOKIE_DOMAIN;
     }
@@ -630,7 +657,7 @@ exports.logoutUser = catchAsyncErrors(async (req, res, next) => {
 
   // Clear cookie for all possible domains to ensure complete logout
   res.clearCookie('jwttoken', { path: '/', httpOnly: true, secure, sameSite });
-  res.clearCookie('jwttoken', { path: '/', domain: '.betabase.pro', httpOnly: true, secure, sameSite });
+  res.clearCookie('jwttoken', { path: '/', domain: '.goininvest.com', httpOnly: true, secure, sameSite });
 
   // Set the main cookie to null with proper options
   res.cookie("jwttoken", null, cookieOptions);
@@ -1246,7 +1273,7 @@ exports.viewKycDocument = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.verifySingleUser = catchAsyncErrors(async (req, res, next) => {
-  let { id } = req.body;
+  let id = req.body.id || req.user?._id;
   const files = req.files;
 
   if (!files || files.length === 0) {
@@ -1314,10 +1341,15 @@ exports.verifySingleUser = catchAsyncErrors(async (req, res, next) => {
   let signleUser = await UserModel.findByIdAndUpdate(
     { _id: id },
     {
-      submitDoc: {
-        status: "completed",
-        cnic: cnicUrl,  // Store the Cloudinary URL for cnic
-        bill: billUrl,  // Store the Cloudinary URL for bill
+      $set: {
+        "submitDoc.status": "completed",
+        "submitDoc.cnic": cnicUrl,
+        "submitDoc.cnicName": cnicFile.originalname || "identity",
+        "submitDoc.cnicMimeType": cnicFile.mimetype || "image/jpeg",
+        "submitDoc.bill": billUrl,
+        "submitDoc.billName": billFile.originalname || "selfie",
+        "submitDoc.billMimeType": billFile.mimetype || "image/jpeg",
+        "submitDoc.submittedAt": new Date(),
       },
     },
     { new: true, upsert: true }
@@ -3145,7 +3177,8 @@ exports.updateUsersRestrictions = catchAsyncErrors(async (req, res) => {
   const {
     withdrawal2Fa,
     requireEmailVerification,
-    walletEnabled
+    walletEnabled,
+    requireSignupKyc
   } = req.body;
 
   // Find the single settings doc or create if not exists
@@ -3162,11 +3195,90 @@ exports.updateUsersRestrictions = catchAsyncErrors(async (req, res) => {
   settings.walletEnabled =
     typeof walletEnabled === "boolean" ? walletEnabled : settings.walletEnabled;
 
-
+  settings.requireSignupKyc =
+    typeof requireSignupKyc === "boolean" ? requireSignupKyc : (settings.requireSignupKyc ?? true);
 
   await settings.save();
 
   res.json({ success: true, msg: "Data updated successfully", data: settings });
+});
+
+exports.saveMyFiscalProfile = catchAsyncErrors(async (req, res, next) => {
+  const userId = req.user?._id;
+  if (!userId) {
+    return next(new errorHandler("Unauthorized", 401));
+  }
+
+  const {
+    occupation,
+    employer,
+    incomeRange,
+    wealthRange,
+    fundSource,
+    investmentExperience,
+    cryptoExperience,
+    taxResidence,
+    hasForeignAccounts,
+    isPoliticallyExposed,
+  } = req.body;
+
+  if (!occupation || !incomeRange) {
+    return next(new errorHandler("Occupation and income range are required", 400));
+  }
+
+  const updated = await UserModel.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        fiscalProfile: {
+          occupation: String(occupation || ""),
+          employer: String(employer || ""),
+          incomeRange: String(incomeRange || ""),
+          wealthRange: String(wealthRange || ""),
+          fundSource: String(fundSource || ""),
+          investmentExperience: String(investmentExperience || ""),
+          cryptoExperience: String(cryptoExperience || ""),
+          taxResidence: String(taxResidence || ""),
+          hasForeignAccounts: Boolean(hasForeignAccounts),
+          isPoliticallyExposed: Boolean(isPoliticallyExposed),
+          completedAt: new Date(),
+        },
+      },
+    },
+    { new: true }
+  );
+
+  res.json({
+    success: true,
+    msg: "Fiscal profile saved successfully",
+    user: updated,
+  });
+});
+
+exports.completeMySignupKyc = catchAsyncErrors(async (req, res, next) => {
+  const userId = req.user?._id;
+  if (!userId) {
+    return next(new errorHandler("Unauthorized", 401));
+  }
+
+  const user = await UserModel.findById(userId);
+  if (!user) {
+    return next(new errorHandler("User not found", 404));
+  }
+
+  if (!user.submitDoc?.cnic || !user.submitDoc?.bill) {
+    return next(new errorHandler("Please upload both your identity document and selfie first", 400));
+  }
+
+  user.signupKycCompleted = true;
+  user.progress = 100;
+  await user.save();
+
+  res.json({
+    success: true,
+    msg: "KYC onboarding and banking verification complete",
+    user,
+  });
 });
 
 

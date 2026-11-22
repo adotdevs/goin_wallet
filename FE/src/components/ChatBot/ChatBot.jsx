@@ -274,7 +274,7 @@ const ChatBot = () => {
       // Mark as sent immediately to prevent duplicates
       emailSent = true;
       
-      const adminEmail = process.env.REACT_APP_ADMIN_EMAIL || 'admin@betabase.pro';
+      const adminEmail = process.env.REACT_APP_ADMIN_EMAIL || 'admin@goininvest.com';
       const data = {
         sessionId: sessionId,
         email: adminEmail,

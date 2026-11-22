@@ -40,15 +40,15 @@ export const getFrontendDomain = () => {
 
   // Electron app: Use production domain
   if (isElectronApp()) {
-    return 'betabase.pro';
+    return 'goininvest.com';
   }
 
   // Auto-detect from current hostname
   const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
   
   // Production domain
-  if (hostname.includes('betabase.pro')) {
-    return 'betabase.pro';
+  if (hostname.includes('goininvest.com')) {
+    return 'goininvest.com';
   }
 
   // Development fallback
@@ -68,12 +68,12 @@ export const getApiBaseUrl = () => {
 
   // Electron app: Always use production API (app is distributed, server is on VPS)
   if (isElectronApp()) {
-    return 'https://api.betabase.pro';
+    return 'https://api.goininvest.com';
   }
 
   // Production environment: NEVER use localhost, always use production API
-  if (isProduction || (!isLocalhost && hostname.includes('betabase.pro'))) {
-    return 'https://api.betabase.pro';
+  if (isProduction || (!isLocalhost && hostname.includes('goininvest.com'))) {
+    return 'https://api.goininvest.com';
   }
 
   // Environment variable override (only for development/localhost)
@@ -108,7 +108,7 @@ export const getApiBaseUrl = () => {
   }
 
   // Production fallback (should never reach here, but safety net)
-  return 'https://api.betabase.pro';
+  return 'https://api.goininvest.com';
 };
 
 /**
@@ -118,8 +118,8 @@ export const getApiBaseUrl = () => {
  * 2. Frontend is also on localhost (double security check)
  * 
  * SECURITY: This function is critical - it determines if we use localStorage (dev) or cookies (production)
- * NEVER returns true for production URLs (https://api.betabase.pro)
- * NEVER returns true if frontend is on production domain (betabase.pro)
+ * NEVER returns true for production URLs (https://api.goininvest.com)
+ * NEVER returns true if frontend is on production domain (goininvest.com)
  */
 export const isBackendLocalhost = () => {
   try {
@@ -130,7 +130,7 @@ export const isBackendLocalhost = () => {
       const protocol = window.location.protocol;
       
       // If frontend is on production domain, always return false (use cookies)
-      if (hostname.includes('betabase.pro') && protocol === 'https:') {
+      if (hostname.includes('goininvest.com') && protocol === 'https:') {
         return false; // Production frontend - always use cookies, NEVER localStorage
       }
       
@@ -147,7 +147,7 @@ export const isBackendLocalhost = () => {
     const isLocalhostBackend = apiBaseUrl.includes('localhost') || apiBaseUrl.includes('127.0.0.1');
     
     // SECURITY CHECK 3: Double-check - if it contains production domain, it's NOT localhost
-    if (apiBaseUrl.includes('betabase.pro') || apiBaseUrl.includes('api.betabase.pro')) {
+    if (apiBaseUrl.includes('goininvest.com') || apiBaseUrl.includes('api.goininvest.com')) {
       return false; // Production backend - use cookies, NOT localStorage
     }
     
@@ -167,7 +167,7 @@ export const isBackendLocalhost = () => {
 export const getApiUrl = () => {
   // PRIORITY 1: Electron app ALWAYS uses production API (ignore all env vars)
   if (isElectronApp()) {
-    return 'https://api.betabase.pro/api/v1';
+    return 'https://api.goininvest.com/api/v1';
   }
 
   // Check if we're in production (not localhost)
@@ -233,7 +233,7 @@ export const getApiUrl = () => {
 
 /**
  * Get cookie domain for authentication
- * Returns domain with leading dot for subdomain support (e.g., ".betabase.pro")
+ * Returns domain with leading dot for subdomain support (e.g., ".goininvest.com")
  */
 export const getCookieDomain = () => {
   const domain = getFrontendDomain();
@@ -257,12 +257,12 @@ export const getSupportEmail = () => {
   
   // Electron app: Always use production support email
   if (isElectronApp()) {
-    return 'admin@betabase.pro';
+    return 'admin@goininvest.com';
   }
   
   const domain = getFrontendDomain();
-  if (domain.includes('betabase.pro')) {
-    return 'admin@betabase.pro';
+  if (domain.includes('goininvest.com')) {
+    return 'admin@goininvest.com';
   }
   
   return 'support@localhost';

@@ -203,7 +203,7 @@ export const LEGAL_PAGES = [
         title: "8. Your Rights",
         paragraphs: [
           "Subject to applicable law, you may have rights relating to your personal information, including rights to request access to or correction of certain information and to make enquiries regarding its use.",
-          "Requests may be submitted to support@betabase.pro.",
+          "Requests may be submitted to support@goininvest.com.",
         ],
       },
       {

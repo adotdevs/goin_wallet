@@ -16,9 +16,9 @@ const faqData = [
   },
   {
     id: 2,
-    question: "What is Betabase Wallet?",
+    question: "What is Goininvest Wallet?",
     answer:
-      "Betabase Wallet is a secure, easy-to-use platform for managing, sending, and receiving cryptocurrencies. It supports multiple tokens and offers advanced security features to protect your digital assets.",
+      "Goininvest Wallet is a secure, easy-to-use platform for managing, sending, and receiving cryptocurrencies. It supports multiple tokens and offers advanced security features to protect your digital assets.",
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ const faqData = [
   },
   {
     id: 4,
-    question: "Is my crypto safe in Betabase Wallet?",
+    question: "Is my crypto safe in Goininvest Wallet?",
     answer:
       "Yes, your crypto is protected with top-level encryption, multi-layer authentication, and cold storage solutions, ensuring maximum security for your digital assets.",
   },
@@ -36,19 +36,19 @@ const faqData = [
     id: 5,
     question: "What crypto is supported?",
     answer:
-      "Betabase Wallet supports a wide variety of cryptocurrencies, including Bitcoin, Ethereum, and many popular altcoins. Check our supported tokens list for the full range of assets you can store and manage.",
+      "Goininvest Wallet supports a wide variety of cryptocurrencies, including Bitcoin, Ethereum, and many popular altcoins. Check our supported tokens list for the full range of assets you can store and manage.",
   },
   {
     id: 6,
-    question: "Can I stake my crypto in Betabase Wallet?",
+    question: "Can I stake my crypto in Goininvest Wallet?",
     answer:
-      "Yes, Betabase Wallet offers a simple staking option that allows you to earn rewards by staking your tokens directly within the app. Just choose your desired crypto, and start staking to maximize your returns.",
+      "Yes, Goininvest Wallet offers a simple staking option that allows you to earn rewards by staking your tokens directly within the app. Just choose your desired crypto, and start staking to maximize your returns.",
   },
   {
     id: 7,
-    question: "Can I connect my bank account or credit card to Betabase Wallet?",
+    question: "Can I connect my bank account or credit card to Goininvest Wallet?",
     answer:
-      "Yes, Betabase Wallet allows you to link your bank account or credit card for easy purchasing and transferring of cryptocurrencies. Enjoy a simple, secure way to fund your wallet and manage your assets.",
+      "Yes, Goininvest Wallet allows you to link your bank account or credit card for easy purchasing and transferring of cryptocurrencies. Enjoy a simple, secure way to fund your wallet and manage your assets.",
   },
 ];
 

@@ -25,7 +25,7 @@ const Menu = ({ hideSectionNav = false, showDashboard = false }) => {
     <LandingMenuWrap active={active || hideSectionNav} solid={hideSectionNav}>
       <LandingMenuContainer>
         <LandingMenuLogoWrap as={Link} to={showDashboard ? "/dashboard" : "/"}>
-          <img src={LogoNew} alt="Betabase Logo"  />
+          <img src={LogoNew} alt="Goininvest Logo"  />
         </LandingMenuLogoWrap>
         {!hideSectionNav && (
           <LandingMenuCenter>

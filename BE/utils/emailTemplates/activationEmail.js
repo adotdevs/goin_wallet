@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const LOGO_CID = "betabase-logo@betabase.pro";
+const LOGO_CID = "goininvest-logo@goininvest.com";
 const LOGO_FILENAME = "logo-blue.png";
 const DEFAULT_STATIC_LOGO = "/static/media/logo-blue.d335fe486a9e05b34898.png";
 
@@ -16,7 +16,7 @@ const getFrontendBaseUrl = () => {
     return baseUrl;
   }
 
-  return "https://www.betabase.pro";
+  return "https://www.goininvest.com";
 };
 
 const getPublicLogoUrl = () => {
@@ -67,7 +67,7 @@ const buildLogoMarkup = (brandName, logoAttachment, publicLogoUrl) => {
 };
 
 const buildActivationEmail = ({ verifyUrl, firstName }) => {
-  const brandName = process.env.WebName || "Betabase";
+  const brandName = process.env.WebName || "Goininvest";
   const safeName = String(firstName || "").trim();
   const greeting = safeName ? `Hi ${safeName},` : "Hi there,";
   const logoAttachment = getLogoAttachment();

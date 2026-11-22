@@ -14,7 +14,7 @@ import appStoreLogo from '../../../../../assets/StoreApp-Store-TypeLight-240x80-
 import apkLogo from '../../../../../assets/Solid-logo-Light-APK-240x80- (1).png';
 import webBrowserLogo from '../../../../../assets/Solid-logo-Light-web-browser-262x80- (3).png';
 
-const WINDOWS_APP_URL = '/downloads/betabase.exe';
+const WINDOWS_APP_URL = '/downloads/goininvest.exe';
 
 export const SECTION_NAV_LINKS = [
   { label: 'Features', id: 'features' },
@@ -110,7 +110,7 @@ const Header = () => (
           </LandingHeaderButtonWrap>
           <AppStoreLogosWrap>
             <AppStoreLogoLink as="a" href={WINDOWS_APP_URL} download target="_blank" rel="noopener noreferrer">
-              <AppStoreLogo src={webBrowserLogo} alt="Download Betabase for Windows" />
+              <AppStoreLogo src={webBrowserLogo} alt="Download Goininvest for Windows" />
             </AppStoreLogoLink>
             <AppStoreLogoLink as={Link} to="/auth/login">
               <AppStoreLogo src={googlePlayLogo} alt="Get it on Google Play" />

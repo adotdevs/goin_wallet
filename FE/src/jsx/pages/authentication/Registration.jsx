@@ -1,34 +1,59 @@
 import React, { useState, useEffect } from "react";
-import { useIsAuthenticated, useAuthUser } from "react-auth-kit";
+import { useIsAuthenticated, useAuthUser, useSignIn } from "react-auth-kit";
 import { registerApi, verifyReferralCodeApi } from "../../../Api/Service";
+import { isBackendLocalhost, isElectronApp } from "../../../config/appConfig";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import GoinLogo from "../kycPortal/GoinLogo";
 import "../kycPortal/kyc-portal.css";
 import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Globe,
-  Lock,
   Eye,
   EyeOff,
-  ArrowRight,
-  Gift,
+  Shield,
+  Zap,
+  TrendingUp,
+  Loader2,
   CheckCircle2,
+  Gift,
 } from "lucide-react";
 
-function Register(props) {
+const NATIONALITIES = [
+  "Afghan", "Albanian", "Algerian", "American", "Andorran", "Angolan", "Argentine", "Armenian", "Australian", "Austrian",
+  "Azerbaijani", "Bahamian", "Bahraini", "Bangladeshi", "Barbadian", "Belarusian", "Belgian", "Belizean", "Beninese", "Bhutanese",
+  "Bolivian", "Bosnian", "Brazilian", "British", "Bruneian", "Bulgarian", "Burkinabe", "Burmese", "Burundian", "Cambodian",
+  "Cameroonian", "Canadian", "Cape Verdean", "Central African", "Chadian", "Chilean", "Chinese", "Colombian", "Comorian", "Congolese",
+  "Costa Rican", "Croatian", "Cuban", "Cypriot", "Czech", "Danish", "Djiboutian", "Dominican", "Dutch", "Ecuadorian",
+  "Egyptian", "Emirati", "Equatorial Guinean", "Eritrean", "Estonian", "Ethiopian", "Fijian", "Filipino", "Finnish", "French",
+  "Gabonese", "Gambian", "Georgian", "German", "Ghanaian", "Greek", "Grenadian", "Guatemalan", "Guinean", "Guyanese",
+  "Haitian", "Honduran", "Hungarian", "Icelandic", "Indian", "Indonesian", "Iranian", "Iraqi", "Irish", "Israeli",
+  "Italian", "Ivorian", "Jamaican", "Japanese", "Jordanian", "Kazakh", "Kenyan", "Kuwaiti", "Kyrgyz", "Laotian",
+  "Latvian", "Lebanese", "Liberian", "Libyan", "Lithuanian", "Luxembourgish", "Macedonian", "Malagasy", "Malawian", "Malaysian",
+  "Maldivian", "Malian", "Maltese", "Mauritanian", "Mauritian", "Mexican", "Moldovan", "Monacan", "Mongolian", "Montenegrin",
+  "Moroccan", "Mozambican", "Namibian", "Nepalese", "New Zealand", "Nicaraguan", "Nigerian", "North Korean", "Norwegian", "Omani",
+  "Pakistani", "Panamanian", "Paraguayan", "Peruvian", "Polish", "Portuguese", "Qatari", "Romanian", "Russian", "Rwandan",
+  "Saudi", "Senegalese", "Serbian", "Singaporean", "Slovak", "Slovenian", "Somali", "South African", "South Korean", "Spanish",
+  "Sri Lankan", "Sudanese", "Surinamese", "Swedish", "Swiss", "Syrian", "Taiwanese", "Tajik", "Tanzanian", "Thai",
+  "Togolese", "Trinidadian", "Tunisian", "Turkish", "Turkmen", "Ugandan", "Ukrainian", "Uruguayan", "Uzbek", "Venezuelan",
+  "Vietnamese", "Yemeni", "Zambian", "Zimbabwean",
+];
+
+const BENEFITS = [
+  { icon: Shield, text: "Bank-grade security" },
+  { icon: Zap, text: "Instant transactions" },
+  { icon: TrendingUp, text: "Real-time market data" },
+];
+
+function Register() {
   const [isloading, setisloading] = useState(false);
   const [errors, setErrors] = useState({});
   const [errorMsg, setErrorMsg] = useState("");
   const isAuthenticated = useIsAuthenticated();
   const authUser = useAuthUser();
+  const signIn = useSignIn();
   const navigate = useNavigate();
-  const [type1, settype1] = useState("password");
-  const [type2, settype2] = useState("password");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [searchParams] = useSearchParams();
 
   const [userData, setUserData] = useState({
@@ -37,6 +62,8 @@ function Register(props) {
     email: "",
     password: "",
     phone: "",
+    dateOfBirth: "",
+    nationality: "",
     note: "",
     address: "",
     city: "",
@@ -56,13 +83,6 @@ function Register(props) {
       document.documentElement.classList.remove("kyc-portal-active");
     };
   }, []);
-
-  const handleTogglePassword = () => {
-    settype1((prev) => (prev === "password" ? "text" : "password"));
-  };
-  const handleTogglePassword1 = () => {
-    settype2((prev) => (prev === "password" ? "text" : "password"));
-  };
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -94,10 +114,9 @@ function Register(props) {
         setReferrerInfo(null);
         setReferralCodeError("Invalid referral code. Please check and try again.");
       }
-    } catch (error) {
+    } catch (_error) {
       setReferrerInfo(null);
       setReferralCodeError("Invalid referral code. Please check and try again.");
-      console.error("Referral code verification error:", error);
     } finally {
       setVerifyingCode(false);
     }
@@ -113,6 +132,7 @@ function Register(props) {
     ) {
       navigate("/admin/dashboard");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -169,7 +189,7 @@ function Register(props) {
       error = true;
     }
     if (userData.password !== userData.cpassword) {
-      errorObj.cpassword = "Password and confirm password doesn't match";
+      errorObj.cpassword = "Passwords do not match";
       error = true;
     }
 
@@ -193,12 +213,14 @@ function Register(props) {
 
     setisloading(true);
     try {
-      let data = {
+      const data = {
         firstName: userData.firstName,
         lastName: userData.lastName,
         email: userData.email,
         password: userData.password,
         phone: userData.phone,
+        dateOfBirth: userData.dateOfBirth,
+        nationality: userData.nationality,
         address: userData.address,
         city: userData.city,
         country: userData.country,
@@ -212,6 +234,59 @@ function Register(props) {
       const updateHeader = await registerApi(data);
 
       if (updateHeader.success) {
+        const tokenValue =
+          typeof updateHeader.token === "string"
+            ? updateHeader.token
+            : updateHeader.token?.token || updateHeader.token;
+
+        // If backend issued an immediate session (e.g. when signup KYC onboarding is enabled)
+        if (tokenValue && updateHeader.user) {
+          const authState = {
+            success: true,
+            token: tokenValue,
+            user: {
+              _id: updateHeader.user._id,
+              address: updateHeader.user.address,
+              city: updateHeader.user.city,
+              country: updateHeader.user.country,
+              email: updateHeader.user.email,
+              kyc: updateHeader.user.kyc,
+              firstName: updateHeader.user.firstName,
+              lastName: updateHeader.user.lastName,
+              note: updateHeader.user.note,
+              phone: updateHeader.user.phone,
+              postalCode: updateHeader.user.postalCode,
+              role: updateHeader.user.role,
+              status: updateHeader.user.status,
+              verified: updateHeader.user.verified,
+              signupKycRequired: updateHeader.user.signupKycRequired,
+              signupKycCompleted: updateHeader.user.signupKycCompleted,
+              permissions: updateHeader.user.permissions || {},
+              adminPermissions: updateHeader.user.adminPermissions || {},
+            },
+          };
+
+          signIn({
+            token: tokenValue,
+            expiresIn: 4317,
+            tokenType: "Bearer",
+            authState,
+            sameSite: false,
+          });
+
+          if (isElectronApp() || isBackendLocalhost()) {
+            localStorage.setItem("jwttoken", tokenValue);
+          }
+
+          toast.dismiss();
+          toast.success(
+            updateHeader.msg ||
+              "Account created! Please complete KYC verification to continue."
+          );
+          navigate(updateHeader.requireSignupKyc ? "/fiscal-profile" : "/dashboard");
+          return;
+        }
+
         toast.dismiss();
         toast.info(updateHeader.msg);
         navigate("/auth/login");
@@ -221,8 +296,8 @@ function Register(props) {
         toast.dismiss();
         toast.error(msg);
       }
-    } catch (error) {
-      const msg = error?.data?.msg || error?.message || "Something went wrong";
+    } catch (err) {
+      const msg = err?.data?.msg || err?.message || "Something went wrong";
       setErrorMsg(msg);
       toast.dismiss();
       toast.error(msg);
@@ -231,334 +306,469 @@ function Register(props) {
     }
   };
 
-  const showPassword = type1 === "text";
-  const showConfirmPassword = type2 === "text";
+  const inputClass =
+    "w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500";
+  const labelClass = "block text-xs font-semibold text-slate-700 mb-1.5";
 
   return (
     <div id="kyc-portal">
-      <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-xl">
-          <div className="flex items-center justify-center">
+      <div className="flex min-h-screen bg-[#F8FAFC] text-slate-900">
+        {/* Left Panel - Branding */}
+        <div className="hidden lg:flex lg:w-1/2 xl:w-[45%] relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900">
+          <div className="absolute inset-0 opacity-10">
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+                backgroundSize: "40px 40px",
+              }}
+            />
+          </div>
+
+          <div className="relative z-10 flex flex-col justify-between p-12 text-white w-full">
             <Link to="/" title="GOin SAS">
-              <GoinLogo height={42} width={168} theme="light" />
+              <GoinLogo height={40} width={160} theme="dark" />
+            </Link>
+
+            <div className="space-y-8 my-auto">
+              <div>
+                <h1 className="mb-4 text-4xl font-extrabold leading-tight xl:text-5xl text-white">
+                  Start your crypto journey today
+                </h1>
+                <p className="text-lg text-blue-100/85">
+                  Join thousands of traders who trust GOin SAS for secure and
+                  seamless cryptocurrency management.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {BENEFITS.map((benefit, index) => {
+                  const Icon = benefit.icon;
+                  return (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm">
+                        <Icon className="h-5 w-5 text-white" />
+                      </div>
+                      <span className="text-lg font-medium text-white">
+                        {benefit.text}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/15">
+              <div className="flex -space-x-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="h-8 w-8 rounded-full border-2 border-white/30 bg-white/25"
+                  />
+                ))}
+              </div>
+              <div>
+                <p className="font-bold text-white">50,000+ users</p>
+                <p className="text-xs text-blue-100/80">Already trading with us</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Panel - Form */}
+        <div className="flex w-full flex-col lg:w-1/2 xl:w-[55%]">
+          {/* Mobile Header */}
+          <div className="flex items-center justify-between border-b border-slate-200 bg-white p-4 lg:hidden">
+            <Link to="/" title="GOin SAS">
+              <GoinLogo height={34} width={136} theme="light" />
+            </Link>
+            <Link
+              to="/auth/login"
+              className="text-sm font-bold text-blue-600 hover:underline"
+            >
+              Sign In
             </Link>
           </div>
 
-          <h2 className="mt-5 text-center text-2xl font-extrabold text-slate-900">
-            Create your account
-          </h2>
-        </div>
+          <div className="flex flex-1 items-start sm:items-center justify-center p-4 sm:p-6 lg:p-10 overflow-y-auto">
+            <div className="w-full max-w-lg space-y-6 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/90 shadow-sm">
+              <div className="text-center lg:text-left">
+                <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 lg:text-3xl">
+                  Create Account
+                </h2>
+                <p className="mt-1.5 text-sm text-slate-500">
+                  Join our secure crypto management platform
+                </p>
+              </div>
 
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
-          <form
-            onSubmit={onSignUp}
-            className="bg-white py-8 px-6 sm:px-8 shadow-card rounded-2xl border border-slate-200/90 space-y-4"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  First Name *
-                </label>
-                <div className="relative">
-                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    name="firstName"
-                    required
-                    value={userData.firstName}
-                    onChange={handleInput}
-                    placeholder="First name"
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+              {errorMsg && (
+                <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs font-semibold text-rose-700">
+                  {errorMsg}
                 </div>
-                {errors.firstName && (
-                  <p className="mt-1 text-xs text-rose-600">{errors.firstName}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Last Name *
-                </label>
-                <div className="relative">
-                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    name="lastName"
-                    required
-                    value={userData.lastName}
-                    onChange={handleInput}
-                    placeholder="Last name"
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                {errors.lastName && (
-                  <p className="mt-1 text-xs text-rose-600">{errors.lastName}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Email Address *
-                </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={userData.email}
-                    onChange={handleInput}
-                    placeholder="Enter email address"
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                {errors.email && (
-                  <p className="mt-1 text-xs text-rose-600">{errors.email}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Phone Number *
-                </label>
-                <div className="relative">
-                  <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    name="phone"
-                    required
-                    value={userData.phone}
-                    onChange={handleInput}
-                    placeholder="Enter phone number"
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                {errors.phone && (
-                  <p className="mt-1 text-xs text-rose-600">{errors.phone}</p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Street Address *
-              </label>
-              <div className="relative">
-                <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  name="address"
-                  required
-                  value={userData.address}
-                  onChange={handleInput}
-                  placeholder="Enter street address"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              {errors.address && (
-                <p className="mt-1 text-xs text-rose-600">{errors.address}</p>
               )}
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  City *
-                </label>
-                <input
-                  name="city"
-                  required
-                  value={userData.city}
-                  onChange={handleInput}
-                  placeholder="City"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {errors.city && (
-                  <p className="mt-1 text-xs text-rose-600">{errors.city}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Country *
-                </label>
-                <div className="relative">
-                  <Globe className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    name="country"
-                    required
-                    value={userData.country}
-                    onChange={handleInput}
-                    placeholder="Country"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                {errors.country && (
-                  <p className="mt-1 text-xs text-rose-600">{errors.country}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Postal Code *
-                </label>
-                <input
-                  name="postalCode"
-                  required
-                  value={userData.postalCode}
-                  onChange={handleInput}
-                  placeholder="Postal code"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {errors.postalCode && (
-                  <p className="mt-1 text-xs text-rose-600">{errors.postalCode}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Password *
-                </label>
-                <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type={type1}
-                    name="password"
-                    required
-                    value={userData.password}
-                    onChange={handleInput}
-                    placeholder="Min. 8 characters"
-                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleTogglePassword}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
+              <form onSubmit={onSignUp} className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="firstName" className={labelClass}>
+                      First Name *
+                    </label>
+                    <input
+                      id="firstName"
+                      name="firstName"
+                      placeholder="John"
+                      value={userData.firstName}
+                      onChange={handleInput}
+                      required
+                      disabled={isloading}
+                      className={inputClass}
+                    />
+                    {errors.firstName && (
+                      <p className="mt-1 text-xs text-rose-600">{errors.firstName}</p>
                     )}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="mt-1 text-xs text-rose-600">{errors.password}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Confirm Password *
-                </label>
-                <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type={type2}
-                    name="cpassword"
-                    required
-                    value={userData.cpassword}
-                    onChange={handleInput}
-                    placeholder="Repeat password"
-                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleTogglePassword1}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <label htmlFor="lastName" className={labelClass}>
+                      Last Name *
+                    </label>
+                    <input
+                      id="lastName"
+                      name="lastName"
+                      placeholder="Doe"
+                      value={userData.lastName}
+                      onChange={handleInput}
+                      required
+                      disabled={isloading}
+                      className={inputClass}
+                    />
+                    {errors.lastName && (
+                      <p className="mt-1 text-xs text-rose-600">{errors.lastName}</p>
                     )}
-                  </button>
+                  </div>
                 </div>
-                {errors.cpassword && (
-                  <p className="mt-1 text-xs text-rose-600">{errors.cpassword}</p>
-                )}
-              </div>
-            </div>
 
-            {/* Optional Referral Code (preserves Wallet MLM referral support) */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Referral Code (Optional)
-              </label>
-              <div className="relative">
-                <Gift className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  name="referralCode"
-                  value={userData.referralCode}
-                  onChange={(e) => {
-                    const code = e.target.value.toUpperCase();
-                    setUserData((prev) => ({ ...prev, referralCode: code }));
-                    if (code.length === 0) {
-                      setReferrerInfo(null);
-                      setReferralCodeError("");
-                    } else if (code.length >= 8) {
-                      verifyReferralCode(code);
-                    } else {
-                      setReferrerInfo(null);
-                      setReferralCodeError("");
-                    }
-                  }}
-                  placeholder="Enter referral code if you have one"
-                  className="w-full pl-10 pr-20 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {verifyingCode ? (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-slate-400">
-                    Checking...
-                  </span>
-                ) : referrerInfo ? (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    Valid
-                  </span>
-                ) : null}
-              </div>
-              {referralCodeError ? (
-                <p className="mt-1 text-xs text-rose-600">
-                  {referralCodeError} Remove it or correct it to continue.
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="email" className={labelClass}>
+                      Email Address *
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={userData.email}
+                      onChange={handleInput}
+                      required
+                      disabled={isloading}
+                      className={inputClass}
+                    />
+                    {errors.email && (
+                      <p className="mt-1 text-xs text-rose-600">{errors.email}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label htmlFor="phone" className={labelClass}>
+                      Phone Number *
+                    </label>
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="442012345678"
+                      value={userData.phone}
+                      onChange={handleInput}
+                      required
+                      disabled={isloading}
+                      className={inputClass}
+                    />
+                    {errors.phone && (
+                      <p className="mt-1 text-xs text-rose-600">{errors.phone}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="dateOfBirth" className={labelClass}>
+                      Date of Birth
+                    </label>
+                    <input
+                      id="dateOfBirth"
+                      name="dateOfBirth"
+                      type="date"
+                      value={userData.dateOfBirth}
+                      onChange={handleInput}
+                      disabled={isloading}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nationality" className={labelClass}>
+                      Nationality
+                    </label>
+                    <select
+                      id="nationality"
+                      name="nationality"
+                      value={userData.nationality}
+                      onChange={handleInput}
+                      disabled={isloading}
+                      className={inputClass}
+                    >
+                      <option value="">Select</option>
+                      {NATIONALITIES.map((nat) => (
+                        <option key={nat} value={nat}>
+                          {nat}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="address" className={labelClass}>
+                    Address *
+                  </label>
+                  <input
+                    id="address"
+                    name="address"
+                    placeholder="123 Main Street"
+                    value={userData.address}
+                    onChange={handleInput}
+                    required
+                    disabled={isloading}
+                    className={inputClass}
+                  />
+                  {errors.address && (
+                    <p className="mt-1 text-xs text-rose-600">{errors.address}</p>
+                  )}
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div>
+                    <label htmlFor="city" className={labelClass}>
+                      City *
+                    </label>
+                    <input
+                      id="city"
+                      name="city"
+                      placeholder="London"
+                      value={userData.city}
+                      onChange={handleInput}
+                      required
+                      disabled={isloading}
+                      className={inputClass}
+                    />
+                    {errors.city && (
+                      <p className="mt-1 text-xs text-rose-600">{errors.city}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label htmlFor="postalCode" className={labelClass}>
+                      Postal Code *
+                    </label>
+                    <input
+                      id="postalCode"
+                      name="postalCode"
+                      placeholder="SW1A 1AA"
+                      value={userData.postalCode}
+                      onChange={handleInput}
+                      required
+                      disabled={isloading}
+                      className={inputClass}
+                    />
+                    {errors.postalCode && (
+                      <p className="mt-1 text-xs text-rose-600">{errors.postalCode}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label htmlFor="country" className={labelClass}>
+                      Country *
+                    </label>
+                    <input
+                      id="country"
+                      name="country"
+                      placeholder="United Kingdom"
+                      value={userData.country}
+                      onChange={handleInput}
+                      required
+                      disabled={isloading}
+                      className={inputClass}
+                    />
+                    {errors.country && (
+                      <p className="mt-1 text-xs text-rose-600">{errors.country}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="password" className={labelClass}>
+                      Password *
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={userData.password}
+                        onChange={handleInput}
+                        required
+                        disabled={isloading}
+                        className={`${inputClass} pr-10`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((s) => !s)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                    <p className="mt-1 text-[11px] text-slate-400">
+                      Minimum 8 characters
+                    </p>
+                    {errors.password && (
+                      <p className="mt-1 text-xs text-rose-600">{errors.password}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label htmlFor="cpassword" className={labelClass}>
+                      Confirm Password *
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="cpassword"
+                        name="cpassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={userData.cpassword}
+                        onChange={handleInput}
+                        required
+                        disabled={isloading}
+                        className={`${inputClass} pr-10`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword((s) => !s)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                    {errors.cpassword && (
+                      <p className="mt-1 text-xs text-rose-600">{errors.cpassword}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Referral Code (Optional) */}
+                <div>
+                  <label htmlFor="referralCode" className={labelClass}>
+                    Referral Code (Optional)
+                  </label>
+                  <div className="relative">
+                    <Gift className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      id="referralCode"
+                      name="referralCode"
+                      value={userData.referralCode}
+                      onChange={(e) => {
+                        const val = e.target.value.toUpperCase();
+                        setUserData((prev) => ({ ...prev, referralCode: val }));
+                        verifyReferralCode(val);
+                      }}
+                      placeholder="Enter 8-character referral code"
+                      maxLength={8}
+                      disabled={isloading}
+                      className={`${inputClass} pl-10 uppercase`}
+                    />
+                  </div>
+                  {verifyingCode && (
+                    <p className="mt-1 text-xs text-slate-500">
+                      Verifying referral code...
+                    </p>
+                  )}
+                  {referrerInfo && !verifyingCode && (
+                    <p className="mt-1 text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      Referred by {referrerInfo.name}
+                    </p>
+                  )}
+                  {referralCodeError && !verifyingCode && (
+                    <p className="mt-1 text-xs text-rose-600">{referralCodeError}</p>
+                  )}
+                </div>
+
+                <p className="text-xs text-slate-500">
+                  By creating an account, you agree to our{" "}
+                  <Link
+                    to="/terms-of-service"
+                    className="text-blue-600 font-semibold hover:underline"
+                  >
+                    Terms of Service
+                  </Link>{" "}
+                  and{" "}
+                  <Link
+                    to="/privacy-policy"
+                    className="text-blue-600 font-semibold hover:underline"
+                  >
+                    Privacy Policy
+                  </Link>
+                  .
                 </p>
-              ) : referrerInfo ? (
-                <p className="mt-1 text-xs font-medium text-emerald-600">
-                  Referred by: {referrerInfo.name}
-                </p>
-              ) : null}
+
+                <button
+                  type="submit"
+                  disabled={isloading}
+                  className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-bold text-base flex items-center justify-center gap-2 shadow-sm transition-all"
+                >
+                  {isloading ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <span>Creating account...</span>
+                    </>
+                  ) : (
+                    <span>Create Account</span>
+                  )}
+                </button>
+              </form>
+
+              {/* Security Note */}
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600">
+                  <CheckCircle2 className="h-5 w-5" />
+                </div>
+                <div className="text-xs">
+                  <p className="font-bold text-slate-900">Your data is protected</p>
+                  <p className="text-slate-500">
+                    256-bit SSL encryption on all connections
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-center text-sm text-slate-500">
+                Already have an account?{" "}
+                <Link
+                  to="/auth/login"
+                  className="font-bold text-blue-600 hover:underline"
+                >
+                  Sign In
+                </Link>
+              </p>
             </div>
-
-            {(errorMsg || props.errorMessage) && (
-              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700">
-                {errorMsg || props.errorMessage}
-              </div>
-            )}
-
-            {props.successMessage && (
-              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-medium text-emerald-700">
-                {props.successMessage}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={isloading}
-              className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20 transition-all"
-            >
-              <span>
-                {isloading ? "Creating Account..." : "Create Account"}
-              </span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            <p className="text-center text-xs text-slate-500 pt-1">
-              Already have an account?{" "}
-              <Link
-                to="/auth/login"
-                className="font-bold text-blue-600 hover:text-blue-700"
-              >
-                Sign in here
-              </Link>
-            </p>
-          </form>
+          </div>
         </div>
       </div>
     </div>

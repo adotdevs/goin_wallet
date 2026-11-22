@@ -55,16 +55,16 @@ const Footer = () => (
 
       <FooterInfo>
         <FooterInfoBlock style={{ flexDirection: 'column', alignItems: 'flex-start', width: "30%" }}>
-          <div><img src={LogoNew} alt="betabase Logo" style={{ height: '80px' }} /> </div>
+          <div><img src={LogoNew} alt="goininvest Logo" style={{ height: '80px' }} /> </div>
           <FooterInfoBlock style={{ paddingLeft: "10px", justifyContent: "start" }}>
-            <p><a href="mailto:support@betabase.pro">support@betabase.pro</a></p>
+            <p><a href="mailto:support@goininvest.com">support@goininvest.com</a></p>
           </FooterInfoBlock>
           <SocialLinks>
             <a
               href="https://www.facebook.com/profile.php?id=61593554224020"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Follow Betabase on Facebook"
+              aria-label="Follow Goininvest on Facebook"
               title="Facebook"
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -86,7 +86,7 @@ const Footer = () => (
       </FooterInfo>
 
       <CaptionBlock>
-        <p>Copyright ©2025 Betabase. All rights reserved.</p>
+        <p>Copyright ©2025 Goininvest. All rights reserved.</p>
       </CaptionBlock>
     </LandingContainer>
   </LandingFooter>

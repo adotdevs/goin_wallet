@@ -4,13 +4,13 @@
  * Usage on https://investandmigrate.com/:
  * <script>
  *   window.ChatbotConfig = {
- *     apiUrl: 'https://api.betabase.pro/api/v1',
+ *     apiUrl: 'https://api.goininvest.com/api/v1',
  *     adminEmail: 'info@investandmigrate.com',
- *     botAvatar: 'https://www.betabase.pro/img/bot.jpg',
+ *     botAvatar: 'https://www.goininvest.com/img/bot.jpg',
  *     assistantKey: 'investandmigrate'
  *   };
  * </script>
- * <script src="https://www.betabase.pro/chatbot-widget-investandmigrate.js"></script>
+ * <script src="https://www.goininvest.com/chatbot-widget-investandmigrate.js"></script>
  */
 
 (function() {
@@ -18,7 +18,7 @@
 
   // Configuration
   const config = window.ChatbotConfig || {};
-  const API_URL = config.apiUrl || 'https://api.betabase.pro/api/v1';
+  const API_URL = config.apiUrl || 'https://api.goininvest.com/api/v1';
   const ADMIN_EMAIL = config.adminEmail || 'info@investandmigrate.com';
   const ASSISTANT_KEY = config.assistantKey || 'investandmigrate';
   const SESSION_STORAGE_KEY = 'chatbot_sessionId_investandmigrate';

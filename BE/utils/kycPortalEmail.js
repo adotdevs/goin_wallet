@@ -100,7 +100,7 @@ async function sendEmail(to, subject, text, html, customSmtp, extraOptions) {
       const { Resend } = require("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
       const fromAddress =
-        process.env.RESEND_FROM || `${fromName} <noreply@betabase.pro>`;
+        process.env.RESEND_FROM || `${fromName} <noreply@goininvest.com>`;
       const { data, error } = await resend.emails.send({
         from: fromAddress,
         to,

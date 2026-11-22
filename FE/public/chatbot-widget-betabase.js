@@ -1,5 +1,5 @@
 /**
- * Betabase Chatbot Widget - Standalone Script
+ * Goininvest Chatbot Widget - Standalone Script
  * 
  * Usage:
  * <script src="https://your-domain.com/chatbot-widget.js"></script>
@@ -7,8 +7,8 @@
  * Or with configuration:
  * <script>
  *   window.ChatbotConfig = {
- *     apiUrl: 'https://api.betabase.pro/api/v1',
- *     adminEmail: 'admin@betabase.pro',
+ *     apiUrl: 'https://api.goininvest.com/api/v1',
+ *     adminEmail: 'admin@goininvest.com',
  *     botAvatar: 'https://your-domain.com/bot.jpg'
  *   };
  * </script>
@@ -20,8 +20,8 @@
 
   // Configuration
   const config = window.ChatbotConfig || {};
-  const API_URL = config.apiUrl || 'https://api.betabase.pro/api/v1';
-  const ADMIN_EMAIL = config.adminEmail || 'admin@betabase.pro';
+  const API_URL = config.apiUrl || 'https://api.goininvest.com/api/v1';
+  const ADMIN_EMAIL = config.adminEmail || 'admin@goininvest.com';
   // Get the script's directory to construct the bot avatar path
   const scriptTag = document.currentScript || document.querySelector('script[src*="chatbot-widget.js"]');
   const scriptSrc = scriptTag ? scriptTag.src : '';
@@ -1016,7 +1016,7 @@
   // Initialize when dependencies are loaded
   loadDependencies(function() {
     const root = document.createElement('div');
-    root.id = 'betabase-chatbot-root';
+    root.id = 'goininvest-chatbot-root';
     document.body.appendChild(root);
     
     const ReactDOM = window.ReactDOM;

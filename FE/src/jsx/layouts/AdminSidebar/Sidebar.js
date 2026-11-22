@@ -1,15 +1,17 @@
-import logo_300x57_1 from "../../../assets/newlogo/logo-blue.png";
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import Log from "../../../assets/newlogo/logo-blue.png";
+import Log from "../../../assets/images/img/log.jpg";
 import { useAuthUser, useSignOut } from "react-auth-kit";
 import { logoutApi, addUserByEmailApi, signleUsersApi } from "../../../Api/Service";
 import { toast } from "react-toastify";
+import GoinLogo from "../../pages/kycPortal/GoinLogo";
+import { useAdminTheme } from "../../Admin/theme/adminTheme";
 import styles from './Sidebar.module.css';
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 const SideBar = (props) => {
   let signOut = useSignOut();
+  const adminTheme = useAdminTheme();
 
   let authUser = useAuthUser();
   const [isLoading, setisLoading] = useState(false);
@@ -182,7 +184,11 @@ const SideBar = (props) => {
               className="router-link-active router-link-exact-active flex items-center justify-center"
               aria-current="page"
             >
-              <img className={styles.logo} src={logo_300x57_1} alt="Betabase" />
+              <GoinLogo
+                theme={adminTheme?.resolvedTheme === "light" ? "light" : "dark"}
+                height={32}
+                width={128}
+              />
               {/* <svg
               width="224"
               height="24"

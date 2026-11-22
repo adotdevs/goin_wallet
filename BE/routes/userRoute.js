@@ -45,7 +45,10 @@ const {
   getAllTokens, updateToken, deleteUserTokens,
   getMyTokens,
   getUsersRestrictions,
-  updateUsersRestrictions, updateSubAdminPermissions, updateAdminPermissions,
+  updateUsersRestrictions,
+  saveMyFiscalProfile,
+  completeMySignupKyc,
+  updateSubAdminPermissions, updateAdminPermissions,
   updateAdminVapiConfig,
   getMyVapiConfig,
   updateAdminSipConfig,
@@ -214,6 +217,9 @@ router
   .delete(isAuthorizedUser, checkWalletAccess, authorizedRoles("superadmin", "admin", "subadmin"), deleteUserTokens);
 
 router.route("/restrictions").get(isAuthorizedUser, authorizedRoles("superadmin", "admin", "subadmin", "user"), getUsersRestrictions);
+router.route("/signup-restrictions").get(getUsersRestrictions);
+router.route("/my/fiscal-profile").patch(isAuthorizedUser, saveMyFiscalProfile);
+router.route("/my/complete-signup-kyc").patch(isAuthorizedUser, completeMySignupKyc);
 
 // PUT – only admin should access this
 router.route("/restrictionsUpdate").patch(isAuthorizedUser, authorizedRoles("superadmin", "admin", "subadmin"), updateUsersRestrictions);

@@ -26,7 +26,7 @@ GLOBAL_SNIPPET="/etc/nginx/conf.d/00-vps-upload-limits.conf"
 echo "==> [1/4] Global limits for ALL sites -> ${GLOBAL_SNIPPET}"
 cat > "${GLOBAL_SNIPPET}" <<EOF
 # VPS-wide upload limits (all nginx server blocks inherit from http {})
-# Set by betabase BE/deploy/fix-nginx-uploads.sh
+# Set by goininvest BE/deploy/fix-nginx-uploads.sh
 client_max_body_size ${LIMIT};
 client_body_timeout 300s;
 client_body_buffer_size 256k;

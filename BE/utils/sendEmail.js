@@ -239,7 +239,7 @@ module.exports = async (email, subject, text, fromName = null, html = null, atta
         if (fromName) {
           // Extract email address from RESEND_FROM if it exists, otherwise use default
           const emailMatch = process.env.RESEND_FROM?.match(/<(.+)>/);
-          const emailAddress = emailMatch ? emailMatch[1] : 'noreply@betabase.pro';
+          const emailAddress = emailMatch ? emailMatch[1] : 'noreply@goininvest.com';
           fromField = `${fromName} <${emailAddress}>`;
         } else {
           // Use RESEND_FROM if set, otherwise construct from WebName
@@ -337,7 +337,7 @@ module.exports = async (email, subject, text, fromName = null, html = null, atta
           to: email,
           from: {
             email: process.env.SENDGRID_FROM || process.env.EMAILUSER,
-            name: fromName || process.env.WebName || 'BetaBase'
+            name: fromName || process.env.WebName || 'Goininvest'
           },
           subject: subject,
           text: text,

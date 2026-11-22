@@ -33,9 +33,9 @@ const LegalPage = () => {
   useEffect(() => {
     if (!page) return;
     window.scrollTo(0, 0);
-    document.title = `${page.title} | Betabase`;
+    document.title = `${page.title} | GOin SAS`;
     return () => {
-      document.title = "Betabase | Be early to the future of finance";
+      document.title = "GOin SAS | Digital Asset & Wealth Platform";
     };
   }, [page]);
 

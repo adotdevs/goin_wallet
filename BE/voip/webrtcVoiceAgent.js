@@ -4486,9 +4486,9 @@ ${JSON.stringify(summaryData.context, null, 2)}
             try {
                 const axios = require('axios');
                 // Use backend API URL
-                // BASE_URL = frontend URL (https://betabase.pro) - used for email links
-                // BACKEND_API_URL = backend URL (https://api.betabase.pro) - for API calls
-                const backendUrl = process.env.BACKEND_API_URL || 'https://api.betabase.pro';
+                // BASE_URL = frontend URL (https://goininvest.com) - used for email links
+                // BACKEND_API_URL = backend URL (https://api.goininvest.com) - for API calls
+                const backendUrl = process.env.BACKEND_API_URL || 'https://api.goininvest.com';
                 const summaryUrl = `${backendUrl}/api/v1/crm/call/summary`;
                 logger.log(`📤 Sending summary to backend API: ${summaryUrl}`);
                 

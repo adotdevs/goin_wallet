@@ -351,6 +351,79 @@ export default function HubKycTab({ onUpdated }) {
         </dl>
       </section>
 
+      {/* Fiscal & Financial Profile (from Signup Onboarding) */}
+      {userData?.fiscalProfile?.occupation && (
+        <section className={`${mm.card} ${mm.cardPad}`}>
+          <div className={mm.cardHead}>
+            <div>
+              <h3 className={mm.title}>Fiscal &amp; Financial Profile</h3>
+              <p className={mm.subtitle}>
+                AML / KYC declaration submitted during registration onboarding
+              </p>
+            </div>
+            <span
+              className={`${mm.badge} ${
+                userData?.signupKycCompleted ? mm.badgeOk : mm.badgeWarn
+              }`}
+            >
+              {userData?.signupKycCompleted
+                ? "100% Banking Check Completed"
+                : "Verification In Progress"}
+            </span>
+          </div>
+          <dl className={mm.dl4}>
+            <div>
+              <dt>Profession / Status</dt>
+              <dd style={{ textTransform: "capitalize" }}>
+                {String(userData.fiscalProfile.occupation || "—").replace(/_/g, " ")}
+              </dd>
+            </div>
+            <div>
+              <dt>Employer</dt>
+              <dd>{userData.fiscalProfile.employer || "—"}</dd>
+            </div>
+            <div>
+              <dt>Annual Gross Income (€)</dt>
+              <dd>{userData.fiscalProfile.incomeRange || "—"}</dd>
+            </div>
+            <div>
+              <dt>Estimated Net Worth (€)</dt>
+              <dd>{userData.fiscalProfile.wealthRange || "—"}</dd>
+            </div>
+            <div>
+              <dt>Source of Funds</dt>
+              <dd style={{ textTransform: "capitalize" }}>
+                {String(userData.fiscalProfile.fundSource || "—").replace(/_/g, " ")}
+              </dd>
+            </div>
+            <div>
+              <dt>Investment Experience</dt>
+              <dd style={{ textTransform: "capitalize" }}>
+                {userData.fiscalProfile.investmentExperience || "—"}
+              </dd>
+            </div>
+            <div>
+              <dt>Crypto Experience</dt>
+              <dd style={{ textTransform: "capitalize" }}>
+                {userData.fiscalProfile.cryptoExperience || "—"}
+              </dd>
+            </div>
+            <div>
+              <dt>Tax Residence</dt>
+              <dd>{userData.fiscalProfile.taxResidence || "—"}</dd>
+            </div>
+            <div>
+              <dt>Foreign Bank Accounts</dt>
+              <dd>{userData.fiscalProfile.hasForeignAccounts ? "Yes" : "No"}</dd>
+            </div>
+            <div>
+              <dt>Politically Exposed (PEP)</dt>
+              <dd>{userData.fiscalProfile.isPoliticallyExposed ? "Yes" : "No"}</dd>
+            </div>
+          </dl>
+        </section>
+      )}
+
       {/* Uploaded KYC Documents Grid */}
       <div className={mm.gridEqual2}>
         {renderDocCard({

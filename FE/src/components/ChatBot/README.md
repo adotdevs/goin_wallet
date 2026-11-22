@@ -84,7 +84,7 @@ The chatbot endpoint requires user authentication:
 
 ## Styling
 
-The component uses styled-components and matches the Betabase design system:
+The component uses styled-components and matches the Goininvest design system:
 - Gradient buttons matching the landing page
 - Professional chat interface
 - Responsive design for mobile devices

@@ -668,6 +668,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   margin-left: auto !important;
   margin-right: auto !important;
 }
+#kyc-portal .my-2{
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
 #kyc-portal .my-5{
   margin-top: 1.25rem !important;
   margin-bottom: 1.25rem !important;
@@ -703,11 +707,17 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .mb-6{
   margin-bottom: 1.5rem !important;
 }
+#kyc-portal .mb-8{
+  margin-bottom: 2rem !important;
+}
 #kyc-portal .ml-1{
   margin-left: 0.25rem !important;
 }
 #kyc-portal .ml-2{
   margin-left: 0.5rem !important;
+}
+#kyc-portal .ml-auto{
+  margin-left: auto !important;
 }
 #kyc-portal .mt-0\.5{
   margin-top: 0.125rem !important;
@@ -777,6 +787,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .h-0\.5{
   height: 0.125rem !important;
+}
+#kyc-portal .h-1\.5{
+  height: 0.375rem !important;
 }
 #kyc-portal .h-10{
   height: 2.5rem !important;
@@ -868,6 +881,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .max-h-36{
   max-height: 9rem !important;
 }
+#kyc-portal .max-h-52{
+  max-height: 13rem !important;
+}
 #kyc-portal .max-h-80{
   max-height: 20rem !important;
 }
@@ -921,6 +937,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .w-2\/3{
   width: 66.666667% !important;
+}
+#kyc-portal .w-20{
+  width: 5rem !important;
 }
 #kyc-portal .w-24{
   width: 6rem !important;
@@ -978,6 +997,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .max-w-3xl{
   max-width: 48rem !important;
+}
+#kyc-portal .max-w-5xl{
+  max-width: 64rem !important;
 }
 #kyc-portal .max-w-6xl{
   max-width: 72rem !important;
@@ -1037,9 +1059,27 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-translate-y: -50% !important;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
 }
+#kyc-portal .translate-y-0{
+  --tw-translate-y: 0px !important;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
+}
+#kyc-portal .translate-y-4{
+  --tw-translate-y: 1rem !important;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
+}
+#kyc-portal .scale-100{
+  --tw-scale-x: 1 !important;
+  --tw-scale-y: 1 !important;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
+}
 #kyc-portal .scale-110{
   --tw-scale-x: 1.1 !important;
   --tw-scale-y: 1.1 !important;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
+}
+#kyc-portal .scale-95{
+  --tw-scale-x: .95 !important;
+  --tw-scale-y: .95 !important;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
 }
 #kyc-portal .transform{
@@ -1157,6 +1197,11 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .gap-y-1{
   row-gap: 0.25rem !important;
 }
+#kyc-portal .-space-x-2 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-x-reverse: 0 !important;
+  margin-right: calc(-0.5rem * var(--tw-space-x-reverse)) !important;
+  margin-left: calc(-0.5rem * calc(1 - var(--tw-space-x-reverse))) !important;
+}
 #kyc-portal .space-y-0\.5 > :not([hidden]) ~ :not([hidden]){
   --tw-space-y-reverse: 0 !important;
   margin-top: calc(0.125rem * calc(1 - var(--tw-space-y-reverse))) !important;
@@ -1206,6 +1251,11 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-space-y-reverse: 0 !important;
   margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse))) !important;
   margin-bottom: calc(1.5rem * var(--tw-space-y-reverse)) !important;
+}
+#kyc-portal .space-y-8 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0 !important;
+  margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse))) !important;
+  margin-bottom: calc(2rem * var(--tw-space-y-reverse)) !important;
 }
 #kyc-portal .divide-y > :not([hidden]) ~ :not([hidden]){
   --tw-divide-y-reverse: 0 !important;
@@ -1294,6 +1344,12 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-border-opacity: 1 !important;
   border-color: rgb(253 230 138 / var(--tw-border-opacity, 1)) !important;
 }
+#kyc-portal .border-amber-500\/25{
+  border-color: rgb(245 158 11 / 0.25) !important;
+}
+#kyc-portal .border-amber-500\/30{
+  border-color: rgb(245 158 11 / 0.3) !important;
+}
 #kyc-portal .border-blue-100{
   --tw-border-opacity: 1 !important;
   border-color: rgb(219 234 254 / var(--tw-border-opacity, 1)) !important;
@@ -1342,6 +1398,12 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-border-opacity: 1 !important;
   border-color: rgb(52 211 153 / var(--tw-border-opacity, 1)) !important;
 }
+#kyc-portal .border-emerald-500\/30{
+  border-color: rgb(16 185 129 / 0.3) !important;
+}
+#kyc-portal .border-emerald-500\/50{
+  border-color: rgb(16 185 129 / 0.5) !important;
+}
 #kyc-portal .border-indigo-100{
   --tw-border-opacity: 1 !important;
   border-color: rgb(224 231 255 / var(--tw-border-opacity, 1)) !important;
@@ -1373,6 +1435,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .border-slate-200{
   --tw-border-opacity: 1 !important;
   border-color: rgb(226 232 240 / var(--tw-border-opacity, 1)) !important;
+}
+#kyc-portal .border-slate-200\/60{
+  border-color: rgb(226 232 240 / 0.6) !important;
 }
 #kyc-portal .border-slate-200\/70{
   border-color: rgb(226 232 240 / 0.7) !important;
@@ -1438,6 +1503,12 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-bg-opacity: 1 !important;
   background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1)) !important;
 }
+#kyc-portal .bg-amber-500\/10{
+  background-color: rgb(245 158 11 / 0.1) !important;
+}
+#kyc-portal .bg-amber-500\/20{
+  background-color: rgb(245 158 11 / 0.2) !important;
+}
 #kyc-portal .bg-amber-600{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(217 119 6 / var(--tw-bg-opacity, 1)) !important;
@@ -1483,6 +1554,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-bg-opacity: 1 !important;
   background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1)) !important;
 }
+#kyc-portal .bg-blue-600\/10{
+  background-color: rgb(37 99 235 / 0.1) !important;
+}
 #kyc-portal .bg-emerald-100{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(209 250 229 / var(--tw-bg-opacity, 1)) !important;
@@ -1505,9 +1579,21 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .bg-emerald-50\/70{
   background-color: rgb(236 253 245 / 0.7) !important;
 }
+#kyc-portal .bg-emerald-50\/90{
+  background-color: rgb(236 253 245 / 0.9) !important;
+}
 #kyc-portal .bg-emerald-500{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(16 185 129 / var(--tw-bg-opacity, 1)) !important;
+}
+#kyc-portal .bg-emerald-500\/10{
+  background-color: rgb(16 185 129 / 0.1) !important;
+}
+#kyc-portal .bg-emerald-500\/15{
+  background-color: rgb(16 185 129 / 0.15) !important;
+}
+#kyc-portal .bg-emerald-500\/20{
+  background-color: rgb(16 185 129 / 0.2) !important;
 }
 #kyc-portal .bg-emerald-600{
   --tw-bg-opacity: 1 !important;
@@ -1572,12 +1658,18 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-bg-opacity: 1 !important;
   background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1)) !important;
 }
+#kyc-portal .bg-slate-100\/70{
+  background-color: rgb(241 245 249 / 0.7) !important;
+}
 #kyc-portal .bg-slate-100\/80{
   background-color: rgb(241 245 249 / 0.8) !important;
 }
 #kyc-portal .bg-slate-200{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1)) !important;
+}
+#kyc-portal .bg-slate-200\/80{
+  background-color: rgb(226 232 240 / 0.8) !important;
 }
 #kyc-portal .bg-slate-300{
   --tw-bg-opacity: 1 !important;
@@ -1642,8 +1734,17 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .bg-white\/20{
   background-color: rgb(255 255 255 / 0.2) !important;
 }
+#kyc-portal .bg-white\/25{
+  background-color: rgb(255 255 255 / 0.25) !important;
+}
+#kyc-portal .bg-white\/85{
+  background-color: rgb(255 255 255 / 0.85) !important;
+}
 #kyc-portal .bg-white\/95{
   background-color: rgb(255 255 255 / 0.95) !important;
+}
+#kyc-portal .bg-gradient-to-b{
+  background-image: linear-gradient(to bottom, var(--tw-gradient-stops)) !important;
 }
 #kyc-portal .bg-gradient-to-br{
   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)) !important;
@@ -1661,9 +1762,19 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-gradient-to: rgb(37 99 235 / 0) var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
 }
+#kyc-portal .from-blue-700{
+  --tw-gradient-from: #1d4ed8 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(29 78 216 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
 #kyc-portal .from-emerald-600{
   --tw-gradient-from: #059669 var(--tw-gradient-from-position) !important;
   --tw-gradient-to: rgb(5 150 105 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+#kyc-portal .from-slate-50{
+  --tw-gradient-from: #f8fafc var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(248 250 252 / 0) var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
 }
 #kyc-portal .from-slate-900{
@@ -1684,6 +1795,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-gradient-to: rgb(29 78 216 / 0)  var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-from), #1d4ed8 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
 }
+#kyc-portal .via-blue-800{
+  --tw-gradient-to: rgb(30 64 175 / 0)  var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #1e40af var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
 #kyc-portal .via-indigo-500{
   --tw-gradient-to: rgb(99 102 241 / 0)  var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-from), #6366f1 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
@@ -1699,6 +1814,12 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .to-indigo-700{
   --tw-gradient-to: #4338ca var(--tw-gradient-to-position) !important;
+}
+#kyc-portal .to-indigo-900{
+  --tw-gradient-to: #312e81 var(--tw-gradient-to-position) !important;
+}
+#kyc-portal .to-slate-100\/70{
+  --tw-gradient-to: rgb(241 245 249 / 0.7) var(--tw-gradient-to-position) !important;
 }
 #kyc-portal .to-slate-800{
   --tw-gradient-to: #1e293b var(--tw-gradient-to-position) !important;
@@ -1922,12 +2043,6 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .pr-2\.5{
   padding-right: 0.625rem !important;
 }
-#kyc-portal .pr-20{
-  padding-right: 5rem !important;
-}
-#kyc-portal .pr-3{
-  padding-right: 0.75rem !important;
-}
 #kyc-portal .pr-3\.5{
   padding-right: 0.875rem !important;
 }
@@ -1977,6 +2092,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .text-3xl{
   font-size: 1.875rem !important;
   line-height: 2.25rem !important;
+}
+#kyc-portal .text-4xl{
+  font-size: 2.25rem !important;
+  line-height: 2.5rem !important;
 }
 #kyc-portal .text-\[10px\]{
   font-size: 10px !important;
@@ -2093,6 +2212,12 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-text-opacity: 1 !important;
   color: rgb(219 234 254 / var(--tw-text-opacity, 1)) !important;
 }
+#kyc-portal .text-blue-100\/80{
+  color: rgb(219 234 254 / 0.8) !important;
+}
+#kyc-portal .text-blue-100\/85{
+  color: rgb(219 234 254 / 0.85) !important;
+}
 #kyc-portal .text-blue-200{
   --tw-text-opacity: 1 !important;
   color: rgb(191 219 254 / var(--tw-text-opacity, 1)) !important;
@@ -2137,6 +2262,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --tw-text-opacity: 1 !important;
   color: rgb(110 231 183 / var(--tw-text-opacity, 1)) !important;
 }
+#kyc-portal .text-emerald-500{
+  --tw-text-opacity: 1 !important;
+  color: rgb(16 185 129 / var(--tw-text-opacity, 1)) !important;
+}
 #kyc-portal .text-emerald-600{
   --tw-text-opacity: 1 !important;
   color: rgb(5 150 105 / var(--tw-text-opacity, 1)) !important;
@@ -2152,6 +2281,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .text-emerald-900{
   --tw-text-opacity: 1 !important;
   color: rgb(6 78 59 / var(--tw-text-opacity, 1)) !important;
+}
+#kyc-portal .text-emerald-900\/80{
+  color: rgb(6 78 59 / 0.8) !important;
 }
 #kyc-portal .text-emerald-950{
   --tw-text-opacity: 1 !important;
@@ -2250,6 +2382,15 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .underline-offset-4{
   text-underline-offset: 4px !important;
+}
+#kyc-portal .opacity-0{
+  opacity: 0 !important;
+}
+#kyc-portal .opacity-10{
+  opacity: 0.1 !important;
+}
+#kyc-portal .opacity-100{
+  opacity: 1 !important;
 }
 #kyc-portal .opacity-60{
   opacity: 0.6 !important;
@@ -2396,6 +2537,15 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .duration-200{
   transition-duration: 200ms !important;
+}
+#kyc-portal .duration-300{
+  transition-duration: 300ms !important;
+}
+#kyc-portal .duration-500{
+  transition-duration: 500ms !important;
+}
+#kyc-portal .duration-700{
+  transition-duration: 700ms !important;
 }
 #kyc-portal .ease-out{
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1) !important;
@@ -3242,6 +3392,9 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
   --tw-ring-opacity: 1 !important;
   --tw-ring-color: rgb(244 63 94 / var(--tw-ring-opacity, 1)) !important;
 }
+#kyc-portal .disabled\:cursor-not-allowed:disabled{
+  cursor: not-allowed !important;
+}
 #kyc-portal .disabled\:bg-slate-200:disabled{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1)) !important;
@@ -3338,10 +3491,6 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     max-width: 24rem !important;
   }
 
-  #kyc-portal .sm\:max-w-xl{
-    max-width: 36rem !important;
-  }
-
   #kyc-portal .sm\:grid-cols-11{
     grid-template-columns: repeat(11, minmax(0, 1fr)) !important;
   }
@@ -3382,6 +3531,10 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     padding: 1.25rem !important;
   }
 
+  #kyc-portal .sm\:p-6{
+    padding: 1.5rem !important;
+  }
+
   #kyc-portal .sm\:p-7{
     padding: 1.75rem !important;
   }
@@ -3398,11 +3551,6 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
   #kyc-portal .sm\:px-6{
     padding-left: 1.5rem !important;
     padding-right: 1.5rem !important;
-  }
-
-  #kyc-portal .sm\:px-8{
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
   }
 
   #kyc-portal .sm\:text-2xl{
@@ -3492,8 +3640,16 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     display: block !important;
   }
 
+  #kyc-portal .lg\:flex{
+    display: flex !important;
+  }
+
   #kyc-portal .lg\:hidden{
     display: none !important;
+  }
+
+  #kyc-portal .lg\:w-1\/2{
+    width: 50% !important;
   }
 
   #kyc-portal .lg\:w-64{
@@ -3556,6 +3712,10 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     border-top-width: 0px !important;
   }
 
+  #kyc-portal .lg\:p-10{
+    padding: 2.5rem !important;
+  }
+
   #kyc-portal .lg\:p-8{
     padding: 2rem !important;
   }
@@ -3565,8 +3725,22 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     padding-right: 2rem !important;
   }
 
+  #kyc-portal .lg\:py-12{
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+
   #kyc-portal .lg\:pl-64{
     padding-left: 16rem !important;
+  }
+
+  #kyc-portal .lg\:text-left{
+    text-align: left !important;
+  }
+
+  #kyc-portal .lg\:text-3xl{
+    font-size: 1.875rem !important;
+    line-height: 2.25rem !important;
   }
 }
 @media (min-width: 1280px){
@@ -3583,6 +3757,14 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     width: 410px !important;
   }
 
+  #kyc-portal .xl\:w-\[45\%\]{
+    width: 45% !important;
+  }
+
+  #kyc-portal .xl\:w-\[55\%\]{
+    width: 55% !important;
+  }
+
   #kyc-portal .xl\:grid-cols-2{
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
@@ -3597,5 +3779,10 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
 
   #kyc-portal .xl\:grid-cols-5{
     grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+
+  #kyc-portal .xl\:text-5xl{
+    font-size: 3rem !important;
+    line-height: 1 !important;
   }
 }

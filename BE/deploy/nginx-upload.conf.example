@@ -8,7 +8,7 @@
 #
 # SSH into VPS and run:
 #
-#   sudo bash /path/to/betabase/BE/deploy/fix-nginx-uploads.sh
+#   sudo bash /path/to/goininvest/BE/deploy/fix-nginx-uploads.sh
 #
 # Custom size (e.g. 200MB for all sites):
 #
@@ -70,7 +70,7 @@
 #   sudo systemctl reload apache2
 #
 # ═══════════════════════════════════════════════════════════
-# NODE / EXPRESS (app level — already set in betabase BE)
+# NODE / EXPRESS (app level — already set in goininvest BE)
 # ═══════════════════════════════════════════════════════════
 #
 # app.js: express.json({ limit: "50mb" })
@@ -90,4 +90,4 @@
 # ═══════════════════════════════════════════════════════════
 #
 #   sudo nginx -T | grep client_max_body_size
-#   curl -I https://api.betabase.pro/api/v1/getLinks
+#   curl -I https://api.goininvest.com/api/v1/getLinks

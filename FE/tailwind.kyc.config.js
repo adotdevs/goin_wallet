@@ -9,8 +9,7 @@ module.exports = {
     "./src/jsx/pages/userPortal/**/*.{js,jsx}",
     "./src/jsx/pages/report/assets/AssetWithdrawModals.jsx",
     "./src/jsx/pages/report/assets/CoinActionModal.jsx",
-    "./src/jsx/pages/authentication/Login.jsx",
-    "./src/jsx/pages/authentication/Registration.jsx",
+    "./src/jsx/pages/authentication/**/*.{js,jsx}",
     "!./src/jsx/pages/kycPortal/goinLandingData.js",
   ],
   theme: {

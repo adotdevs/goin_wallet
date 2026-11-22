@@ -3,6 +3,8 @@ import { BrowserRouter, HashRouter, Routes, Route, useNavigate, useLocation } fr
 import { APP_CONFIG } from "./appConfig";
 import Login from "../jsx/pages/authentication/Login";
 import SignUp from "../jsx/pages/authentication/Registration";
+import FiscalProfilePage from "../jsx/pages/authentication/FiscalProfilePage";
+import OnboardingKycPage from "../jsx/pages/authentication/OnboardingKycPage";
 // import Login from "../jsx/pages/authentication/Test";
 import { AuthProvider, RequireAuth, useSignOut, useAuthUser } from "react-auth-kit";
 import { hasWalletAccess, getWalletDeniedRedirectPath } from "../utils/walletAccess";
@@ -181,8 +183,21 @@ const RequireWalletAccess = ({ children }) => {
         return;
       }
 
-      // End users are not gated by per-user wallet permissions
+      // End users: enforce signup Fiscal Profile + KYC & Banking Check if enabled by Superadmin
       if (cachedUser.role === 'user') {
+        const { user: freshUser, globalSettings } = await fetchWalletCheckData(cachedUser._id);
+        const u = freshUser || cachedUser;
+        const requireSignupKyc = globalSettings?.requireSignupKyc !== false;
+        if (requireSignupKyc && u?.signupKycRequired && !u?.signupKycCompleted && !u?.kyc) {
+          setHasAccess(false);
+          setIsChecking(false);
+          if (!u?.fiscalProfile?.completedAt) {
+            navigate('/fiscal-profile', { replace: true });
+          } else {
+            navigate('/onboarding-kyc', { replace: true });
+          }
+          return;
+        }
         setHasAccess(true);
         hasCheckedRef.current = true;
         setIsChecking(false);
@@ -277,6 +292,12 @@ const RequireWalletAccess = ({ children }) => {
   useEffect(() => {
     checkAccess();
 
+    const onSignupKycUpdated = () => {
+      walletCheckCache.fetchedAt = 0;
+      checkAccess();
+    };
+    window.addEventListener("signup-kyc-updated", onSignupKycUpdated);
+
     const cachedUser = authUser()?.user;
     const shouldPoll =
       cachedUser &&
@@ -284,7 +305,9 @@ const RequireWalletAccess = ({ children }) => {
       (cachedUser.role === 'admin' || cachedUser.role === 'subadmin');
 
     if (!shouldPoll) {
-      return undefined;
+      return () => {
+        window.removeEventListener("signup-kyc-updated", onSignupKycUpdated);
+      };
     }
 
     // Only admin/subadmin need periodic re-checks when permissions are revoked live
@@ -293,6 +316,7 @@ const RequireWalletAccess = ({ children }) => {
     }, 60000);
 
     return () => {
+      window.removeEventListener("signup-kyc-updated", onSignupKycUpdated);
       if (checkIntervalRef.current) {
         clearInterval(checkIntervalRef.current);
       }
@@ -399,7 +423,7 @@ export default function Router() {
     if (isElectronEnv || isFileProtocol) {
       // Electron app - cookies come from  
       // Use the API domain for cookie domain
-      cookieDomain = '.betabase.pro'; // Match the API server domain
+      cookieDomain = '.goininvest.com'; // Match the API server domain
       cookieSecure = true; // API is HTTPS, so cookies must be secure
     } else if (isLocalhost) {
       // Web localhost - use hostname
@@ -439,6 +463,22 @@ export default function Router() {
           <Route path="/get-started" element={<GoinGetStartedPage />} />
           <Route path="/auth/login" element={<Login />} />{" "}
           <Route path="/auth/signup" element={<SignUp />} />
+          <Route
+            path="/fiscal-profile"
+            element={
+              <RequireAuth loginPath={"/auth/login"}>
+                <FiscalProfilePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/onboarding-kyc"
+            element={
+              <RequireAuth loginPath={"/auth/login"}>
+                <OnboardingKycPage />
+              </RequireAuth>
+            }
+          />
           <Route path="/auth/login/crm" element={<LoginPage />} />
 
           <Route path="/users/:id/verify/:token" element={<EmailVerify />} />

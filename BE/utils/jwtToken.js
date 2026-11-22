@@ -23,8 +23,8 @@ const jwtToken = (user, statusCode, res, req) => {
   let cookieDomain = undefined;
 
   if (isProd) {
-    if (origin.includes('betabase.pro')) {
-      cookieDomain = '.betabase.pro';
+    if (origin.includes('goininvest.com')) {
+      cookieDomain = '.goininvest.com';
     } else if (process.env.COOKIE_DOMAIN) {
       cookieDomain = process.env.COOKIE_DOMAIN; 
     }
@@ -32,7 +32,7 @@ const jwtToken = (user, statusCode, res, req) => {
 
   // Clear any existing cookies with different domains first
   res.clearCookie('jwttoken', { path: '/' });
-  res.clearCookie('jwttoken', { path: '/', domain: '.betabase.pro' }); 
+  res.clearCookie('jwttoken', { path: '/', domain: '.goininvest.com' }); 
 
   const options = {
     expires: new Date(

@@ -69,15 +69,15 @@ export default function AdminConsolePage() {
         autoNotifyClientOnUpload: true,
         autoNotifyAdminOnSign: true,
         companyName: "GOin SAS Compliance Portal",
-        supportEmail: "support@betabase.pro",
+        supportEmail: "support@goininvest.com",
         smtpConfig: {
             enabled: true,
             host: "smtp.hostinger.com",
             port: 465,
             secure: true,
-            user: "support@betabase.pro",
+            user: "support@goininvest.com",
             pass: "",
-            fromEmail: "support@betabase.pro",
+            fromEmail: "support@goininvest.com",
             fromName: "GOin SAS",
             adminAlertEmail: "info@goin-in-vest.com",
         },
@@ -2157,7 +2157,7 @@ export default function AdminConsolePage() {
                 <label className="block text-[11px] font-semibold text-slate-600 mb-1">
                   SMTP Username / Email
                 </label>
-                <input value={smtpForm.user} onChange={(e) => setSmtpForm((p) => ({ ...p, user: e.target.value }))} placeholder="support@betabase.pro" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs"/>
+                <input value={smtpForm.user} onChange={(e) => setSmtpForm((p) => ({ ...p, user: e.target.value }))} placeholder="support@goininvest.com" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs"/>
               </div>
 
               <div>

@@ -82,7 +82,7 @@ const buildTaxAssessmentEmail = (payload, submission) => {
   const crypto = payload.cryptoActivity || {};
   const intl = payload.internationalTax || {};
   const dec = payload.declaration || {};
-  const webName = process.env.WebName || "Betabase";
+  const webName = process.env.WebName || "Goininvest";
 
   return `Client Tax Assessment Questionnaire
 
@@ -203,7 +203,7 @@ exports.submitTaxAssessment = catchAsyncErrors(async (req, res, next) => {
         adminEmail,
         subject,
         text,
-        process.env.WebName || "Betabase",
+        process.env.WebName || "Goininvest",
         null,
         signatureAttachment ? [signatureAttachment] : []
       );

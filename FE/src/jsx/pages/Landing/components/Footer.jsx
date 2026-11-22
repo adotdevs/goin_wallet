@@ -9,7 +9,7 @@ const Footer = () => (
     <LandingContainer>
       <FooterInfo>
         <FooterInfoBlock>
-          <img src={LogoNew} alt="betabase Logo" style={{ height: '80px' }} />
+          <img src={LogoNew} alt="goininvest Logo" style={{ height: '80px' }} />
         </FooterInfoBlock>
         <FooterInfoBlock>
           <p className="animate-on-scroll">
@@ -18,11 +18,11 @@ const Footer = () => (
           </p>
         </FooterInfoBlock>
         <FooterInfoBlock>
-          <p><a href="mailto:support@betabase.pro">support@betabase.pro</a></p>
+          <p><a href="mailto:support@goininvest.com">support@goininvest.com</a></p>
         </FooterInfoBlock>
       </FooterInfo>
       <CaptionBlock>
-        <p>Copyright ©2025 Betabase. All rights reserved.</p>
+        <p>Copyright ©2025 Goininvest. All rights reserved.</p>
       </CaptionBlock>
     </LandingContainer>
   </LandingFooter>

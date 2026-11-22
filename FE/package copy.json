@@ -1,5 +1,5 @@
 {
-  "name": "betabase",
+  "name": "goininvest",
   "version": "0.1.0",
   "private": true,
   "main": "main.js",
@@ -95,8 +95,8 @@
   },
   "build": {
     "extends": null,
-    "appId": "com.betabase.app",
-    "productName": "Betabase",
+    "appId": "com.goininvest.app",
+    "productName": "Goininvest",
     "files": [
       "build/**/*",
       "main.js",
@@ -128,7 +128,7 @@
       "deleteAppDataOnUninstall": false,
       "runAfterFinish": false,
       "menuCategory": false,
-      "shortcutName": "Betabase"
+      "shortcutName": "Goininvest"
     },
     "compression": "maximum",
     "removePackageScripts": false,
@@ -172,9 +172,9 @@
   "keywords": [],
   "license": "ISC",
   "description": "",
-  "homepage": "https://betabase.pro",
+  "homepage": "https://goininvest.com",
   "author": {
-    "name": "Betabase Team",
-    "email": "support@betabase.pro"
+    "name": "Goininvest Team",
+    "email": "support@goininvest.com"
   }
 }

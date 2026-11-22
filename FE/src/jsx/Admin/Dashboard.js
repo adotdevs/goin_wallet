@@ -269,6 +269,7 @@ const Dashboard = () => {
   const [Allow2Fa, setAllow2Fa] = useState(false);
   const [requireEmailVerification, setRequireEmailVerification] = useState(true);
   const [walletEnabled, setWalletEnabled] = useState(true);
+  const [requireSignupKyc, setRequireSignupKyc] = useState(true);
   const [isLoadingNew, setisLoadingNew] = useState(false);
   const [getLoading, setgetLoading] = useState(true);
   const getUserRestrcition = async () => {
@@ -282,6 +283,7 @@ const Dashboard = () => {
         // Default to true (require verification) if not explicitly set to false
         setRequireEmailVerification(data?.data?.requireEmailVerification ?? true);
         setWalletEnabled(data?.data?.walletEnabled !== false); // Default to true if not set
+        setRequireSignupKyc(data?.data?.requireSignupKyc !== false); // Default to true if not set
         return;
       } else {
         toast.dismiss();
@@ -490,6 +492,37 @@ const Dashboard = () => {
                       {walletEnabled 
                         ? 'Wallet platform is enabled for all users with permissions. Users, admins, and sub admins can access wallet features based on their individual permissions.'
                         : 'Wallet platform is disabled. Only Super Admin can access wallet features. All other users will be blocked from wallet access.'}
+                    </p>
+                  </div>
+                )}
+
+                {/* KYC & Banking Check on Signup */}
+                {getLoading ? (
+                  <AdminSkeleton variant="switchCard" />
+                ) : (
+                  <div className={`${dash.card} permission-card`}>
+                    <div className={dash.cardHead}>
+                      <h3 className={dash.cardTitle}>
+                        KYC &amp; Banking Check on Signup
+                      </h3>
+                      <Switch
+                        disabled={isLoadingNew}
+                        checked={requireSignupKyc}
+                        onChange={() => updateRestrictions({ requireSignupKyc: !requireSignupKyc })}
+                        sx={{
+                          '& .MuiSwitch-switchBase.Mui-checked': {
+                            color: '#ffffff',
+                          },
+                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                            backgroundColor: '#ffffff',
+                          },
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-300" style={{ color: '#6b7280' }}>
+                      {requireSignupKyc
+                        ? 'Enabled: Newly registered users must complete the Fiscal Profile, submit KYC documents (ID & Selfie), and finish 100% of the international banking/regulatory database check before accessing their dashboard.'
+                        : 'Disabled: Newly registered users can proceed without the mandatory signup KYC & banking verification flow.'}
                     </p>
                   </div>
                 )}
