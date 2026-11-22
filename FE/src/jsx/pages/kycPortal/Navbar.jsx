@@ -33,9 +33,50 @@ export default function Navbar() {
     }, [user?.role]);
 
     // Regular wallet users see the unified User Dashboard Shell (Sidebar + Header)
+    // and Staff users see the unified Admin Dashboard Shell (Admin Sidebar + AdminHeader)
     // provided by KycPortalShell, so suppress the standalone KYC top navbar.
     if (user?.role === "user") {
         return null;
+    }
+    if (isStaff) {
+        if (pathname.startsWith("/admin/kyc")) {
+            return null;
+        }
+        return (
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white border border-slate-200/90 px-4 py-3 shadow-sm">
+                <div className="flex flex-wrap items-center gap-2">
+                    <Link
+                        to="/admin/kyc"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-colors"
+                    >
+                        <LayoutDashboard className="w-3.5 h-3.5" />
+                        <span>Back to KYC &amp; Documents Console</span>
+                    </Link>
+                    <Link
+                        to="/flows/documents"
+                        className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors ${
+                            pathname === "/flows/documents"
+                                ? "bg-blue-50 text-blue-600 border border-blue-200"
+                                : "bg-slate-100 text-slate-700 hover:bg-slate-200/70"
+                        }`}
+                    >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>Interactive Document Gallery</span>
+                    </Link>
+                    <Link
+                        to="/flows/kyc-profile"
+                        className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors ${
+                            pathname === "/flows/kyc-profile"
+                                ? "bg-blue-50 text-blue-600 border border-blue-200"
+                                : "bg-slate-100 text-slate-700 hover:bg-slate-200/70"
+                        }`}
+                    >
+                        <User className="w-3.5 h-3.5" />
+                        <span>Signature &amp; SMTP Profile</span>
+                    </Link>
+                </div>
+            </div>
+        );
     }
     const loadNotifications = async () => {
         try {

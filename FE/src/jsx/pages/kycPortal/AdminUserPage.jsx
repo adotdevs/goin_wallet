@@ -344,7 +344,11 @@ export default function SingleClientHubPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <Link to={`/admin/users/${client._id}?tab=compliance&sub=kyc`} className="px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 shadow-sm">
+              <ExternalLink className="w-3.5 h-3.5 text-blue-600"/>
+              <span>Open Member Wallet Hub</span>
+            </Link>
             {canManageComplianceLock && (<button onClick={toggleComplianceLock} className={`px-3.5 py-2.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 ${client.isComplianceRestricted
                 ? "bg-rose-50 border-rose-200 text-rose-700"
                 : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"}`}>

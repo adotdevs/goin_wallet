@@ -612,3 +612,50 @@ html.user-portal-dark body::-webkit-scrollbar-thumb {
 #kyc-portal.user-portal-dark .MuiTab-root.Mui-selected {
   color: #60a5fa !important;
 }
+
+/* =====================================================================
+   ADMIN DASHBOARD EMBEDDED KYC & DOCUMENTS CONSOLE
+   Matches AdminShell variables (--admin-bg, --admin-surface-1, --admin-surface-2)
+   ===================================================================== */
+#kyc-portal.admin-kyc-embedded {
+  background-color: transparent !important;
+  min-height: auto !important;
+}
+
+#kyc-portal.admin-kyc-embedded .min-h-screen {
+  min-height: auto !important;
+  background-color: transparent !important;
+}
+
+#kyc-portal.admin-kyc-embedded.user-portal-dark {
+  background-color: transparent !important;
+  color: #f3f5f7 !important;
+}
+
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-white,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-white\/95,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-white\/90 {
+  background-color: #13171e !important;
+}
+
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-50,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-50\/80,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-50\/70,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-50\/60,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-50\/50 {
+  background-color: #1a1f28 !important;
+}
+
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-100,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-100\/80 {
+  background-color: #222833 !important;
+}
+
+#kyc-portal.admin-kyc-embedded.user-portal-dark .border-slate-100,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .border-slate-200,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .border-slate-200\/90,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .border-slate-200\/80,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+

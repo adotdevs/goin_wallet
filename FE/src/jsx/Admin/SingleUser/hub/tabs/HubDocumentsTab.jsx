@@ -4,22 +4,36 @@ import { toast } from "react-toastify";
 import {
   UploadCloud,
   FileText,
+  FileSignature,
+  CheckCircle2,
+  Clock,
   Download,
   Trash2,
   Eye,
   X,
   FolderOpen,
+  Plus,
 } from "lucide-react";
 import {
   deleteSingleFileApi,
   getAllDataApi,
   uploadFilesApi,
 } from "../../../../../Api/Service";
+import { kycBlob, kycFetch } from "../../../../pages/kycPortal/kycApi";
 import mm from "../MemberHub.module.css";
+
+const E_SIGN_FOLDERS = [
+  "Contracts",
+  "Agreements",
+  "NDAs",
+  "KYC & Compliance",
+  "Other",
+];
 
 export default function HubDocumentsTab() {
   const { id } = useParams();
   const inputRef = useRef(null);
+  const signFileInputRef = useRef(null);
 
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -27,6 +41,19 @@ export default function HubDocumentsTab() {
   const [allFiles, setAllFiles] = useState([]);
   const [pendingFiles, setPendingFiles] = useState([]);
   const [previewFile, setPreviewFile] = useState(null);
+
+  // E-Signature Documents State (merged from KYC & Signing system)
+  const [signDocs, setSignDocs] = useState([]);
+  const [loadingSignDocs, setLoadingSignDocs] = useState(true);
+  const [signModalOpen, setSignModalOpen] = useState(false);
+  const [signTitle, setSignTitle] = useState("");
+  const [signFolder, setSignFolder] = useState("Agreements");
+  const [signDescription, setSignDescription] = useState("");
+  const [signContentPreview, setSignContentPreview] = useState("");
+  const [signShareGlobal, setSignShareGlobal] = useState(false);
+  const [signFiles, setSignFiles] = useState([]);
+  const [uploadingSignDoc, setUploadingSignDoc] = useState(false);
+  const [deletingSignDocId, setDeletingSignDocId] = useState("");
 
   const loadFiles = async () => {
     try {
@@ -41,9 +68,114 @@ export default function HubDocumentsTab() {
     }
   };
 
+  const loadSignDocuments = async () => {
+    try {
+      setLoadingSignDocs(true);
+      const res = await kycFetch(`/api/users/${id}`, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.success) {
+          setSignDocs(Array.isArray(data.documents) ? data.documents : []);
+        }
+      }
+    } catch {
+      // ignore if unavailable
+    } finally {
+      setLoadingSignDocs(false);
+    }
+  };
+
   useEffect(() => {
     loadFiles();
+    loadSignDocuments();
   }, [id]);
+
+  const handleUploadSignDoc = async (e) => {
+    e.preventDefault();
+    if (signFiles.length === 0 && !signTitle.trim()) {
+      toast.error("Please select a file or enter a document title");
+      return;
+    }
+    try {
+      setUploadingSignDoc(true);
+      const fd = new FormData();
+      fd.append("isGlobal", String(signShareGlobal));
+      fd.append("userId", signShareGlobal ? "global" : id);
+      fd.append("folder", signFolder);
+      if (signTitle.trim()) fd.append("title", signTitle.trim());
+      if (signDescription.trim()) fd.append("description", signDescription.trim());
+      if (signContentPreview.trim()) {
+        fd.append("documentContentPreview", signContentPreview.trim());
+      }
+      fd.append("requiresSignature", "true");
+      signFiles.forEach((f) => fd.append("files", f));
+
+      const res = await kycFetch("/api/documents", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.success) {
+        throw new Error(data?.msg || "Upload failed");
+      }
+      toast.success(
+        data.msg || "Document uploaded and assigned for electronic signature!"
+      );
+      setSignFiles([]);
+      setSignTitle("");
+      setSignDescription("");
+      setSignContentPreview("");
+      setSignShareGlobal(false);
+      setSignModalOpen(false);
+      await loadSignDocuments();
+    } catch (err) {
+      toast.error(err?.message || "Failed to upload E-Signature document");
+    } finally {
+      setUploadingSignDoc(false);
+    }
+  };
+
+  const handleDeleteSignDoc = async (docId) => {
+    if (!window.confirm("Delete this E-Signature document permanently?")) return;
+    try {
+      setDeletingSignDocId(docId);
+      const res = await kycFetch(`/api/documents/${docId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data?.success) {
+        toast.success("E-Signature document deleted");
+        await loadSignDocuments();
+      } else {
+        toast.error(data?.msg || "Failed to delete document");
+      }
+    } catch {
+      toast.error("Failed to delete document");
+    } finally {
+      setDeletingSignDocId("");
+    }
+  };
+
+  const handleOpenSignDocPdf = async (doc, inline = false) => {
+    try {
+      const path = `/api/documents/${doc._id}/download${inline ? "?inline=1" : ""}`;
+      const blob = await kycBlob(path);
+      const url = URL.createObjectURL(blob);
+      if (inline) {
+        window.open(url, "_blank", "noopener,noreferrer");
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = doc.fileName || `${doc.title || "document"}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Could not open PDF document");
+    }
+  };
 
   const handleSelectFiles = (e) => {
     const incoming = Array.from(e.target.files || []);
@@ -111,6 +243,164 @@ export default function HubDocumentsTab() {
 
   return (
     <div className={mm.stack}>
+      {/* E-Signature Contracts & Agreements Section (Merged KYC & E-Sign System) */}
+      <section className={`${mm.card} ${mm.cardPad}`}>
+        <div className={mm.cardHead}>
+          <div className={mm.docCardTitleWrap}>
+            <div className={mm.iconTile}>
+              <FileSignature size={18} />
+            </div>
+            <div>
+              <h2 className={mm.title}>
+                E-Signature Documents &amp; Contracts ({signDocs.length})
+              </h2>
+              <p className={mm.subtitle}>
+                Assign contracts, agreements, or compliance PDFs for the client to electronically sign online
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSignModalOpen(true)}
+            className={mm.btn}
+          >
+            <Plus size={15} /> Upload Document for E-Signature
+          </button>
+        </div>
+
+        {loadingSignDocs ? (
+          <span className={mm.skel} style={{ height: 180 }} />
+        ) : signDocs.length === 0 ? (
+          <div className={mm.empty}>
+            No E-Signature documents assigned to this member yet. Click &ldquo;Upload Document for E-Signature&rdquo; above to assign a contract or agreement.
+          </div>
+        ) : (
+          <div className={mm.fileGrid}>
+            {signDocs.map((doc) => {
+              const isSigned = doc.status === "signed" && doc.signature;
+              return (
+                <div
+                  key={doc._id}
+                  className={mm.fileCard}
+                  style={{
+                    padding: 16,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    gap: 14,
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p className={mm.fileCardName} style={{ fontSize: 14, marginBottom: 4 }}>
+                        {doc.title}
+                      </p>
+                      <p className={mm.subtitle} style={{ fontSize: 12 }}>
+                        {doc.folder || "Agreements"} •{" "}
+                        {doc.createdAt
+                          ? new Date(doc.createdAt).toLocaleDateString()
+                          : "—"}
+                      </p>
+                    </div>
+                    <span
+                      className={`${mm.badge} ${
+                        isSigned ? mm.badgeOk : mm.badgeWarn
+                      }`}
+                    >
+                      {isSigned ? (
+                        <>
+                          <CheckCircle2 size={12} /> Signed
+                        </>
+                      ) : (
+                        <>
+                          <Clock size={12} /> Awaiting Signature
+                        </>
+                      )}
+                    </span>
+                  </div>
+
+                  {isSigned ? (
+                    <div
+                      style={{
+                        padding: 10,
+                        borderRadius: 10,
+                        background: "var(--admin-success-soft, rgba(52, 211, 153, 0.12))",
+                        border: "1px solid rgba(52, 211, 153, 0.28)",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 8,
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11.5 }}>
+                        <strong style={{ color: "var(--admin-success, #34d399)" }}>
+                          Signed by {doc.signature.signerName}
+                        </strong>
+                        <span className={mm.subtitle}>
+                          {doc.signature.certificateId}
+                        </span>
+                      </div>
+                      {doc.signature.signatureDataUrl && (
+                        <img
+                          src={doc.signature.signatureDataUrl}
+                          alt="Client Handwritten Signature"
+                          style={{
+                            height: 40,
+                            objectFit: "contain",
+                            background: "#ffffff",
+                            borderRadius: 6,
+                            padding: "2px 8px",
+                          }}
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: 10,
+                        background: "var(--admin-warning-soft, rgba(251, 191, 36, 0.12))",
+                        fontSize: 12,
+                        color: "var(--admin-warning, #fbbf24)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Awaiting Client Handwritten E-Signature Online
+                    </div>
+                  )}
+
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenSignDocPdf(doc, true)}
+                      className={mm.btnGhost}
+                      style={{ flex: 1 }}
+                    >
+                      <Eye size={13} /> Preview PDF
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenSignDocPdf(doc, false)}
+                      className={mm.btn}
+                      style={{ flex: 1 }}
+                    >
+                      <Download size={13} /> Download
+                    </button>
+                    <button
+                      type="button"
+                      disabled={deletingSignDocId === doc._id}
+                      onClick={() => handleDeleteSignDoc(doc._id)}
+                      className={mm.btnDangerSoft}
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
       {/* Upload Card */}
       <section className={`${mm.card} ${mm.cardPad}`}>
         <div className={mm.cardHead}>
@@ -263,6 +553,179 @@ export default function HubDocumentsTab() {
                 style={{ maxWidth: "100%", maxHeight: "72vh", borderRadius: 10 }}
               />
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload E-Signature Document Modal */}
+      {signModalOpen && (
+        <div className={mm.modalOverlay} onClick={() => setSignModalOpen(false)}>
+          <div
+            className={mm.modalBox}
+            style={{ maxWidth: 540 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={mm.modalHead}>
+              <h3 className={mm.title}>Upload Document for Client E-Signature</h3>
+              <button
+                type="button"
+                className={mm.iconClose}
+                onClick={() => setSignModalOpen(false)}
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <form
+              onSubmit={handleUploadSignDoc}
+              className={mm.modalBody}
+              style={{ display: "flex", flexDirection: "column", gap: 14 }}
+            >
+              <div className={mm.gridEqual2}>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 6 }}>
+                    Category Folder
+                  </label>
+                  <select
+                    value={signFolder}
+                    onChange={(e) => setSignFolder(e.target.value)}
+                    className={mm.select}
+                  >
+                    {E_SIGN_FOLDERS.map((f) => (
+                      <option key={f} value={f}>
+                        {f}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 6 }}>
+                    Document Title
+                  </label>
+                  <input
+                    type="text"
+                    value={signTitle}
+                    onChange={(e) => setSignTitle(e.target.value)}
+                    placeholder="e.g., Investment Agreement.pdf"
+                    className={mm.input}
+                  />
+                </div>
+              </div>
+
+              <input
+                ref={signFileInputRef}
+                type="file"
+                multiple
+                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                style={{ display: "none" }}
+                onChange={(e) => {
+                  const incoming = Array.from(e.target.files || []);
+                  if (!incoming.length) return;
+                  setSignFiles((prev) => [...prev, ...incoming]);
+                  if (!signTitle && incoming.length === 1) {
+                    setSignTitle(incoming[0].name);
+                  }
+                  e.target.value = "";
+                }}
+              />
+
+              <div
+                className={mm.dropzone}
+                role="button"
+                tabIndex={0}
+                onClick={() => signFileInputRef.current?.click()}
+                onKeyDown={(e) => e.key === "Enter" && signFileInputRef.current?.click()}
+              >
+                <UploadCloud size={24} />
+                <p className={mm.dropzoneTitle}>
+                  Click to select PDF, DOCX, or Image files
+                </p>
+                <p className={mm.dropzoneHint}>
+                  Or leave empty to auto-generate a formatted PDF contract from the clauses below
+                </p>
+              </div>
+
+              {signFiles.length > 0 && (
+                <div className={mm.chipList}>
+                  {signFiles.map((file, idx) => (
+                    <span key={`${file.name}-${idx}`} className={mm.fileChip}>
+                      <FileText size={13} />
+                      <span>{file.name}</span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSignFiles((prev) => prev.filter((_, i) => i !== idx))
+                        }
+                        className={mm.fileChipRemove}
+                      >
+                        <X size={12} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 6 }}>
+                  Summary / Notes for Client (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={signDescription}
+                  onChange={(e) => setSignDescription(e.target.value)}
+                  placeholder="Instructions or notes shown to the client..."
+                  className={mm.input}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 6 }}>
+                  Contract Clauses (Used when auto-generating a PDF without file upload)
+                </label>
+                <textarea
+                  rows={3}
+                  value={signContentPreview}
+                  onChange={(e) => setSignContentPreview(e.target.value)}
+                  placeholder="Enter agreement terms or clauses..."
+                  className={mm.textarea}
+                />
+              </div>
+
+              <label
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={signShareGlobal}
+                  onChange={(e) => setSignShareGlobal(e.target.checked)}
+                />
+                <span>Share globally with all clients (instead of only this member)</span>
+              </label>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, paddingTop: 6 }}>
+                <button
+                  type="button"
+                  onClick={() => setSignModalOpen(false)}
+                  className={mm.btnGhost}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={uploadingSignDoc}
+                  className={mm.btn}
+                >
+                  <UploadCloud size={15} />{" "}
+                  {uploadingSignDoc ? "Uploading..." : "Upload & Assign for Signature"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

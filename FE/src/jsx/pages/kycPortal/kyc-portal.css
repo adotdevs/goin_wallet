@@ -1007,6 +1007,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 #kyc-portal .max-w-\[130px\]{
   max-width: 130px !important;
 }
+#kyc-portal .max-w-\[1500px\]{
+  max-width: 1500px !important;
+}
 #kyc-portal .max-w-\[1600px\]{
   max-width: 1600px !important;
 }
@@ -1280,6 +1283,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .overflow-y-auto{
   overflow-y: auto !important;
+}
+#kyc-portal .overflow-x-hidden{
+  overflow-x: hidden !important;
 }
 #kyc-portal .truncate{
   overflow: hidden !important;
@@ -1994,6 +2000,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 #kyc-portal .pb-1{
   padding-bottom: 0.25rem !important;
+}
+#kyc-portal .pb-16{
+  padding-bottom: 4rem !important;
 }
 #kyc-portal .pb-3{
   padding-bottom: 0.75rem !important;
@@ -3159,279 +3168,402 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
 #kyc-portal.user-portal-dark .MuiTab-root.Mui-selected {
   color: #60a5fa !important;
 }
+
+/* =====================================================================
+   ADMIN DASHBOARD EMBEDDED KYC & DOCUMENTS CONSOLE
+   Matches AdminShell variables (--admin-bg, --admin-surface-1, --admin-surface-2)
+   ===================================================================== */
+#kyc-portal.admin-kyc-embedded {
+  background-color: transparent !important;
+  min-height: auto !important;
+}
+
+#kyc-portal.admin-kyc-embedded .min-h-screen {
+  min-height: auto !important;
+  background-color: transparent !important;
+}
+
+#kyc-portal.admin-kyc-embedded.user-portal-dark {
+  background-color: transparent !important;
+  color: #f3f5f7 !important;
+}
+
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-white,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-white\/95,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-white\/90 {
+  background-color: #13171e !important;
+}
+
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-50,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-50\/80,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-50\/70,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-50\/60,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-50\/50 {
+  background-color: #1a1f28 !important;
+}
+
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-100,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .bg-slate-100\/80 {
+  background-color: #222833 !important;
+}
+
+#kyc-portal.admin-kyc-embedded.user-portal-dark .border-slate-100,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .border-slate-200,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .border-slate-200\/90,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .border-slate-200\/80,
+#kyc-portal.admin-kyc-embedded.user-portal-dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
 #kyc-portal .placeholder\:text-slate-300::placeholder{
   --tw-text-opacity: 1 !important;
   color: rgb(203 213 225 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .placeholder\:text-slate-400::placeholder{
   --tw-text-opacity: 1 !important;
   color: rgb(148 163 184 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:border-blue-200:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(191 219 254 / var(--tw-border-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:border-blue-300:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(147 197 253 / var(--tw-border-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:border-blue-400:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(96 165 250 / var(--tw-border-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:border-blue-500:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(59 130 246 / var(--tw-border-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:border-blue-600:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(37 99 235 / var(--tw-border-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:border-slate-200:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(226 232 240 / var(--tw-border-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:border-slate-300:hover{
   --tw-border-opacity: 1 !important;
   border-color: rgb(203 213 225 / var(--tw-border-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-amber-100:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(254 243 199 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-amber-100\/70:hover{
   background-color: rgb(254 243 199 / 0.7) !important;
 }
+
 #kyc-portal .hover\:bg-blue-100:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(219 234 254 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-blue-50:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-blue-50\/30:hover{
   background-color: rgb(239 246 255 / 0.3) !important;
 }
+
 #kyc-portal .hover\:bg-blue-600:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-blue-700:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(29 78 216 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-emerald-100:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(209 250 229 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-emerald-100\/80:hover{
   background-color: rgb(209 250 229 / 0.8) !important;
 }
+
 #kyc-portal .hover\:bg-emerald-50:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(236 253 245 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-emerald-600:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(5 150 105 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-emerald-700:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(4 120 87 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-indigo-100:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(224 231 255 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-rose-100:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 228 230 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-rose-50:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 241 242 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-rose-500\/30:hover{
   background-color: rgb(244 63 94 / 0.3) !important;
 }
+
 #kyc-portal .hover\:bg-rose-600:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(225 29 72 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-rose-700:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(190 18 60 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-slate-100:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-slate-200:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-slate-200\/60:hover{
   background-color: rgb(226 232 240 / 0.6) !important;
 }
+
+#kyc-portal .hover\:bg-slate-200\/70:hover{
+  background-color: rgb(226 232 240 / 0.7) !important;
+}
+
 #kyc-portal .hover\:bg-slate-200\/80:hover{
   background-color: rgb(226 232 240 / 0.8) !important;
 }
+
 #kyc-portal .hover\:bg-slate-50:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(248 250 252 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-slate-50\/70:hover{
   background-color: rgb(248 250 252 / 0.7) !important;
 }
+
 #kyc-portal .hover\:bg-slate-50\/80:hover{
   background-color: rgb(248 250 252 / 0.8) !important;
 }
+
 #kyc-portal .hover\:bg-slate-800:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-white:hover{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:bg-white\/10:hover{
   background-color: rgb(255 255 255 / 0.1) !important;
 }
+
 #kyc-portal .hover\:bg-white\/25:hover{
   background-color: rgb(255 255 255 / 0.25) !important;
 }
+
 #kyc-portal .hover\:bg-white\/70:hover{
   background-color: rgb(255 255 255 / 0.7) !important;
 }
+
 #kyc-portal .hover\:text-blue-100:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(219 234 254 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:text-blue-600:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(37 99 235 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:text-blue-700:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(29 78 216 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:text-rose-600:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(225 29 72 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:text-rose-700:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(190 18 60 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:text-slate-600:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(71 85 105 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:text-slate-700:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(51 65 85 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:text-slate-800:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(30 41 59 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:text-slate-900:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(15 23 42 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:text-white:hover{
   --tw-text-opacity: 1 !important;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .hover\:underline:hover{
   -webkit-text-decoration-line: underline !important;
           text-decoration-line: underline !important;
 }
+
 #kyc-portal .hover\:shadow-card-hover:hover{
   --tw-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
   --tw-shadow-colored: 0 10px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color) !important;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
 }
+
 #kyc-portal .hover\:shadow-md:hover{
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
   --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color) !important;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
 }
+
 #kyc-portal .focus\:border-blue-500:focus{
   --tw-border-opacity: 1 !important;
   border-color: rgb(59 130 246 / var(--tw-border-opacity, 1)) !important;
 }
+
 #kyc-portal .focus\:border-transparent:focus{
   border-color: transparent !important;
 }
+
 #kyc-portal .focus\:bg-white:focus{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .focus\:outline-none:focus{
   outline: 2px solid transparent !important;
   outline-offset: 2px !important;
 }
+
 #kyc-portal .focus\:ring-2:focus{
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000) !important;
 }
+
 #kyc-portal .focus\:ring-blue-500:focus{
   --tw-ring-opacity: 1 !important;
   --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity, 1)) !important;
 }
+
 #kyc-portal .focus\:ring-blue-500\/15:focus{
   --tw-ring-color: rgb(59 130 246 / 0.15) !important;
 }
+
 #kyc-portal .focus\:ring-blue-500\/20:focus{
   --tw-ring-color: rgb(59 130 246 / 0.2) !important;
 }
+
 #kyc-portal .focus\:ring-rose-500:focus{
   --tw-ring-opacity: 1 !important;
   --tw-ring-color: rgb(244 63 94 / var(--tw-ring-opacity, 1)) !important;
 }
+
 #kyc-portal .disabled\:cursor-not-allowed:disabled{
   cursor: not-allowed !important;
 }
+
 #kyc-portal .disabled\:bg-slate-200:disabled{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .disabled\:text-slate-400:disabled{
   --tw-text-opacity: 1 !important;
   color: rgb(148 163 184 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .disabled\:text-slate-500:disabled{
   --tw-text-opacity: 1 !important;
   color: rgb(100 116 139 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .disabled\:opacity-40:disabled{
   opacity: 0.4 !important;
 }
+
 #kyc-portal .disabled\:opacity-50:disabled{
   opacity: 0.5 !important;
 }
+
 #kyc-portal .disabled\:opacity-60:disabled{
   opacity: 0.6 !important;
 }
+
 #kyc-portal .group:hover .group-hover\:border-blue-400{
   --tw-border-opacity: 1 !important;
   border-color: rgb(96 165 250 / var(--tw-border-opacity, 1)) !important;
 }
+
 #kyc-portal .group:hover .group-hover\:bg-blue-600{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1)) !important;
 }
+
 #kyc-portal .group:hover .group-hover\:text-blue-600{
   --tw-text-opacity: 1 !important;
   color: rgb(37 99 235 / var(--tw-text-opacity, 1)) !important;
 }
+
 #kyc-portal .group:hover .group-hover\:text-white{
   --tw-text-opacity: 1 !important;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1)) !important;
 }
+
 @media (min-width: 640px){
 
   #kyc-portal .sm\:col-span-1{
@@ -3588,6 +3720,7 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     line-height: 1.75rem !important;
   }
 }
+
 @media (min-width: 768px){
 
   #kyc-portal .md\:col-span-2{
@@ -3622,6 +3755,7 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     align-items: center !important;
   }
 }
+
 @media (min-width: 1024px){
 
   #kyc-portal .lg\:col-span-2{
@@ -3634,6 +3768,11 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
 
   #kyc-portal .lg\:col-span-7{
     grid-column: span 7 / span 7 !important;
+  }
+
+  #kyc-portal .lg\:ms-\[280px\]{
+    -webkit-margin-start: 280px !important;
+            margin-inline-start: 280px !important;
   }
 
   #kyc-portal .lg\:block{
@@ -3652,10 +3791,6 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     width: 50% !important;
   }
 
-  #kyc-portal .lg\:w-64{
-    width: 16rem !important;
-  }
-
   #kyc-portal .lg\:w-72{
     width: 18rem !important;
   }
@@ -3666,6 +3801,10 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
 
   #kyc-portal .lg\:w-\[380px\]{
     width: 380px !important;
+  }
+
+  #kyc-portal .lg\:max-w-\[calc\(100\%_-_280px\)\]{
+    max-width: calc(100% - 280px) !important;
   }
 
   #kyc-portal .lg\:grid-cols-12{
@@ -3743,6 +3882,7 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     line-height: 2.25rem !important;
   }
 }
+
 @media (min-width: 1280px){
 
   #kyc-portal .xl\:col-span-5{
@@ -3781,8 +3921,22 @@ html.kyc-portal-active body::-webkit-scrollbar-thumb:hover {
     grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   }
 
+  #kyc-portal .xl\:flex-row{
+    flex-direction: row !important;
+  }
+
+  #kyc-portal .xl\:items-center{
+    align-items: center !important;
+  }
+
+  #kyc-portal .xl\:px-8{
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+
   #kyc-portal .xl\:text-5xl{
     font-size: 3rem !important;
     line-height: 1 !important;
   }
 }
+

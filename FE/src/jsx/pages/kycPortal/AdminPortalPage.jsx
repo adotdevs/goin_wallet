@@ -678,18 +678,10 @@ export default function AdminConsolePage() {
     return (<div className="min-h-screen bg-[#F8FAFC] flex flex-col">
       <Navbar />
 
-      <div className="flex-1 max-w-[1600px] w-full mx-auto flex flex-col lg:flex-row">
-        {/* ==================== ADMIN SIDEBAR ==================== */}
-        <aside className="w-full lg:w-64 shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-slate-200/80 p-5 space-y-6">
-          {canManageDocuments && (<button onClick={() => {
-                setUploadTargetUserId("");
-                setUploadModalOpen(true);
-            }} className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm shadow-blue-600/25 transition-all">
-              <UploadCloud className="w-4 h-4"/>
-              <span>Upload Client Document</span>
-            </button>)}
-
-          <nav className="space-y-1">
+      <div className="flex-1 w-full mx-auto flex flex-col space-y-5 pt-2">
+        {/* ==================== UNIFIED ADMIN CONSOLE TAB BAR ==================== */}
+        <div className="bg-white rounded-2xl border border-slate-200/90 p-3 shadow-sm flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+          <nav className="flex flex-wrap items-center gap-1.5" aria-label="KYC & Documents Console Tabs">
             {sidebarTabs
             .filter((t) => t.show)
             .map((tab) => {
@@ -698,15 +690,13 @@ export default function AdminConsolePage() {
             return (<button key={tab.id} onClick={() => {
                     triggerTopProgress();
                     setActiveTab(tab.id);
-                }} className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${active
-                    ? "bg-blue-50 text-blue-600"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}>
-                    <span className="flex items-center gap-2.5">
-                      <Icon className="w-4 h-4"/>
-                      {tab.label}
-                    </span>
+                }} className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${active
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"}`}>
+                    <Icon className="w-4 h-4 shrink-0"/>
+                    <span>{tab.label}</span>
                     {typeof tab.badge === "number" && (<span className={`text-[11px] px-2 py-0.5 rounded-full ${active
-                        ? "bg-blue-600 text-white"
+                        ? "bg-white/20 text-white"
                         : "bg-slate-100 text-slate-600"}`}>
                         {tab.badge}
                       </span>)}
@@ -714,26 +704,27 @@ export default function AdminConsolePage() {
         })}
           </nav>
 
-          {/* Role Indicator Card */}
-          <div className="p-4 rounded-2xl bg-slate-900 text-white space-y-2">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-blue-400"/>
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-300">
-                {user.role} Access
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-300 leading-relaxed">
-              {isSuperAdmin
-            ? "Full control over Admins, Sub-Admins, Clients, KYC approvals, and E-Signatures."
-            : isAdmin
-                ? "Manage Clients, Sub-Admins, KYC approvals, and Document Signing."
-                : "Manage assigned & shared clients, review KYC, and upload documents."}
-            </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link to="/flows/documents" className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-bold inline-flex items-center gap-2 transition-colors">
+              <FileSignature className="w-4 h-4 text-blue-600"/>
+              <span>Interactive Document Gallery</span>
+            </Link>
+            <Link to="/flows/kyc-profile" className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-bold inline-flex items-center gap-2 transition-colors">
+              <PenTool className="w-4 h-4 text-blue-600"/>
+              <span>Saved Signature</span>
+            </Link>
+            {canManageDocuments && (<button onClick={() => {
+                setUploadTargetUserId("");
+                setUploadModalOpen(true);
+            }} className="py-2 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold inline-flex items-center justify-center gap-2 shadow-sm transition-all">
+                <UploadCloud className="w-4 h-4"/>
+                <span>Upload Client Document</span>
+              </button>)}
           </div>
-        </aside>
+        </div>
 
         {/* ==================== MAIN ADMIN CONTENT ==================== */}
-        <main className="flex-1 p-6 lg:p-8 min-w-0 space-y-6">
+        <main className="flex-1 min-w-0 space-y-6">
           {/* 1. OVERVIEW TAB */}
           {activeTab === "overview" && (<div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
