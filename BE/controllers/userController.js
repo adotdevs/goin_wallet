@@ -149,7 +149,7 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     note: "",
     country,
     postalCode,
-    verified: isRole ? true : (requireSignupKyc || requireEmailVerification === false),
+    verified: isRole ? true : (requireEmailVerification === false),
     signupKycRequired: requireSignupKyc,
     signupKycCompleted: !requireSignupKyc,
     submitDoc: {
@@ -188,28 +188,28 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     return
   }
 
-  if (requireSignupKyc) {
-    const token = createUser.generateToken();
-    return res.status(201).cookie("jwttoken", token, {
-      expires: new Date(Date.now() + (Number(process.env.TOKEN_EXPIRE) || 5) * 24 * 60 * 60 * 1000),
-      httpOnly: true,
-      sameSite: "Lax",
-      secure: false,
-      path: "/",
-    }).send({
-      msg: "Account created! Please complete KYC verification to continue.",
-      success: true,
-      link: false,
-      requireSignupKyc: true,
-      token,
-      user: createUser,
-    });
-  }
-
   if (requireEmailVerification === false) {
     // Only skip email verification if admin explicitly disabled it
     createUser.verified = true;
     await createUser.save();
+
+    if (requireSignupKyc) {
+      const token = createUser.generateToken();
+      return res.status(201).cookie("jwttoken", token, {
+        expires: new Date(Date.now() + (Number(process.env.TOKEN_EXPIRE) || 5) * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        sameSite: "Lax",
+        secure: false,
+        path: "/",
+      }).send({
+        msg: "Account created! Please complete KYC verification to continue.",
+        success: true,
+        link: false,
+        requireSignupKyc: true,
+        token,
+        user: createUser,
+      });
+    }
 
     res.status(201).send({
       msg: "Registration successful! You can now login.",
