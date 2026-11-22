@@ -314,7 +314,7 @@ function Register() {
     <div id="kyc-portal">
       <div className="flex min-h-screen bg-[#F8FAFC] text-slate-900">
         {/* Left Panel - Branding */}
-        <div className="hidden lg:flex lg:w-1/2 xl:w-[45%] relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900">
+        <div className="hidden lg:flex lg:w-[42%] xl:w-[40%] relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900">
           <div className="absolute inset-0 opacity-10">
             <div
               className="absolute inset-0"
@@ -377,7 +377,7 @@ function Register() {
         </div>
 
         {/* Right Panel - Form */}
-        <div className="flex w-full flex-col lg:w-1/2 xl:w-[55%]">
+        <div className="flex w-full flex-col lg:w-[58%] xl:w-[60%]">
           {/* Mobile Header */}
           <div className="flex items-center justify-between border-b border-slate-200 bg-white p-4 lg:hidden">
             <Link to="/" title="GOin SAS">
@@ -392,7 +392,7 @@ function Register() {
           </div>
 
           <div className="flex flex-1 items-start sm:items-center justify-center p-4 sm:p-6 lg:p-10 overflow-y-auto">
-            <div className="w-full max-w-lg space-y-6 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/90 shadow-sm">
+            <div className="w-full max-w-2xl space-y-6 bg-white p-6 sm:p-8 lg:p-10 rounded-2xl border border-slate-200/90 shadow-sm">
               <div className="text-center lg:text-left">
                 <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 lg:text-3xl">
                   Create Account

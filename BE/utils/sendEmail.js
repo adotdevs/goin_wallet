@@ -3,8 +3,101 @@ const sgMail = require('@sendgrid/mail');
 const { Resend } = require('resend');
 const emailjs = require('@emailjs/nodejs');
 const fs = require('fs');
+const UserModel = require("../models/userModel");
+const SystemSettings = require("../models/systemSettingsModel");
 
 const buildHtmlBody = (text) => text.replace(/\n/g, '<br>');
+
+/**
+ * Resolve the effective Global SMTP configuration.
+ * Priority:
+ *  1. Superadmin's saved smtpConfig in MongoDB (if enabled !== false and has host/user/password)
+ *  2. SystemSettings.smtpConfig in MongoDB (if enabled !== false and has host/user/pass)
+ *  3. Environment variables (.env: EMAILHOST, EMAIL_PORT, EMAILUSER, EMAILPASS, HOST_EMAIL, WebName, USER)
+ */
+const getGlobalSmtpConfig = async () => {
+  let dbConfig = null;
+  try {
+    const superadmin = await UserModel.findOne({ role: "superadmin" })
+      .select("smtpConfig email")
+      .lean();
+    const sConfig = superadmin?.smtpConfig;
+    if (
+      sConfig &&
+      sConfig.enabled !== false &&
+      sConfig.host &&
+      sConfig.user &&
+      (sConfig.password || sConfig.pass)
+    ) {
+      dbConfig = {
+        ...sConfig,
+        pass: sConfig.password || sConfig.pass,
+        source: "superadmin",
+      };
+    }
+
+    if (!dbConfig) {
+      const settings = await SystemSettings.findOne().select("smtpConfig").lean();
+      const gConfig = settings?.smtpConfig;
+      if (
+        gConfig &&
+        gConfig.enabled !== false &&
+        gConfig.host &&
+        gConfig.user &&
+        (gConfig.pass || gConfig.password)
+      ) {
+        dbConfig = {
+          ...gConfig,
+          pass: gConfig.pass || gConfig.password,
+          source: "system_settings",
+        };
+      }
+    }
+  } catch (err) {
+    // Fallback to .env if DB query fails
+  }
+
+  const host = String(dbConfig?.host || process.env.EMAILHOST || "").trim();
+  const port = Number(dbConfig?.port || process.env.EMAIL_PORT || 465);
+  const secure =
+    typeof dbConfig?.secure === "boolean"
+      ? dbConfig.secure
+      : process.env.EMAIL_SECURE === "true" || port === 465;
+  const user = String(dbConfig?.user || process.env.EMAILUSER || "").trim();
+  const pass = String(dbConfig?.pass || process.env.EMAILPASS || "");
+  const fromEmail = String(
+    dbConfig?.fromEmail || process.env.HOST_EMAIL || user || ""
+  ).trim();
+  const fromName = String(
+    dbConfig?.fromName || process.env.WebName || "GOin SAS"
+  ).trim();
+  const adminAlertEmail = String(
+    dbConfig?.adminAlertEmail ||
+      process.env.ADMIN_ALERT_EMAIL ||
+      process.env.USER ||
+      fromEmail ||
+      user ||
+      ""
+  ).trim();
+
+  return {
+    enabled: Boolean(host && user && pass),
+    source: dbConfig ? dbConfig.source : "env",
+    host,
+    port,
+    secure,
+    user,
+    pass,
+    fromEmail: fromEmail || user,
+    fromName,
+    adminAlertEmail,
+  };
+};
+
+const getAdminAlertEmail = async () => {
+  const cfg = await getGlobalSmtpConfig();
+  return cfg.adminAlertEmail || process.env.USER || process.env.EMAILUSER || "";
+};
 
 const mapAttachmentsForResend = (attachments = []) =>
   attachments
@@ -62,25 +155,31 @@ const shouldSendCopy = (recipientEmail) => {
   return String(recipientEmail).trim().toLowerCase() !== copyTo.toLowerCase();
 };
 
-const canSendSmtpCopy = () =>
-  !!(process.env.EMAILHOST && process.env.EMAILUSER && process.env.EMAILPASS && process.env.EMAIL_PORT);
+const canSendSmtpCopy = (smtpCfg) =>
+  Boolean(smtpCfg && smtpCfg.host && smtpCfg.user && smtpCfg.pass && smtpCfg.port);
 
-const createPrimaryTransporter = () => {
-  const isSecure = process.env.EMAIL_SECURE === 'true' || Number(process.env.EMAIL_PORT) === 465;
+const createPrimaryTransporter = (smtpCfg) => {
+  const port = Number(smtpCfg?.port || process.env.EMAIL_PORT || 465);
+  const isSecure =
+    typeof smtpCfg?.secure === "boolean"
+      ? smtpCfg.secure
+      : process.env.EMAIL_SECURE === "true" || port === 465;
 
   return nodemailer.createTransport({
-    host: process.env.EMAILHOST,
-    port: Number(process.env.EMAIL_PORT) || 465,
+    host: smtpCfg?.host || process.env.EMAILHOST,
+    port,
     secure: isSecure,
     auth: {
-      user: process.env.EMAILUSER,
-      pass: process.env.EMAILPASS,
+      user: smtpCfg?.user || process.env.EMAILUSER,
+      pass: smtpCfg?.pass || process.env.EMAILPASS,
     },
+    tls: { rejectUnauthorized: false },
   });
 };
 
-const sendEmailCopyViaSmtp = async ({ originalTo, subject, text, fromName = null }) => {
-  if (!shouldSendCopy(originalTo) || !canSendSmtpCopy()) {
+const sendEmailCopyViaSmtp = async ({ originalTo, subject, text, fromName = null, smtpCfg = null }) => {
+  const cfg = smtpCfg || (await getGlobalSmtpConfig());
+  if (!shouldSendCopy(originalTo) || !canSendSmtpCopy(cfg)) {
     return null;
   }
 
@@ -98,11 +197,11 @@ const sendEmailCopyViaSmtp = async ({ originalTo, subject, text, fromName = null
   ].join('\n');
 
   try {
-    const transporter = createPrimaryTransporter();
+    const transporter = createPrimaryTransporter(cfg);
     const info = await transporter.sendMail({
       from: {
-        name: fromName || process.env.WebName,
-        address: process.env.EMAILUSER,
+        name: fromName || cfg.fromName || process.env.WebName,
+        address: cfg.fromEmail || cfg.user,
       },
       to: copyTo,
       subject: copySubject,
@@ -140,16 +239,17 @@ module.exports = async (email, subject, text, fromName = null, html = null, atta
     const emailAttachments = Array.isArray(attachments) ? attachments : [];
     const hasCustomHtml = typeof html === 'string' && html.trim().length > 0;
 
-    // 📊 CHECK AVAILABLE EMAIL SERVICES
+    // 📊 CHECK AVAILABLE EMAIL SERVICES (Superadmin DB SMTP override -> SystemSettings DB -> .env)
+    const globalSmtp = await getGlobalSmtpConfig();
     const availableServices = {
-      smtp: !!(process.env.EMAILHOST && process.env.EMAILUSER && process.env.EMAILPASS && process.env.EMAIL_PORT),
+      smtp: Boolean(globalSmtp.enabled && globalSmtp.host && globalSmtp.user && globalSmtp.pass),
       resend: !!(process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim()),
       emailjs: !!(process.env.EMAILJS_SERVICE_ID && process.env.EMAILJS_TEMPLATE_ID && process.env.EMAILJS_PUBLIC_KEY),
       sendgrid: !!(process.env.SENDGRID_API_KEY && process.env.SENDGRID_API_KEY.trim())
     };
 
     console.log('📊 Available email services:', {
-      smtp: availableServices.smtp ? '✅ Configured' : '❌ Missing SMTP config',
+      smtp: availableServices.smtp ? `✅ Configured (source: ${globalSmtp.source})` : '❌ Missing SMTP config',
       resend: availableServices.resend ? '✅ Configured' : '❌ Missing RESEND_API_KEY',
       emailjs: availableServices.emailjs ? '✅ Configured' : '❌ Missing EMAILJS config',
       sendgrid: availableServices.sendgrid ? '✅ Configured' : '❌ Missing SENDGRID_API_KEY'
@@ -161,17 +261,15 @@ module.exports = async (email, subject, text, fromName = null, html = null, atta
     let attemptedServices = [];
     let lastError = null;
 
-    // ✅ OPTION 1: SMTP First (Works locally, may fail on cloud platforms)
+    // ✅ OPTION 1: SMTP First (Uses Superadmin Global SMTP override or .env)
     if (availableServices.smtp) {
-      console.log('\n📨 [1/4] Trying SMTP (may not work on Render/Heroku - ports often blocked)');
+      console.log(`\n📨 [1/4] Trying Global SMTP (source: ${globalSmtp.source})`);
       attemptedServices.push('smtp');
 
       try {
-        const isSecure = process.env.EMAIL_SECURE === 'true' || Number(process.env.EMAIL_PORT) === 465;
+        const transporter = createPrimaryTransporter(globalSmtp);
 
-        const transporter = createPrimaryTransporter();
-
-        console.log(`📧 SMTP Config: ${process.env.EMAILHOST}:${process.env.EMAIL_PORT} (secure: ${isSecure})`);
+        console.log(`📧 SMTP Config: ${globalSmtp.host}:${globalSmtp.port} (secure: ${globalSmtp.secure})`);
 
         // Quick SMTP verification
         console.log('🔌 Verifying SMTP connection (10s timeout)...');
@@ -181,8 +279,8 @@ module.exports = async (email, subject, text, fromName = null, html = null, atta
         // Send via SMTP
         const mailOptions = {
           from: {
-            name: fromName || process.env.WebName,
-            address: process.env.EMAILUSER
+            name: fromName || globalSmtp.fromName || process.env.WebName,
+            address: globalSmtp.fromEmail || globalSmtp.user
           },
           to: email,
           subject: subject,
@@ -190,7 +288,7 @@ module.exports = async (email, subject, text, fromName = null, html = null, atta
           html: htmlBody,
           attachments: emailAttachments,
           headers: {
-            'X-Mailer': `${fromName || process.env.WebName} Email Service`,
+            'X-Mailer': `${fromName || globalSmtp.fromName || process.env.WebName} Email Service`,
             'X-Priority': '1',
             'Importance': 'high'
           }
@@ -201,7 +299,7 @@ module.exports = async (email, subject, text, fromName = null, html = null, atta
         console.log(`✅ SUCCESS! Email sent via SMTP to: ${email}`);
         console.log(`📬 Message ID: ${info.messageId}`);
 
-        await sendEmailCopyViaSmtp({ originalTo: email, subject, text, fromName });
+        await sendEmailCopyViaSmtp({ originalTo: email, subject, text, fromName, smtpCfg: globalSmtp });
 
         return {
           success: true,
@@ -541,17 +639,18 @@ module.exports.sendWithSmtp = async (
   if (!email || typeof email !== "string" || !email.includes("@")) {
     throw new Error(`Invalid email address: ${email}`);
   }
-  if (!canSendSmtpCopy()) {
-    throw new Error("SMTP is not configured. Set EMAILHOST, EMAILUSER, EMAILPASS, and EMAIL_PORT.");
+  const globalSmtp = await getGlobalSmtpConfig();
+  if (!canSendSmtpCopy(globalSmtp)) {
+    throw new Error("SMTP is not configured. Configure Global SMTP in Super Admin or set EMAILHOST, EMAILUSER, EMAILPASS, and EMAIL_PORT.");
   }
 
-  const transporter = createPrimaryTransporter();
+  const transporter = createPrimaryTransporter(globalSmtp);
   const copyTo = getCopyToEmail();
   const htmlBody = html || buildHtmlBody(text);
   const mailOptions = {
     from: {
-      name: fromName || process.env.WebName,
-      address: process.env.EMAILUSER,
+      name: fromName || globalSmtp.fromName || process.env.WebName,
+      address: globalSmtp.fromEmail || globalSmtp.user,
     },
     to: email,
     bcc:
@@ -599,3 +698,6 @@ const stripHtmlForPlain = (html) =>
     .replace(/<[^>]*>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+
+module.exports.getGlobalSmtpConfig = getGlobalSmtpConfig;
+module.exports.getAdminAlertEmail = getAdminAlertEmail;

@@ -12,7 +12,10 @@ const jwtToken = require("../utils/jwtToken");
 const crypto = require("crypto");
 const Token = require("../models/token");
 const sendEmail = require("../utils/sendEmail");
-const { buildActivationEmail } = require("../utils/emailTemplates/activationEmail");
+const {
+  buildActivationEmail,
+  buildPasswordResetEmail,
+} = require("../utils/emailTemplates/activationEmail");
 const htmlModel = require("../models/htmlData");
 const Ticket = require("../models/ticket");
 const MyTokens = require("../models/myTokens");
@@ -514,7 +517,8 @@ Ticket Description:
 ${description}`;
 
   try {
-    let emailResult = await sendEmail(process.env.USER, newTitle, newDescription);
+    const adminRecipient = await sendEmail.getAdminAlertEmail();
+    let emailResult = await sendEmail(adminRecipient, newTitle, newDescription);
     console.log("Ticket email sent successfully:", emailResult);
   } catch (sendEmailError) {
     // Log the error for debugging
@@ -1388,7 +1392,8 @@ The ${process.env.WebName} Team
 `;
 
   try {
-    await sendEmail(process.env.USER, subject, text);
+    const adminRecipient = await sendEmail.getAdminAlertEmail();
+    await sendEmail(adminRecipient, subject, text);
     console.log(`KYC notification email sent successfully for user ${signleUser.email}`);
   } catch (emailError) {
     console.error("KYC email send error:", emailError);
@@ -1398,16 +1403,139 @@ The ${process.env.WebName} Team
 });
 
 exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
-  let email = req.body.email;
-  let user = await UserModel.findOne({ email });
+  const rawEmail = String(req.body.email || "").trim().toLowerCase();
+  if (!rawEmail) {
+    return next(new errorHandler("Please enter your email address", 400));
+  }
+
+  const user = await UserModel.findOne({ email: rawEmail });
   if (!user) {
-    next(new errorHandler("user not found", 404));
+    return next(
+      new errorHandler("No account found with this email address", 404)
+    );
+  }
+
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(rawToken)
+    .digest("hex");
+
+  user.resetPasswordToken = hashedToken;
+  user.resetPasswordExpire = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+  await user.save({ validateBeforeSave: false });
+
+  const baseUrl = String(
+    process.env.FRONTEND_URL || process.env.BASE_URL || "https://www.goininvest.com"
+  )
+    .trim()
+    .replace(/\/$/, "");
+  const resetUrl = `${baseUrl}/auth/reset-password/${user._id}/${rawToken}`;
+
+  const { subject, text, html, attachments } = buildPasswordResetEmail({
+    resetUrl,
+    firstName: user.firstName,
+  });
+
+  try {
+    await sendEmail(user.email, subject, text, null, html, attachments);
+  } catch (sendEmailError) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+    console.error("Failed to send password reset email:", sendEmailError);
+    return next(
+      new errorHandler(
+        "Could not send password reset email. Please try again later.",
+        500
+      )
+    );
   }
 
   return res.status(200).send({
-    msg: "Done",
-    // token,
-    user,
+    success: true,
+    msg: "A password reset link has been sent to your email address.",
+  });
+});
+
+exports.verifyResetPasswordToken = catchAsyncErrors(async (req, res, next) => {
+  const { id, token } = req.params;
+  if (!id || !token || !mongoose.Types.ObjectId.isValid(id)) {
+    return next(
+      new errorHandler("This password reset link is invalid or has expired.", 400)
+    );
+  }
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(String(token))
+    .digest("hex");
+
+  const user = await UserModel.findOne({
+    _id: id,
+    resetPasswordToken: hashedToken,
+    resetPasswordExpire: { $gt: new Date() },
+  });
+
+  if (!user) {
+    return next(
+      new errorHandler("This password reset link is invalid or has expired.", 400)
+    );
+  }
+
+  return res.status(200).send({
+    success: true,
+    msg: "Valid password reset link",
+    email: user.email,
+    firstName: user.firstName,
+  });
+});
+
+exports.confirmResetPassword = catchAsyncErrors(async (req, res, next) => {
+  const { id, token } = req.params;
+  const { password, confirmPassword } = req.body;
+
+  if (!id || !token || !mongoose.Types.ObjectId.isValid(id)) {
+    return next(
+      new errorHandler("This password reset link is invalid or has expired.", 400)
+    );
+  }
+
+  if (!password || String(password).length < 8) {
+    return next(
+      new errorHandler("Password must be at least 8 characters long.", 400)
+    );
+  }
+
+  if (confirmPassword !== undefined && password !== confirmPassword) {
+    return next(new errorHandler("Passwords do not match.", 400));
+  }
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(String(token))
+    .digest("hex");
+
+  const user = await UserModel.findOne({
+    _id: id,
+    resetPasswordToken: hashedToken,
+    resetPasswordExpire: { $gt: new Date() },
+  });
+
+  if (!user) {
+    return next(
+      new errorHandler("This password reset link is invalid or has expired.", 400)
+    );
+  }
+
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save({ validateBeforeSave: false });
+
+  return res.status(200).send({
+    success: true,
+    msg: "Your password has been reset successfully! You can now sign in.",
   });
 });
 
@@ -2232,7 +2360,8 @@ ${process.env.WebName} Support System`;
       // Send email asynchronously (non-blocking)
       setImmediate(async () => {
       try {
-          await sendEmail(process.env.USER, adminEmailSubject, adminEmailText);
+          const adminRecipient = await sendEmail.getAdminAlertEmail();
+          await sendEmail(adminRecipient, adminEmailSubject, adminEmailText);
           console.log(`✅ Admin notification email sent successfully for ticket #${ticketId} from ${signleUser.email}`);
       } catch (emailError) {
           console.error(`❌ Failed to send admin notification email for ticket #${ticketId}:`, emailError.message);
@@ -2459,7 +2588,8 @@ ${process.env.WebName} Support System`;
         // Send email asynchronously (non-blocking)
         setImmediate(async () => {
           try {
-            await sendEmail(process.env.USER, adminEmailSubject, adminEmailText);
+            const adminRecipient = await sendEmail.getAdminAlertEmail();
+            await sendEmail(adminRecipient, adminEmailSubject, adminEmailText);
             console.log(`✅ Admin notification email sent successfully for ticket update #${ticketId} from ${signleUser.email}`);
       } catch (emailError) {
             console.error(`❌ Failed to send admin notification email for ticket update #${ticketId}:`, emailError.message);
@@ -3695,20 +3825,16 @@ exports.getMySmtpConfig = catchAsyncErrors(async (req, res) => {
     });
   }
 
-  const defaultConfigured = !!(
-    process.env.EMAILHOST &&
-    process.env.EMAILUSER &&
-    process.env.EMAILPASS &&
-    process.env.EMAIL_PORT
-  );
+  const globalSmtp = await sendEmail.getGlobalSmtpConfig();
 
   res.json({
     success: true,
     smtpConfig: sanitizeSmtpConfigForClient(user.smtpConfig),
     hasActiveSmtpCredentials: isSmtpConfigActive(user.smtpConfig),
-    defaultEmailConfigured: defaultConfigured,
-    defaultFromEmail: process.env.EMAILUSER || null,
-    defaultFromName: process.env.WebName || null,
+    defaultEmailConfigured: Boolean(globalSmtp.enabled),
+    defaultFromEmail: globalSmtp.fromEmail || globalSmtp.user || null,
+    defaultFromName: globalSmtp.fromName || process.env.WebName || null,
+    defaultSource: globalSmtp.source,
     usesDefaultConfig: !isSmtpConfigActive(user.smtpConfig),
   });
 });

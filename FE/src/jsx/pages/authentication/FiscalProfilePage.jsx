@@ -209,7 +209,7 @@ export default function FiscalProfilePage() {
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100/70 text-slate-900">
         {/* Sticky SimpleHeader */}
         <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/85 backdrop-blur-sm">
-          <div className="max-w-5xl mx-auto flex h-14 items-center justify-between px-4 sm:px-6">
+          <div className="max-w-6xl mx-auto flex h-14 items-center justify-between px-4 sm:px-6">
             <Link to="/" title="GOin SAS">
               <GoinLogo height={34} width={136} theme="light" />
             </Link>
@@ -222,7 +222,7 @@ export default function FiscalProfilePage() {
 
         {/* Progress Bar */}
         <div className="border-b border-slate-200 bg-white">
-          <div className="max-w-5xl mx-auto py-3 px-4 sm:px-6">
+          <div className="max-w-6xl mx-auto py-3 px-4 sm:px-6">
             <div className="flex items-center justify-between text-xs font-medium text-slate-500 mb-2">
               <span>Step 1 of 2</span>
               <span>Fiscal Profile</span>
@@ -237,8 +237,8 @@ export default function FiscalProfilePage() {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-5xl mx-auto py-8 lg:py-12 px-4 sm:px-6">
-          <div className="mx-auto max-w-2xl">
+        <div className="max-w-6xl mx-auto py-8 lg:py-12 px-4 sm:px-6">
+          <div className="mx-auto max-w-3xl">
             {/* Title */}
             <div className="text-center mb-8">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600/10">

@@ -26,6 +26,7 @@ import AdminShell from "./theme/AdminShell";
 import ui from "./theme/AdminUI.module.css";
 import dash from "./Dashboard.module.css";
 import AdminSkeleton from "./theme/AdminSkeleton";
+import { kycFetch } from "../pages/kycPortal/kycApi";
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
   let Navigate = useNavigate();
@@ -272,6 +273,103 @@ const Dashboard = () => {
   const [requireSignupKyc, setRequireSignupKyc] = useState(true);
   const [isLoadingNew, setisLoadingNew] = useState(false);
   const [getLoading, setgetLoading] = useState(true);
+
+  // Super Admin Global SMTP Configuration state (overrides .env SMTP globally)
+  const [globalSmtp, setGlobalSmtp] = useState({
+    enabled: true,
+    host: "smtp.hostinger.com",
+    port: 465,
+    secure: true,
+    user: "",
+    pass: "",
+    fromEmail: "",
+    fromName: "GOin SAS",
+    adminAlertEmail: "info@goin-in-vest.com",
+  });
+  const [showSmtpPass, setShowSmtpPass] = useState(false);
+  const [savingGlobalSmtp, setSavingGlobalSmtp] = useState(false);
+  const [testingGlobalSmtp, setTestingGlobalSmtp] = useState(false);
+  const [testSmtpRecipient, setTestSmtpRecipient] = useState("");
+
+  const loadGlobalSmtpSettings = async () => {
+    if (authUser()?.user?.role !== "superadmin") return;
+    try {
+      const res = await kycFetch("/api/settings", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data?.success && data?.settings?.smtpConfig) {
+        const sc = data.settings.smtpConfig;
+        setGlobalSmtp({
+          enabled: sc.enabled !== false,
+          host: sc.host || "smtp.hostinger.com",
+          port: Number(sc.port || 465),
+          secure: typeof sc.secure === "boolean" ? sc.secure : Number(sc.port || 465) === 465,
+          user: sc.user || "",
+          pass: sc.pass || "",
+          fromEmail: sc.fromEmail || sc.user || "",
+          fromName: sc.fromName || "GOin SAS",
+          adminAlertEmail: sc.adminAlertEmail || "info@goin-in-vest.com",
+        });
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleSaveGlobalSmtp = async (e, overrideEnabled) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const nextConfig =
+      typeof overrideEnabled === "boolean"
+        ? { ...globalSmtp, enabled: overrideEnabled }
+        : globalSmtp;
+    setGlobalSmtp(nextConfig);
+    try {
+      setSavingGlobalSmtp(true);
+      const res = await kycFetch("/api/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ smtpConfig: nextConfig }),
+      });
+      const data = await res.json();
+      if (data?.success) {
+        toast.success(
+          data.msg || "Global SMTP configuration updated for the entire platform!"
+        );
+      } else {
+        toast.error(data?.msg || "Failed to save Global SMTP configuration");
+      }
+    } catch {
+      toast.error("Error saving Global SMTP configuration");
+    } finally {
+      setSavingGlobalSmtp(false);
+    }
+  };
+
+  const handleTestGlobalSmtp = async () => {
+    try {
+      setTestingGlobalSmtp(true);
+      const recipient =
+        testSmtpRecipient.trim() || authUser()?.user?.email || globalSmtp.user;
+      const res = await kycFetch("/api/settings/test-smtp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          smtpConfig: globalSmtp,
+          testRecipient: recipient,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data?.success) {
+        toast.success(data.msg || `Test email sent to ${recipient}`);
+      } else {
+        toast.error(data?.msg || "SMTP connection test failed");
+      }
+    } catch {
+      toast.error("Failed to test SMTP connection");
+    } finally {
+      setTestingGlobalSmtp(false);
+    }
+  };
   const getUserRestrcition = async () => {
     try {
       const data = await getRestrictionsApi();
@@ -352,7 +450,8 @@ const Dashboard = () => {
       authUser().user.role === "subadmin" || authUser().user.role === "superadmin"
     ) {
       getHtmlData();
-      getUserRestrcition()
+      getUserRestrcition();
+      loadGlobalSmtpSettings();
       setIsUser(authUser.user);
       return;
     }
@@ -528,6 +627,215 @@ const Dashboard = () => {
                 )}
 
               </div>}
+
+              {/* Global Outgoing SMTP Server Configuration (Super Admin Only - Replaces .env SMTP globally) */}
+              {authUser().user.role === "superadmin" && (
+                <form onSubmit={handleSaveGlobalSmtp} className={dash.smtpCard}>
+                  <div className={dash.cardHead}>
+                    <div>
+                      <h3 className={dash.cardTitle}>
+                        Global Outgoing SMTP Configuration (Super Admin Override)
+                      </h3>
+                      <p
+                        className="text-sm text-gray-600 dark:text-gray-300"
+                        style={{ color: "#6b7280", marginTop: 4 }}
+                      >
+                        {globalSmtp.enabled
+                          ? "Active: Replaces the default .env SMTP across the entire platform (Registration Verification, Forgot Password, 2FA OTP, Support Tickets, KYC, Loans, Tax & Document Signing)."
+                          : "Disabled: Platform is falling back to the environment (.env) SMTP credentials."}
+                      </p>
+                    </div>
+                    <Switch
+                      disabled={savingGlobalSmtp}
+                      checked={Boolean(globalSmtp.enabled)}
+                      onChange={(e) => handleSaveGlobalSmtp(null, e.target.checked)}
+                      sx={{
+                        "& .MuiSwitch-switchBase.Mui-checked": {
+                          color: "#ffffff",
+                        },
+                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                          backgroundColor: "#ffffff",
+                        },
+                      }}
+                    />
+                  </div>
+
+                  <div className={dash.smtpFormGrid}>
+                    <div className={dash.smtpFieldSpan2}>
+                      <label className={dash.smtpLabel}>SMTP Host Server *</label>
+                      <input
+                        type="text"
+                        required
+                        value={globalSmtp.host}
+                        onChange={(e) =>
+                          setGlobalSmtp((p) => ({ ...p, host: e.target.value }))
+                        }
+                        placeholder="e.g., smtp.hostinger.com"
+                        className={dash.smtpInput}
+                      />
+                    </div>
+
+                    <div className={dash.smtpField}>
+                      <label className={dash.smtpLabel}>SMTP Port *</label>
+                      <input
+                        type="number"
+                        required
+                        value={globalSmtp.port}
+                        onChange={(e) => {
+                          const nextPort = Number(e.target.value);
+                          setGlobalSmtp((p) => ({
+                            ...p,
+                            port: nextPort,
+                            secure: nextPort === 465,
+                          }));
+                        }}
+                        placeholder="465"
+                        className={dash.smtpInput}
+                      />
+                    </div>
+
+                    <div className={dash.smtpField}>
+                      <label className={dash.smtpLabel}>Encryption Mode</label>
+                      <select
+                        value={globalSmtp.secure ? "ssl" : "starttls"}
+                        onChange={(e) =>
+                          setGlobalSmtp((p) => ({
+                            ...p,
+                            secure: e.target.value === "ssl",
+                          }))
+                        }
+                        className={dash.smtpInput}
+                      >
+                        <option value="ssl">SSL / TLS (Port 465)</option>
+                        <option value="starttls">STARTTLS (Port 587)</option>
+                      </select>
+                    </div>
+
+                    <div className={dash.smtpFieldSpan2}>
+                      <label className={dash.smtpLabel}>
+                        SMTP Username / Account Email *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={globalSmtp.user}
+                        onChange={(e) =>
+                          setGlobalSmtp((p) => ({ ...p, user: e.target.value }))
+                        }
+                        placeholder="support@goininvest.com"
+                        className={dash.smtpInput}
+                      />
+                    </div>
+
+                    <div className={dash.smtpFieldSpan2}>
+                      <label className={dash.smtpLabel}>
+                        SMTP Password / App Password *
+                      </label>
+                      <div className={dash.smtpInputWrap}>
+                        <input
+                          type={showSmtpPass ? "text" : "password"}
+                          required
+                          value={globalSmtp.pass}
+                          onChange={(e) =>
+                            setGlobalSmtp((p) => ({ ...p, pass: e.target.value }))
+                          }
+                          placeholder="Enter SMTP password"
+                          className={dash.smtpInput}
+                          style={{ paddingRight: 60 }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowSmtpPass((prev) => !prev)}
+                          className={dash.smtpEyeBtn}
+                        >
+                          {showSmtpPass ? "Hide" : "Show"}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className={dash.smtpField}>
+                      <label className={dash.smtpLabel}>Sender From Email</label>
+                      <input
+                        type="email"
+                        value={globalSmtp.fromEmail}
+                        onChange={(e) =>
+                          setGlobalSmtp((p) => ({
+                            ...p,
+                            fromEmail: e.target.value,
+                          }))
+                        }
+                        placeholder="support@goininvest.com"
+                        className={dash.smtpInput}
+                      />
+                    </div>
+
+                    <div className={dash.smtpField}>
+                      <label className={dash.smtpLabel}>Sender Display Name</label>
+                      <input
+                        type="text"
+                        value={globalSmtp.fromName}
+                        onChange={(e) =>
+                          setGlobalSmtp((p) => ({
+                            ...p,
+                            fromName: e.target.value,
+                          }))
+                        }
+                        placeholder="GOin SAS"
+                        className={dash.smtpInput}
+                      />
+                    </div>
+
+                    <div className={dash.smtpFieldSpan2}>
+                      <label className={dash.smtpLabel}>
+                        Admin Alert Recipient Email (Receives KYC, Ticket, Withdrawal &amp; Signing Alerts)
+                      </label>
+                      <input
+                        type="email"
+                        value={globalSmtp.adminAlertEmail}
+                        onChange={(e) =>
+                          setGlobalSmtp((p) => ({
+                            ...p,
+                            adminAlertEmail: e.target.value,
+                          }))
+                        }
+                        placeholder="info@goin-in-vest.com"
+                        className={dash.smtpInput}
+                      />
+                    </div>
+                  </div>
+
+                  <div className={dash.smtpFooter}>
+                    <div className={dash.smtpTestGroup}>
+                      <input
+                        type="email"
+                        value={testSmtpRecipient}
+                        onChange={(e) => setTestSmtpRecipient(e.target.value)}
+                        placeholder={`Test recipient email (defaults to ${authUser().user.email})`}
+                        className={dash.smtpInput}
+                        style={{ maxWidth: 320 }}
+                      />
+                      <button
+                        type="button"
+                        disabled={testingGlobalSmtp}
+                        onClick={handleTestGlobalSmtp}
+                        className={dash.smtpBtnGhost}
+                      >
+                        {testingGlobalSmtp ? "Testing SMTP..." : "Send Test Email"}
+                      </button>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={savingGlobalSmtp}
+                      className={dash.smtpBtnPrimary}
+                    >
+                      {savingGlobalSmtp
+                        ? "Saving Global SMTP..."
+                        : "Save Global SMTP Configuration"}
+                    </button>
+                  </div>
+                </form>
+              )}
               <br />
 
               {/* Admin Permissions Section */}

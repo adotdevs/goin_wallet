@@ -1380,10 +1380,9 @@ exports.getSettings = async (req, res) => {
     const settings = await ensureSettings();
     const viewer = req.user;
     const settingsObj = settings.toObject();
-    const canManage =
-      viewer.role === "superadmin" ||
-      (viewer.role === "admin" && viewer.adminPermissions?.canManageSettings !== false);
-    if (!canManage) delete settingsObj.smtpConfig;
+    if (viewer.role !== "superadmin") {
+      delete settingsObj.smtpConfig;
+    }
     return res.json({ success: true, settings: settingsObj });
   } catch (error) {
     return fail(res, 500, error?.message || "Failed to load settings");
@@ -1393,10 +1392,9 @@ exports.getSettings = async (req, res) => {
 exports.patchSettings = async (req, res) => {
   try {
     const viewer = req.user;
-    const canManage =
-      viewer.role === "superadmin" ||
-      (viewer.role === "admin" && viewer.adminPermissions?.canManageSettings !== false);
-    if (!canManage) return fail(res, 403, "Your account does not have permission to modify global settings");
+    if (viewer.role !== "superadmin") {
+      return fail(res, 403, "Only Super Admin can modify global settings and global SMTP configuration");
+    }
     const settings = await ensureSettings();
     const body = req.body || {};
     ["requireEmailVerification", "requireKycBeforeSign", "autoNotifyClientOnUpload", "autoNotifyAdminOnSign"].forEach(
@@ -1453,10 +1451,9 @@ exports.patchSettings = async (req, res) => {
 exports.testSmtp = async (req, res) => {
   try {
     const viewer = req.user;
-    const canManage =
-      viewer.role === "superadmin" ||
-      (viewer.role === "admin" && viewer.adminPermissions?.canManageSettings !== false);
-    if (!canManage) return fail(res, 403, "Your account does not have permission to test global SMTP settings");
+    if (viewer.role !== "superadmin") {
+      return fail(res, 403, "Only Super Admin can test global SMTP settings");
+    }
     const recipient = String(req.body?.testRecipient || viewer.email || "").trim();
     if (!recipient) return fail(res, 400, "Please enter a recipient email for the test");
     const result = await testSmtpConnectionAndSend({

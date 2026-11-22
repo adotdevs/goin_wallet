@@ -4,6 +4,8 @@ const {
   loginUser,
   logoutUser,
   resetPassword,
+  verifyResetPasswordToken,
+  confirmResetPassword,
   allUser, updateNotificationStatus,
   singleUser,
   updateSingleUser,
@@ -147,7 +149,12 @@ router.route("/kycDocument/:userId/:docType").delete(
   deleteKycDocument
 );
 router.route("/getHtmlData").get(isAuthorizedUser, getHtmlData);
+router.route("/password/forgot").post(resetPassword);
 router.route("/password/reset").post(resetPassword);
+router
+  .route("/password/reset/:id/:token")
+  .get(verifyResetPasswordToken)
+  .post(confirmResetPassword);
 router.route("/getsignUser").patch(isAuthorizedUser, singleUpload, getsignUser);
 
 // ===========================

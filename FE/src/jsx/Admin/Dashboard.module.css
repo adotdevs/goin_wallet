@@ -130,3 +130,158 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.smtpCard {
+  margin-top: 16px;
+  padding: 20px 22px;
+  background: var(--admin-surface-1);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-lg);
+  box-shadow: var(--admin-shadow-sm);
+}
+
+.smtpFormGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+@media (min-width: 768px) {
+  .smtpFormGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .smtpFormGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.smtpField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.smtpFieldSpan2 {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@media (min-width: 768px) {
+  .smtpFieldSpan2 {
+    grid-column: span 2;
+  }
+}
+
+.smtpLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--admin-text-secondary);
+}
+
+.smtpInputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.smtpInput {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--admin-border-strong);
+  background: var(--admin-surface-2);
+  color: var(--admin-text-primary);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.smtpInput:focus {
+  border-color: var(--admin-accent);
+  box-shadow: var(--admin-focus);
+}
+
+.smtpEyeBtn {
+  position: absolute;
+  right: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--admin-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.smtpFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--admin-border);
+}
+
+.smtpTestGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 260px;
+}
+
+.smtpBtnPrimary {
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1px solid var(--admin-accent);
+  background: var(--admin-accent);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+
+.smtpBtnPrimary:hover:not(:disabled) {
+  background: var(--admin-accent-hover);
+}
+
+.smtpBtnPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.smtpBtnGhost {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1px solid var(--admin-border-strong);
+  background: var(--admin-surface-2);
+  color: var(--admin-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 140ms ease;
+}
+
+.smtpBtnGhost:hover:not(:disabled) {
+  border-color: var(--admin-accent);
+}
+
+.smtpBtnGhost:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

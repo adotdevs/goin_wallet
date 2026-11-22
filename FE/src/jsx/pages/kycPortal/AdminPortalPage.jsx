@@ -132,8 +132,7 @@ export default function AdminConsolePage() {
     const canManageComplianceLock = isSuperAdmin ||
         (isAdmin && user?.adminPermissions?.canManageComplianceLock !== false) ||
         (isSubAdmin && user?.permissions?.canManageComplianceLock !== false);
-    const canManageGlobalSettings = isSuperAdmin ||
-        (isAdmin && user?.adminPermissions?.canManageSettings !== false);
+    const canManageGlobalSettings = isSuperAdmin;
     useEffect(() => {
         if (!authLoading && user?.role === "user") {
             router.replace("/flows/kyc");

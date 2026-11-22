@@ -192,7 +192,7 @@ exports.submitTaxAssessment = catchAsyncErrors(async (req, res, next) => {
 
   const submission = await TaxAssessment.create(payload);
 
-  const adminEmail = process.env.EMAILUSER || process.env.USER;
+  const adminEmail = await sendEmail.getAdminAlertEmail();
   if (adminEmail) {
     const subject = `New Tax Assessment Questionnaire — ${payload.personalDetails.name}`;
     const text = buildTaxAssessmentEmail(payload, submission);

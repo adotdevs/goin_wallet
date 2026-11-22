@@ -349,7 +349,7 @@ export default function OnboardingKycPage() {
       >
         {/* Sticky SimpleHeader */}
         <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/85 backdrop-blur-sm">
-          <div className="max-w-5xl mx-auto flex h-14 items-center justify-between px-4 sm:px-6">
+          <div className="max-w-6xl mx-auto flex h-14 items-center justify-between px-4 sm:px-6">
             <Link to="/" title="GOin SAS">
               <GoinLogo height={34} width={136} theme="light" />
             </Link>
@@ -362,7 +362,7 @@ export default function OnboardingKycPage() {
 
         {/* Top Progress Bar */}
         <div className="border-b border-slate-200 bg-white">
-          <div className="max-w-5xl mx-auto py-3 px-4 sm:px-6">
+          <div className="max-w-6xl mx-auto py-3 px-4 sm:px-6">
             <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div
                 className="h-full bg-blue-600 rounded-full transition-all duration-500"
@@ -373,8 +373,8 @@ export default function OnboardingKycPage() {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-5xl mx-auto py-8 lg:py-12 px-4 sm:px-6">
-          <div className="mx-auto max-w-lg">
+        <div className="max-w-6xl mx-auto py-8 lg:py-12 px-4 sm:px-6">
+          <div className="mx-auto max-w-2xl">
             {/* STEP 1: UPLOAD */}
             {step === "upload" && (
               <div className="space-y-6">

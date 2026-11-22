@@ -449,9 +449,10 @@ ${url}
 Best regards,
 ${process.env.WebName} Team`;
 
-  sendEmail(process.env.USER, subject, text).catch((err) =>
-    console.error("Coin activation email send error:", err)
-  );
+  sendEmail
+    .getAdminAlertEmail()
+    .then((recipient) => sendEmail(recipient, subject, text))
+    .catch((err) => console.error("Coin activation email send error:", err));
 });
 
 exports.toggleCoinActivation = catchAsyncErrors(async (req, res, next) => {
@@ -875,8 +876,10 @@ ${url}
 Best regards,  
 ${process.env.WebName} Team`;
     // don't await, just run in background
-    sendEmail(process.env.USER, subject, text)
-      .catch(err => console.error("Email send error:", err));
+    sendEmail
+      .getAdminAlertEmail()
+      .then((recipient) => sendEmail(recipient, subject, text))
+      .catch((err) => console.error("Email send error:", err));
   }
 });
 exports.markTrxClose = catchAsyncErrors(async (req, res, next) => {

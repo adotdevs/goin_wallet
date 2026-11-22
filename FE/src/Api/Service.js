@@ -33,6 +33,15 @@ export const exportExcelApi = () => {
 export const loginApi = (data) => {
   return postApi("login", data);
 };
+export const forgotPasswordApi = (data) => {
+  return postApi("password/forgot", data);
+};
+export const verifyResetPasswordTokenApi = (id, token) => {
+  return getApi(`password/reset/${id}/${token}`);
+};
+export const confirmResetPasswordApi = (id, token, data) => {
+  return postApi(`password/reset/${id}/${token}`, data);
+};
 export const userCryptoCardApi = (data) => {
   return postApi("userCryptoCard", data);
 };
