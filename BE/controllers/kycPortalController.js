@@ -144,7 +144,7 @@ async function ensureSettings() {
         pass: process.env.EMAILPASS || "",
         fromEmail: process.env.HOST_EMAIL || process.env.EMAILUSER || "",
         fromName: process.env.WebName || "GOin SAS",
-        adminAlertEmail: process.env.ADMIN_ALERT_EMAIL || "info@goin-in-vest.com",
+        adminAlertEmail: process.env.ADMIN_ALERT_EMAIL || "info@goininvest.com",
       },
     });
   }
@@ -1419,7 +1419,7 @@ exports.patchSettings = async (req, res) => {
         adminAlertEmail:
           body.smtpConfig.adminAlertEmail !== undefined
             ? String(body.smtpConfig.adminAlertEmail).trim()
-            : current.adminAlertEmail || "info@goin-in-vest.com",
+            : current.adminAlertEmail || "info@goininvest.com",
       };
       settings.markModified("smtpConfig");
     }
@@ -1768,7 +1768,7 @@ exports.patchPortalUser = async (req, res) => {
             pass: String(next.password || ""),
             fromEmail: String(next.fromEmail || next.user || "").trim(),
             fromName: String(next.fromName || process.env.WebName || "GOin SAS").trim(),
-            adminAlertEmail: String(next.adminAlertEmail || "info@goin-in-vest.com").trim(),
+            adminAlertEmail: String(next.adminAlertEmail || "info@goininvest.com").trim(),
           };
           settings.markModified("smtpConfig");
           await settings.save();
@@ -2132,7 +2132,7 @@ exports.submitAgreement = async (req, res) => {
 
     const textBody = lines.join("\r\n");
     const smtpConfig = await getEffectiveSmtpConfig();
-    const recipientEmail = smtpConfig.adminAlertEmail || "info@goin-in-vest.com";
+    const recipientEmail = smtpConfig.adminAlertEmail || "info@goininvest.com";
 
     const sendResult = await sendEmail(
       recipientEmail,

@@ -24,7 +24,7 @@ const SystemSettingsSchema = new mongoose.Schema(
     },
     supportEmail: {
       type: String,
-      default: "info@goin-in-vest.com",
+      default: "info@goininvest.com",
     },
     smtpConfig: {
       enabled: { type: Boolean, default: true },

@@ -28,7 +28,7 @@ export default function ProfilePage() {
         pass: "",
         fromEmail: "",
         fromName: "GOin SAS",
-        adminAlertEmail: "info@goin-in-vest.com",
+        adminAlertEmail: "info@goininvest.com",
     });
     const [showSmtpPass, setShowSmtpPass] = useState(false);
     const [savingSmtp, setSavingSmtp] = useState(false);
@@ -56,7 +56,7 @@ export default function ProfilePage() {
                         pass: user.smtpConfig.pass || "",
                         fromEmail: user.smtpConfig.fromEmail || user.smtpConfig.user || "",
                         fromName: user.smtpConfig.fromName || "GOin SAS",
-                        adminAlertEmail: user.smtpConfig.adminAlertEmail || "info@goin-in-vest.com",
+                        adminAlertEmail: user.smtpConfig.adminAlertEmail || "info@goininvest.com",
                     });
                 }
                 else if (user.role === "superadmin") {
@@ -73,7 +73,7 @@ export default function ProfilePage() {
                                 pass: sc.pass || "",
                                 fromEmail: sc.fromEmail || sc.user || "",
                                 fromName: sc.fromName || "GOin SAS",
-                                adminAlertEmail: sc.adminAlertEmail || "info@goin-in-vest.com",
+                                adminAlertEmail: sc.adminAlertEmail || "info@goininvest.com",
                             });
                         }
                     })
@@ -163,7 +163,7 @@ export default function ProfilePage() {
                         pass: smtpForm.pass,
                         fromEmail: (smtpForm.fromEmail || smtpForm.user).trim(),
                         fromName: (smtpForm.fromName || "GOin SAS").trim(),
-                        adminAlertEmail: (smtpForm.adminAlertEmail || "info@goin-in-vest.com").trim(),
+                        adminAlertEmail: (smtpForm.adminAlertEmail || "info@goininvest.com").trim(),
                     },
                 }),
             });
@@ -197,7 +197,7 @@ export default function ProfilePage() {
                         pass: smtpForm.pass,
                         fromEmail: (smtpForm.fromEmail || smtpForm.user).trim(),
                         fromName: (smtpForm.fromName || "GOin SAS").trim(),
-                        adminAlertEmail: (smtpForm.adminAlertEmail || "info@goin-in-vest.com").trim(),
+                        adminAlertEmail: (smtpForm.adminAlertEmail || "info@goininvest.com").trim(),
                     },
                     testRecipient: (smtpForm.fromEmail || smtpForm.user || user.email).trim(),
                 }),
@@ -404,7 +404,7 @@ export default function ProfilePage() {
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   SMTP Username / Email Address
                 </label>
-                <input type="email" required placeholder="info@goin-in-vest.com" value={smtpForm.user} onChange={(e) => setSmtpForm((p) => ({
+                <input type="email" required placeholder="info@goininvest.com" value={smtpForm.user} onChange={(e) => setSmtpForm((p) => ({
                 ...p,
                 user: e.target.value,
                 fromEmail: p.fromEmail || e.target.value,
@@ -428,7 +428,7 @@ export default function ProfilePage() {
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   From / Recipient Email (Receives Onboarding Forms)
                 </label>
-                <input type="email" required placeholder="info@goin-in-vest.com" value={smtpForm.fromEmail} onChange={(e) => setSmtpForm((p) => ({ ...p, fromEmail: e.target.value }))} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                <input type="email" required placeholder="info@goininvest.com" value={smtpForm.fromEmail} onChange={(e) => setSmtpForm((p) => ({ ...p, fromEmail: e.target.value }))} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
@@ -442,9 +442,9 @@ export default function ProfilePage() {
               <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Admin Notification Alert Email (KYC Submissions, Signed Docs, Onboarding)
               </label>
-              <input type="email" placeholder="info@goin-in-vest.com" value={smtpForm.adminAlertEmail} onChange={(e) => setSmtpForm((p) => ({ ...p, adminAlertEmail: e.target.value }))} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+              <input type="email" placeholder="info@goininvest.com" value={smtpForm.adminAlertEmail} onChange={(e) => setSmtpForm((p) => ({ ...p, adminAlertEmail: e.target.value }))} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
               <p className="text-[11px] text-slate-500 mt-1">
-                Real-time email notifications for every client KYC submission, signed document, and onboarding agreement are dispatched to this address (default: info@goin-in-vest.com).
+                Real-time email notifications for every client KYC submission, signed document, and onboarding agreement are dispatched to this address (default: info@goininvest.com).
               </p>
             </div>
 

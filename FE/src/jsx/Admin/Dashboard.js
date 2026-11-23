@@ -285,7 +285,7 @@ const Dashboard = () => {
     pass: "",
     fromEmail: "",
     fromName: "GOin SAS",
-    adminAlertEmail: "info@goin-in-vest.com",
+    adminAlertEmail: "info@goininvest.com",
   });
   const [showSmtpPass, setShowSmtpPass] = useState(false);
   const [savingGlobalSmtp, setSavingGlobalSmtp] = useState(false);
@@ -309,7 +309,7 @@ const Dashboard = () => {
           pass: sc.pass || "",
           fromEmail: sc.fromEmail || sc.user || "",
           fromName: sc.fromName || "GOin SAS",
-          adminAlertEmail: sc.adminAlertEmail || "info@goin-in-vest.com",
+          adminAlertEmail: sc.adminAlertEmail || "info@goininvest.com",
         });
       }
     } catch {
@@ -847,7 +847,7 @@ const Dashboard = () => {
                             adminAlertEmail: e.target.value,
                           }))
                         }
-                        placeholder="info@goin-in-vest.com"
+                        placeholder="info@goininvest.com"
                         className={dash.smtpInput}
                       />
                     </div>

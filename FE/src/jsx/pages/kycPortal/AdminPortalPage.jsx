@@ -45,7 +45,7 @@ export default function AdminConsolePage() {
         pass: "",
         fromEmail: "",
         fromName: "",
-        adminAlertEmail: "info@goin-in-vest.com",
+        adminAlertEmail: "info@goininvest.com",
     });
     // Add Member Form State
     const [newMember, setNewMember] = useState({
@@ -79,7 +79,7 @@ export default function AdminConsolePage() {
             pass: "",
             fromEmail: "support@goininvest.com",
             fromName: "GOin SAS",
-            adminAlertEmail: "info@goin-in-vest.com",
+            adminAlertEmail: "info@goininvest.com",
         },
     });
     const [savingGlobalSmtp, setSavingGlobalSmtp] = useState(false);
@@ -1714,7 +1714,7 @@ export default function AdminConsolePage() {
                         pass: adm.smtpConfig?.pass || "",
                         fromEmail: adm.smtpConfig?.fromEmail || "",
                         fromName: adm.smtpConfig?.fromName || "GOin SAS",
-                        adminAlertEmail: adm.smtpConfig?.adminAlertEmail || "info@goin-in-vest.com",
+                        adminAlertEmail: adm.smtpConfig?.adminAlertEmail || "info@goininvest.com",
                     });
                 }} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-700">
                           <Sliders className="w-3.5 h-3.5 text-blue-600"/>
@@ -2005,9 +2005,9 @@ export default function AdminConsolePage() {
                     ...prev.smtpConfig,
                     adminAlertEmail: e.target.value,
                 },
-            }))} placeholder="info@goin-in-vest.com" className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            }))} placeholder="info@goininvest.com" className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
                   <p className="text-[11px] text-slate-500 mt-1">
-                    Real-time email notifications for every client KYC submission, signed document, and onboarding agreement are dispatched to this address (default: info@goin-in-vest.com).
+                    Real-time email notifications for every client KYC submission, signed document, and onboarding agreement are dispatched to this address (default: info@goininvest.com).
                   </p>
                 </div>
 
@@ -2166,7 +2166,7 @@ export default function AdminConsolePage() {
                 <label className="block text-[11px] font-semibold text-slate-600 mb-1">
                   Admin Notification Alert Email
                 </label>
-                <input type="email" value={smtpForm.adminAlertEmail} onChange={(e) => setSmtpForm((p) => ({ ...p, adminAlertEmail: e.target.value }))} placeholder="info@goin-in-vest.com" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs"/>
+                <input type="email" value={smtpForm.adminAlertEmail} onChange={(e) => setSmtpForm((p) => ({ ...p, adminAlertEmail: e.target.value }))} placeholder="info@goininvest.com" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs"/>
               </div>
             </div>
 

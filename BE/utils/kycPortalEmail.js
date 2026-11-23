@@ -59,7 +59,7 @@ async function getEffectiveSmtpConfig(customSmtp) {
   const adminAlertEmail = (
     effective?.adminAlertEmail ||
     process.env.ADMIN_ALERT_EMAIL ||
-    "info@goin-in-vest.com"
+    "info@goininvest.com"
   ).trim();
 
   return { host, port, secure, user, pass, fromEmail, fromName, adminAlertEmail };
@@ -164,7 +164,7 @@ async function sendAdminAlertEmail({
   customSmtp,
 }) {
   const config = await getEffectiveSmtpConfig(customSmtp);
-  const targetEmail = config.adminAlertEmail || "info@goin-in-vest.com";
+  const targetEmail = config.adminAlertEmail || "info@goininvest.com";
   const extraLinesHtml =
     extraDetails && extraDetails.length
       ? `<div style="margin: 20px 0; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;"><table style="width: 100%; border-collapse: collapse; font-size: 13px;">${extraDetails
