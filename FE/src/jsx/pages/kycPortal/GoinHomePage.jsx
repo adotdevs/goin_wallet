@@ -1,7 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuthUser, useIsAuthenticated } from "react-auth-kit";
 import { INDEX_HEAD_STYLES, INDEX_BODY_HTML } from "./goinLandingData";
+import {
+  SUPPORTED_LANGUAGES,
+  HOME_META,
+  translateHomeString,
+} from "./goinHomeTranslations";
+
+const LANG_STORAGE_KEY = "goin_home_lang";
+
+const getInitialLanguage = () => {
+  if (typeof window === "undefined") return "fr";
+  const saved = window.localStorage.getItem(LANG_STORAGE_KEY);
+  return saved && HOME_META[saved] ? saved : "fr";
+};
 
 const HOMEPAGE_BASE_GUARD = `<style id="goin-homepage-wallet-guard">
 html.goin-homepage-active {
@@ -11,31 +25,272 @@ html.goin-homepage-active {
   font-size: 16px;
   line-height: 1.5;
 }
+.goin-lang-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.goin-lang-trigger {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 13px;
+  border-radius: 10px;
+  border: 1px solid #2A4366;
+  background: rgba(12, 26, 46, 0.88);
+  color: #E6EDF7;
+  font-family: Manrope, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+.goin-lang-trigger:hover,
+.goin-lang-trigger[aria-expanded="true"] {
+  border-color: #5B9BFF;
+  background: rgba(18, 39, 68, 0.96);
+  box-shadow: 0 0 0 3px rgba(91, 155, 255, 0.14);
+}
+.goin-lang-chevron {
+  transition: transform 0.2s ease;
+  color: #8FB6F2;
+}
+.goin-lang-trigger[aria-expanded="true"] .goin-lang-chevron {
+  transform: rotate(180deg);
+}
+.goin-lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 172px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid #2A4366;
+  background: rgba(11, 25, 43, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.48), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: goin-lang-drop 0.16s ease-out;
+}
+@keyframes goin-lang-drop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.goin-lang-option {
+  appearance: none;
+  border: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  background: transparent;
+  color: #CBD6E6;
+  font-family: Manrope, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.goin-lang-option:hover {
+  background: rgba(91, 155, 255, 0.12);
+  color: #F5F8FD;
+}
+.goin-lang-option.is-active {
+  background: rgba(91, 155, 255, 0.18);
+  color: #F5F8FD;
+}
+.goin-lang-option-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.goin-lang-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: rgba(143, 182, 242, 0.12);
+  border: 1px solid rgba(143, 182, 242, 0.24);
+  color: #9CCBFA;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.goin-lang-option.is-active .goin-lang-badge {
+  background: #5B9BFF;
+  border-color: #5B9BFF;
+  color: #061426;
+}
+@media (max-width: 720px) {
+  .goin-lang-menu {
+    right: 0;
+    left: auto;
+  }
+}
 </style>`;
+
+const HOMEPAGE_HEAD_HTML = { __html: HOMEPAGE_BASE_GUARD + INDEX_HEAD_STYLES };
+const HOMEPAGE_BODY_HTML = { __html: INDEX_BODY_HTML };
 
 export default function GoinHomePage() {
   const navigate = useNavigate();
   const isAuthenticated = useIsAuthenticated();
   const authUser = useAuthUser();
 
+  const [lang, setLang] = useState(getInitialLanguage);
+  const [langSlot, setLangSlot] = useState(null);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const langDropdownRef = useRef(null);
+  const originalTextMapRef = useRef(new WeakMap());
+  const originalAriaMapRef = useRef(new WeakMap());
+
   const loggedIn = isAuthenticated();
   const currentUser = loggedIn ? authUser()?.user : null;
 
+  const handleSelectLanguage = (nextLang) => {
+    if (!HOME_META[nextLang]) return;
+    setLang(nextLang);
+    setLangMenuOpen(false);
+    try {
+      window.localStorage.setItem(LANG_STORAGE_KEY, nextLang);
+    } catch {
+      // ignore storage errors
+    }
+  };
+
+  useEffect(() => {
+    if (!langMenuOpen) return undefined;
+    const handlePointerDown = (event) => {
+      if (langDropdownRef.current && !langDropdownRef.current.contains(event.target)) {
+        setLangMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setLangMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [langMenuOpen]);
+
   useEffect(() => {
     const prevTitle = document.title;
-    document.title = "GOin SAS — Crypto investing, held securely";
+    const prevLang = document.documentElement.lang;
     document.documentElement.classList.add("goin-homepage-active");
 
     return () => {
       document.title = prevTitle;
+      document.documentElement.lang = prevLang;
       document.documentElement.classList.remove("goin-homepage-active");
     };
   }, []);
 
   useEffect(() => {
+    const meta = HOME_META[lang] || HOME_META.en;
+    document.title = meta.title;
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  // Create a stable mount slot inside the homepage navbar for the language switcher
+  useEffect(() => {
     const root = document.getElementById("goin-homepage-root");
     if (!root) return;
 
+    const actionsContainer = root.querySelector("header nav > div:last-child");
+    if (!actionsContainer) return;
+
+    actionsContainer.style.alignItems = "center";
+
+    let slot = actionsContainer.querySelector("[data-goin-lang-slot='1']");
+    if (!slot) {
+      slot = document.createElement("div");
+      slot.setAttribute("data-goin-lang-slot", "1");
+      slot.style.display = "inline-flex";
+      slot.style.alignItems = "center";
+      actionsContainer.appendChild(slot);
+    }
+    setLangSlot(slot);
+
+    return () => {
+      if (slot && slot.parentNode) {
+        slot.parentNode.removeChild(slot);
+      }
+      setLangSlot(null);
+    };
+  }, []);
+
+  // Apply homepage-only translations to all visible text nodes and aria-labels
+  useEffect(() => {
+    const root = document.getElementById("goin-homepage-root");
+    if (!root) return;
+
+    const textMap = originalTextMapRef.current;
+    const ariaMap = originalAriaMapRef.current;
+
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent) return NodeFilter.FILTER_REJECT;
+        if (
+          parent.closest("style, script, svg, [data-goin-lang-slot='1'], [data-goin-auth-link='1']")
+        ) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        if (!node.nodeValue || !node.nodeValue.trim()) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+
+    const textNodes = [];
+    let current = walker.nextNode();
+    while (current) {
+      textNodes.push(current);
+      current = walker.nextNode();
+    }
+
+    textNodes.forEach((node) => {
+      if (!textMap.has(node)) {
+        textMap.set(node, node.nodeValue);
+      }
+      const original = textMap.get(node);
+      node.nodeValue = translateHomeString(original, lang);
+    });
+
+    root.querySelectorAll("[aria-label]").forEach((el) => {
+      if (el.closest("svg, [data-goin-lang-slot='1']")) return;
+      if (!ariaMap.has(el)) {
+        ariaMap.set(el, el.getAttribute("aria-label") || "");
+      }
+      const originalAria = ariaMap.get(el);
+      el.setAttribute("aria-label", translateHomeString(originalAria, lang));
+    });
+  }, [lang]);
+
+  useEffect(() => {
+    const root = document.getElementById("goin-homepage-root");
+    if (!root) return;
+
+    const meta = HOME_META[lang] || HOME_META.en;
     const isStaff =
       currentUser?.role === "superadmin" ||
       currentUser?.role === "admin" ||
@@ -53,7 +308,7 @@ export default function GoinHomePage() {
     const cleanups = loginLinks.map((el) => {
       el.setAttribute("data-goin-auth-link", "1");
       el.setAttribute("href", targetPath);
-      el.textContent = currentUser ? "Dashboard" : "Login";
+      el.textContent = currentUser ? meta.dashboard : meta.login;
 
       const handleClick = (e) => {
         e.preventDefault();
@@ -75,7 +330,7 @@ export default function GoinHomePage() {
     return () => {
       cleanups.forEach((fn) => fn());
     };
-  }, [currentUser, navigate]);
+  }, [currentUser, navigate, lang]);
 
   useEffect(() => {
     const root = document.getElementById("goin-homepage-root");
@@ -145,19 +400,102 @@ export default function GoinHomePage() {
     };
   }, []);
 
+  const meta = HOME_META[lang] || HOME_META.en;
+  const currentLangItem =
+    SUPPORTED_LANGUAGES.find((item) => item.code === lang) || SUPPORTED_LANGUAGES[0];
+
   return (
     <>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: HOMEPAGE_BASE_GUARD + INDEX_HEAD_STYLES,
-        }}
-      />
-      <div
-        id="goin-homepage-root"
-        dangerouslySetInnerHTML={{
-          __html: INDEX_BODY_HTML,
-        }}
-      />
+      <div dangerouslySetInnerHTML={HOMEPAGE_HEAD_HTML} />
+      <div id="goin-homepage-root" dangerouslySetInnerHTML={HOMEPAGE_BODY_HTML} />
+      {langSlot &&
+        createPortal(
+          <div className="goin-lang-dropdown" ref={langDropdownRef}>
+            <button
+              type="button"
+              className="goin-lang-trigger"
+              onClick={() => setLangMenuOpen((open) => !open)}
+              aria-haspopup="listbox"
+              aria-expanded={langMenuOpen}
+              aria-label={meta.switcherAria}
+              title={currentLangItem.name}
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#69A5FF"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+              <span>{currentLangItem.label}</span>
+              <svg
+                className="goin-lang-chevron"
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+
+            {langMenuOpen && (
+              <div
+                className="goin-lang-menu"
+                role="listbox"
+                aria-label={meta.switcherAria}
+              >
+                {SUPPORTED_LANGUAGES.map((item) => {
+                  const isActive = lang === item.code;
+                  return (
+                    <button
+                      key={item.code}
+                      type="button"
+                      role="option"
+                      aria-selected={isActive}
+                      className={`goin-lang-option${isActive ? " is-active" : ""}`}
+                      onClick={() => handleSelectLanguage(item.code)}
+                    >
+                      <span className="goin-lang-option-left">
+                        <span className="goin-lang-badge">{item.label}</span>
+                        <span>{item.name}</span>
+                      </span>
+                      {isActive && (
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#5B9BFF"
+                          strokeWidth="2.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>,
+          langSlot
+        )}
     </>
   );
 }
