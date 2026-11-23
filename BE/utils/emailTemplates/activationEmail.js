@@ -2,14 +2,28 @@ const fs = require("fs");
 const path = require("path");
 
 const LOGO_CID = "goininvest-logo@goininvest.com";
-const LOGO_FILENAME = "logo-blue.png";
-const DEFAULT_STATIC_LOGO = "/static/media/logo-blue.d335fe486a9e05b34898.png";
+const LOGO_FILENAME = "goininvest-logo.png";
+const DEFAULT_STATIC_LOGO = `/email/${LOGO_FILENAME}`;
 
-const getLogoPath = () => path.join(__dirname, "../../assets/email", LOGO_FILENAME);
+const getLogoPath = () => {
+  const candidates = [
+    path.join(__dirname, "../../assets/email", LOGO_FILENAME),
+    path.join(__dirname, "../../../FE/public/email", LOGO_FILENAME),
+  ];
+
+  return candidates.find((candidate) => fs.existsSync(candidate)) || candidates[0];
+};
+
+const normalizeHttpUrl = (value) => {
+  const trimmed = String(value || "").trim().replace(/\/$/, "");
+  if (!trimmed) return "";
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+};
 
 const getFrontendBaseUrl = () => {
-  const baseUrl = String(process.env.BASE_URL || "").trim().replace(/\/$/, "");
-  const frontendUrl = String(process.env.FRONTEND_URL || "").trim().replace(/\/$/, "");
+  const baseUrl = normalizeHttpUrl(process.env.BASE_URL);
+  const frontendUrl = normalizeHttpUrl(process.env.FRONTEND_URL);
 
   if (frontendUrl) return frontendUrl;
   if (baseUrl && !baseUrl.includes("/users/") && !baseUrl.includes("api.")) {
@@ -20,15 +34,15 @@ const getFrontendBaseUrl = () => {
 };
 
 const getPublicLogoUrl = () => {
-  const envLogoUrl = String(process.env.EMAIL_LOGO_URL || "").trim();
+  const envLogoUrl = normalizeHttpUrl(process.env.EMAIL_LOGO_URL);
   if (envLogoUrl) return envLogoUrl;
 
-  const apiPublicUrl = String(process.env.API_PUBLIC_URL || "").trim().replace(/\/$/, "");
+  const apiPublicUrl = normalizeHttpUrl(process.env.API_PUBLIC_URL);
   if (apiPublicUrl) {
     return `${apiPublicUrl}/api/v1/email-assets/${LOGO_FILENAME}`;
   }
 
-  const baseUrl = String(process.env.BASE_URL || "").trim().replace(/\/$/, "");
+  const baseUrl = normalizeHttpUrl(process.env.BASE_URL);
   if (baseUrl.includes("api.")) {
     return `${baseUrl}/api/v1/email-assets/${LOGO_FILENAME}`;
   }
@@ -46,24 +60,17 @@ const getLogoAttachment = () => {
     content: fs.readFileSync(logoPath),
     cid: LOGO_CID,
     contentType: "image/png",
+    contentDisposition: "inline",
   };
 };
 
 const buildLogoMarkup = (brandName, logoAttachment, publicLogoUrl) => {
   const alt = brandName;
   const imgStyle =
-    "display:block;width:160px;max-width:160px;height:auto;border:0;outline:none;text-decoration:none;margin:0 auto;";
+    "display:block;width:176px;max-width:176px;height:auto;border:0;outline:none;text-decoration:none;margin:0 auto;color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:700;";
 
-  if (logoAttachment) {
-    return `<!--[if mso]>
-<img src="cid:${LOGO_CID}" alt="${alt}" width="160" border="0" style="${imgStyle}" />
-<![endif]-->
-<!--[if !mso]><!-->
-<img src="${publicLogoUrl}" alt="${alt}" width="160" border="0" style="${imgStyle}" />
-<!--<![endif]-->`;
-  }
-
-  return `<img src="${publicLogoUrl}" alt="${alt}" width="160" border="0" style="${imgStyle}" />`;
+  const src = logoAttachment ? `cid:${LOGO_CID}` : publicLogoUrl;
+  return `<img src="${src}" alt="${alt}" width="176" height="44" border="0" style="${imgStyle}" />`;
 };
 
 const buildActivationEmail = ({ verifyUrl, firstName }) => {
@@ -102,7 +109,7 @@ The ${brandName} Team`;
       <td align="center" style="padding:24px 12px;">
         <table role="presentation" width="600" border="0" cellspacing="0" cellpadding="0" style="width:100%;max-width:600px;background-color:#ffffff;border:1px solid #dbe3ee;">
           <tr>
-            <td align="center" bgcolor="#000000" style="padding:24px 20px;background-color:#000000;">
+            <td align="center" bgcolor="#07111F" style="padding:24px 20px;background-color:#07111F;">
               ${logoMarkup}
             </td>
           </tr>
@@ -206,7 +213,7 @@ The ${brandName} Team`;
       <td align="center" style="padding:24px 12px;">
         <table role="presentation" width="600" border="0" cellspacing="0" cellpadding="0" style="width:100%;max-width:600px;background-color:#ffffff;border:1px solid #dbe3ee;">
           <tr>
-            <td align="center" bgcolor="#000000" style="padding:24px 20px;background-color:#000000;">
+            <td align="center" bgcolor="#07111F" style="padding:24px 20px;background-color:#07111F;">
               ${logoMarkup}
             </td>
           </tr>
