@@ -397,13 +397,6 @@ const useMenuList = () => {
             external: true,
             iconStyle: <i className="material-symbols-outlined">help</i>,
         },
-        {
-            title: 'Tax Assessment',
-            classsChange: 'mm-active',
-            to: '/tax-assessment-questionnaire?from=dashboard',
-            external: true,
-            iconStyle: <i className="material-symbols-outlined">assignment</i>,
-        },
     ];
 
     return filterMenuItems(menuItems);

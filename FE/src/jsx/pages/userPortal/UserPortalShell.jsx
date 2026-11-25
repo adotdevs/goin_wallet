@@ -40,7 +40,6 @@ import {
   Clock,
   XCircle,
   HelpCircle,
-  ClipboardList,
   Headphones,
   LogOut,
   User,
@@ -70,7 +69,6 @@ function getMenuIcon(title = "") {
   if (t.includes("affiliate")) return Users;
   if (t.includes("document")) return FileText;
   if (t.includes("help")) return HelpCircle;
-  if (t.includes("tax")) return ClipboardList;
   if (t.includes("support")) return Headphones;
   return LayoutDashboard;
 }

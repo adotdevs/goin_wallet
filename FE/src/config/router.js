@@ -24,8 +24,6 @@ import Dashboard from "../jsx/pages/userPortal/UserDashboardPage";
 import Market from "../jsx/pages/userPortal/UserMarketPage";
 import Error404 from "../jsx/pages/error/Error404";
 import HelpStaticRedirect from "../components/HelpStaticRedirect.jsx";
-import TaxAssessmentQuestionnaire from "../jsx/pages/user/TaxAssessmentQuestionnaire";
-import LegalPage, { LEGAL_PAGES } from "../jsx/pages/user/Legal";
 import Documents from "../jsx/pages/userPortal/UserDocumentsFilesPage";
 import Assets from "../jsx/pages/userPortal/UserAssetsPage";
 import StakingPg from "../jsx/pages/userPortal/UserStakingPage";
@@ -1224,10 +1222,6 @@ export default function Router() {
           />
           <Route path="/help" element={<HelpStaticRedirect />} />
           <Route path="/help/*" element={<HelpStaticRedirect />} />
-          {LEGAL_PAGES.map((page) => (
-            <Route key={page.path} path={page.path} element={<LegalPage />} />
-          ))}
-          <Route path="/tax-assessment-questionnaire" element={<TaxAssessmentQuestionnaire />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </RouterComponent>

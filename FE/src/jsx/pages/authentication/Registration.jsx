@@ -713,20 +713,9 @@ function Register() {
 
                 <p className="text-xs text-slate-500">
                   By creating an account, you agree to our{" "}
-                  <Link
-                    to="/terms-of-service"
-                    className="text-blue-600 font-semibold hover:underline"
-                  >
-                    Terms of Service
-                  </Link>{" "}
+                  <span className="text-slate-700 font-semibold">Terms of Service</span>{" "}
                   and{" "}
-                  <Link
-                    to="/privacy-policy"
-                    className="text-blue-600 font-semibold hover:underline"
-                  >
-                    Privacy Policy
-                  </Link>
-                  .
+                  <span className="text-slate-700 font-semibold">Privacy Policy</span>.
                 </p>
 
                 <button
