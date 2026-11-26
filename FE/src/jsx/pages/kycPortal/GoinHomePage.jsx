@@ -25,66 +25,72 @@ html.goin-homepage-active {
   font-size: 16px;
   line-height: 1.5;
 }
-.goin-lang-dropdown {
+#goin-homepage-root .goin-lang-dropdown {
   position: relative;
   display: inline-flex;
   align-items: center;
 }
-.goin-lang-trigger {
+#goin-homepage-root .goin-lang-trigger {
   appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 10px 13px;
+  height: 42px;
+  padding: 0 14px;
+  margin: 0;
   border-radius: 10px;
   border: 1px solid #2A4366;
-  background: rgba(12, 26, 46, 0.88);
+  background-color: rgba(12, 26, 46, 0.92);
   color: #E6EDF7;
   font-family: Manrope, system-ui, sans-serif;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.03em;
-  line-height: 1.2;
+  line-height: 1;
   cursor: pointer;
   transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
 }
-.goin-lang-trigger:hover,
-.goin-lang-trigger[aria-expanded="true"] {
+#goin-homepage-root .goin-lang-trigger:hover,
+#goin-homepage-root .goin-lang-trigger[aria-expanded="true"] {
   border-color: #5B9BFF;
-  background: rgba(18, 39, 68, 0.96);
-  box-shadow: 0 0 0 3px rgba(91, 155, 255, 0.14);
+  background-color: rgba(18, 39, 68, 0.98);
+  box-shadow: 0 0 0 3px rgba(91, 155, 255, 0.16);
 }
-.goin-lang-chevron {
+#goin-homepage-root .goin-lang-chevron {
   transition: transform 0.2s ease;
   color: #8FB6F2;
 }
-.goin-lang-trigger[aria-expanded="true"] .goin-lang-chevron {
+#goin-homepage-root .goin-lang-trigger[aria-expanded="true"] .goin-lang-chevron {
   transform: rotate(180deg);
 }
-.goin-lang-menu {
+#goin-homepage-root .goin-lang-menu {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  min-width: 172px;
+  min-width: 176px;
   padding: 6px;
   border-radius: 12px;
   border: 1px solid #2A4366;
-  background: rgba(11, 25, 43, 0.98);
+  background-color: rgba(11, 25, 43, 0.98);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.48), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
   z-index: 120;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   animation: goin-lang-drop 0.16s ease-out;
 }
 @keyframes goin-lang-drop {
   from { opacity: 0; transform: translateY(-6px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.goin-lang-option {
+#goin-homepage-root .goin-lang-option {
   appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
   border: 0;
   width: 100%;
   display: flex;
@@ -92,8 +98,9 @@ html.goin-homepage-active {
   justify-content: space-between;
   gap: 10px;
   padding: 9px 11px;
+  margin: 0;
   border-radius: 8px;
-  background: transparent;
+  background-color: transparent;
   color: #CBD6E6;
   font-family: Manrope, system-ui, sans-serif;
   font-size: 13px;
@@ -102,40 +109,41 @@ html.goin-homepage-active {
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
-.goin-lang-option:hover {
-  background: rgba(91, 155, 255, 0.12);
+#goin-homepage-root .goin-lang-option:hover {
+  background-color: rgba(91, 155, 255, 0.14);
   color: #F5F8FD;
 }
-.goin-lang-option.is-active {
-  background: rgba(91, 155, 255, 0.18);
+#goin-homepage-root .goin-lang-option.is-active {
+  background-color: rgba(91, 155, 255, 0.2);
   color: #F5F8FD;
 }
-.goin-lang-option-left {
+#goin-homepage-root .goin-lang-option-left {
   display: inline-flex;
   align-items: center;
   gap: 9px;
 }
-.goin-lang-badge {
+#goin-homepage-root .goin-lang-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 26px;
-  padding: 2px 5px;
+  height: 20px;
+  padding: 0 5px;
   border-radius: 5px;
-  background: rgba(143, 182, 242, 0.12);
+  background-color: rgba(143, 182, 242, 0.12);
   border: 1px solid rgba(143, 182, 242, 0.24);
   color: #9CCBFA;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
-.goin-lang-option.is-active .goin-lang-badge {
-  background: #5B9BFF;
+#goin-homepage-root .goin-lang-option.is-active .goin-lang-badge {
+  background-color: #5B9BFF;
   border-color: #5B9BFF;
   color: #061426;
 }
 @media (max-width: 720px) {
-  .goin-lang-menu {
+  #goin-homepage-root .goin-lang-menu {
     right: 0;
     left: auto;
   }
