@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node --max-old-space-size=4096 server.js",
-    "dev": "node --max-old-space-size=4096 server.js",
+    "start": "pm2-runtime start ecosystem.config.js",
+    "start:daemon": "pm2 start ecosystem.config.js",
+    "restart:daemon": "pm2 restart ecosystem.config.js",
+    "stop:daemon": "pm2 stop ecosystem.config.js",
+    "logs": "pm2 logs goininvest-api",
+    "dev": "nodemon --config nodemon.json",
+    "start:node": "node --max-old-space-size=4096 server.js",
     "test": "node --watch --max-old-space-size=4096 server.js"
   },
   "author": "",
@@ -42,6 +47,7 @@
     "openai": "^6.17.0",
     "pcm-convert": "^1.6.5",
     "pdf-lib": "^1.17.1",
+    "pm2": "^7.1.2",
     "resend": "^6.1.2",
     "socket.io": "^4.8.0",
     "uuid": "^9.0.0",

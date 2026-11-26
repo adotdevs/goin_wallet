@@ -6,6 +6,8 @@ import { useSignIn, useIsAuthenticated, useAuthUser } from "react-auth-kit";
 import { isBackendLocalhost, isElectronApp } from "../../../config/appConfig";
 import GoinLogo from "../kycPortal/GoinLogo";
 import "../kycPortal/kyc-portal.css";
+import AuthLangSwitcher from "./AuthLangSwitcher";
+import { useAuthKycLang } from "./authKycI18n";
 import {
   Mail,
   Lock,
@@ -16,6 +18,8 @@ import {
 
 function Login(props) {
   const [isloading, setisloading] = useState(false);
+  const { lang, changeLang, t } = useAuthKycLang();
+  const L = t.login;
   const signIn = useSignIn();
   const isAuthenticated = useIsAuthenticated();
   const authUser = useAuthUser();
@@ -47,18 +51,18 @@ function Login(props) {
     let error = false;
     const errorObj = { email: "", password: "" };
     if (email.trim() === "") {
-      errorObj.email = "Email is required";
+      errorObj.email = L.errEmailRequired;
       error = true;
     } else {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email.trim())) {
-        errorObj.email = "Please enter a valid email address";
+        errorObj.email = L.errEmailInvalid;
         error = true;
       }
     }
 
     if (password === "") {
-      errorObj.password = "Password is Required";
+      errorObj.password = L.errPasswordRequired;
       error = true;
     }
     setErrors(errorObj);
@@ -152,13 +156,13 @@ function Login(props) {
         setPassword("");
         return;
       } else {
-        const msg = updateHeader.msg || "Invalid email or password";
+        const msg = updateHeader.msg || L.errInvalidCreds;
         setErrorMsg(msg);
         toast.dismiss();
         toast.error(msg);
       }
     } catch (error) {
-      const msg = error?.data?.msg || "Something went wrong";
+      const msg = error?.data?.msg || L.errGeneric;
       setErrorMsg(msg);
       toast.dismiss();
       toast.error(msg);
@@ -184,7 +188,15 @@ function Login(props) {
 
   return (
     <div id="kyc-portal">
-      <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="relative min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div style={{ position: "absolute", top: 20, right: 24, zIndex: 40 }}>
+          <AuthLangSwitcher
+            lang={lang}
+            onChange={changeLang}
+            ariaLabel={t.switcherAria}
+          />
+        </div>
+
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="flex items-center justify-center">
             <Link to="/" title="GOin SAS">
@@ -193,7 +205,7 @@ function Login(props) {
           </div>
 
           <h2 className="mt-5 text-center text-2xl font-extrabold text-slate-900">
-            Sign in to your account
+            {L.title}
           </h2>
         </div>
 
@@ -204,7 +216,7 @@ function Login(props) {
           >
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                Email Address
+                {L.emailLabel}
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -214,7 +226,7 @@ function Login(props) {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address"
+                  placeholder={L.emailPlaceholder}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
@@ -226,13 +238,13 @@ function Login(props) {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-xs font-semibold text-slate-700">
-                  Password
+                  {L.passwordLabel}
                 </label>
                 <Link
                   to="/auth/forgot-password"
                   className="text-xs font-bold text-blue-600 hover:text-blue-700"
                 >
-                  Forgot password?
+                  {L.forgotPassword}
                 </Link>
               </div>
               <div className="relative">
@@ -243,14 +255,14 @@ function Login(props) {
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder={L.passwordPlaceholder}
                   className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
                 <button
                   type="button"
                   onClick={handleTogglePassword}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={showPassword ? L.hidePassword : L.showPassword}
                 >
                   {showPassword ? (
                     <EyeOff className="w-4 h-4" />
@@ -281,17 +293,17 @@ function Login(props) {
               disabled={isloading}
               className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20 transition-all"
             >
-              <span>{isloading ? "Signing in..." : "Sign In"}</span>
+              <span>{isloading ? L.signingIn : L.signIn}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
             <p className="text-center text-xs text-slate-500 pt-1">
-              Don&apos;t have an account yet?{" "}
+              {L.noAccount}{" "}
               <Link
                 to="/auth/signup"
                 className="font-bold text-blue-600 hover:text-blue-700"
               >
-                Create an account
+                {L.createAccount}
               </Link>
             </p>
           </form>

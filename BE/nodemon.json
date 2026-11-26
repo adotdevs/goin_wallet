@@ -1,0 +1,26 @@
+{
+  "watch": [
+    "server.js",
+    "app.js",
+    "config/",
+    "controllers/",
+    "crmDB/",
+    "middlewares/",
+    "models/",
+    "routes/",
+    "utils/",
+    "voip/"
+  ],
+  "ignore": [
+    "node_modules/",
+    "logs/",
+    "uploads/",
+    "assets/",
+    "*.test.js",
+    "*.log"
+  ],
+  "ext": "js,json,env",
+  "delay": "500",
+  "signal": "SIGTERM",
+  "exec": "node --max-old-space-size=4096 server.js"
+}

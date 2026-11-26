@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import GoinLogo from "../kycPortal/GoinLogo";
 import "../kycPortal/kyc-portal.css";
+import AuthLangSwitcher from "./AuthLangSwitcher";
+import { useAuthKycLang } from "./authKycI18n";
 import {
   saveMyFiscalProfileApi,
   signleUsersApi,
@@ -82,6 +84,8 @@ const FUND_SOURCES = [
 export default function FiscalProfilePage() {
   const navigate = useNavigate();
   const authUser = useAuthUser();
+  const { lang, changeLang, t } = useAuthKycLang();
+  const F = t.fiscal;
   const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -163,7 +167,7 @@ export default function FiscalProfilePage() {
     e.preventDefault();
 
     if (!formData.occupation || !formData.incomeRange) {
-      toast.error("Please fill in at least your professional situation and income.");
+      toast.error(F.errRequired);
       return;
     }
 
@@ -184,15 +188,13 @@ export default function FiscalProfilePage() {
 
       if (res?.success) {
         window.dispatchEvent(new Event("signup-kyc-updated"));
-        toast.success("Fiscal profile saved! Continue to identity verification.");
+        toast.success(F.toastSaved);
         navigate("/onboarding-kyc");
       } else {
-        toast.error(res?.msg || "Failed to save fiscal profile. Please try again.");
+        toast.error(res?.msg || F.errSaveFailed);
       }
     } catch (error) {
-      toast.error(
-        error?.data?.msg || error?.message || "An error occurred. Please try again."
-      );
+      toast.error(error?.data?.msg || error?.message || F.errGeneric);
     } finally {
       setIsLoading(false);
     }
@@ -213,9 +215,16 @@ export default function FiscalProfilePage() {
             <Link to="/" title="GOin SAS">
               <GoinLogo height={34} width={136} theme="light" />
             </Link>
-            <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-              <Lock className="h-3.5 w-3.5 text-emerald-600" />
-              <span>Data secured</span>
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                <Lock className="h-3.5 w-3.5 text-emerald-600" />
+                <span>{F.dataSecured}</span>
+              </div>
+              <AuthLangSwitcher
+                lang={lang}
+                onChange={changeLang}
+                ariaLabel={t.switcherAria}
+              />
             </div>
           </div>
         </header>
@@ -224,8 +233,8 @@ export default function FiscalProfilePage() {
         <div className="border-b border-slate-200 bg-white">
           <div className="max-w-6xl mx-auto py-3 px-4 sm:px-6">
             <div className="flex items-center justify-between text-xs font-medium text-slate-500 mb-2">
-              <span>Step 1 of 2</span>
-              <span>Fiscal Profile</span>
+              <span>{F.stepLabel}</span>
+              <span>{F.stepName}</span>
             </div>
             <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div
@@ -245,10 +254,10 @@ export default function FiscalProfilePage() {
                 <Briefcase className="h-8 w-8 text-blue-600" />
               </div>
               <h1 className="mb-2 text-2xl sm:text-3xl font-extrabold text-slate-900">
-                Fiscal &amp; Financial Profile
+                {F.title}
               </h1>
               <p className="text-sm sm:text-base text-slate-500">
-                This information is required by regulations for fund recovery
+                {F.subtitle}
               </p>
             </div>
 
@@ -257,11 +266,9 @@ export default function FiscalProfilePage() {
               <div className="flex gap-3">
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-blue-600 mt-0.5" />
                 <div className="text-sm">
-                  <p className="font-bold text-slate-900">Why this information?</p>
+                  <p className="font-bold text-slate-900">{F.whyTitle}</p>
                   <p className="text-slate-600 mt-1 leading-relaxed">
-                    In accordance with European anti-money laundering (AML) directives and
-                    know your customer (KYC) requirements, we must collect this information
-                    to process your fund recovery case.
+                    {F.whyBody}
                   </p>
                 </div>
               </div>
@@ -273,13 +280,13 @@ export default function FiscalProfilePage() {
               <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
                 <h2 className="mb-4 font-bold text-slate-900 flex items-center gap-2 text-base">
                   <Briefcase className="h-5 w-5 text-blue-600" />
-                  Professional Situation
+                  {F.profSection}
                 </h2>
 
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Profession / Status *
+                      {F.professionLabel}
                     </label>
                     <select
                       value={formData.occupation}
@@ -289,10 +296,10 @@ export default function FiscalProfilePage() {
                       className={selectClass}
                       required
                     >
-                      <option value="">Select your situation</option>
+                      <option value="">{F.professionPlaceholder}</option>
                       {OCCUPATION_OPTIONS.map((occ) => (
                         <option key={occ.value} value={occ.value}>
-                          {occ.label}
+                          {F.occupations[occ.value] || occ.label}
                         </option>
                       ))}
                     </select>
@@ -303,11 +310,11 @@ export default function FiscalProfilePage() {
                     formData.occupation === "civil_servant") && (
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                        Employer Name
+                        {F.employerLabel}
                       </label>
                       <input
                         type="text"
-                        placeholder="Company name"
+                        placeholder={F.employerPlaceholder}
                         value={formData.employer}
                         onChange={(e) =>
                           setFormData({ ...formData, employer: e.target.value })
@@ -323,13 +330,13 @@ export default function FiscalProfilePage() {
               <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
                 <h2 className="mb-4 font-bold text-slate-900 flex items-center gap-2 text-base">
                   <Wallet className="h-5 w-5 text-blue-600" />
-                  Financial Situation
+                  {F.finSection}
                 </h2>
 
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Annual gross income *
+                      {F.incomeLabel}
                     </label>
                     <select
                       value={formData.incomeRange}
@@ -339,10 +346,10 @@ export default function FiscalProfilePage() {
                       className={selectClass}
                       required
                     >
-                      <option value="">Select a range</option>
+                      <option value="">{F.rangePlaceholder}</option>
                       {INCOME_RANGES.map((item) => (
                         <option key={item.value} value={item.value}>
-                          {item.label}
+                          {F.incomeRanges[item.value] || item.label}
                         </option>
                       ))}
                     </select>
@@ -350,7 +357,7 @@ export default function FiscalProfilePage() {
 
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Estimated net worth
+                      {F.wealthLabel}
                     </label>
                     <select
                       value={formData.wealthRange}
@@ -359,10 +366,10 @@ export default function FiscalProfilePage() {
                       }
                       className={selectClass}
                     >
-                      <option value="">Select a range</option>
+                      <option value="">{F.rangePlaceholder}</option>
                       {WEALTH_RANGES.map((item) => (
                         <option key={item.value} value={item.value}>
-                          {item.label}
+                          {F.wealthRanges[item.value] || item.label}
                         </option>
                       ))}
                     </select>
@@ -370,7 +377,7 @@ export default function FiscalProfilePage() {
 
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Source of funds
+                      {F.fundSourceLabel}
                     </label>
                     <select
                       value={formData.fundSource}
@@ -379,10 +386,10 @@ export default function FiscalProfilePage() {
                       }
                       className={selectClass}
                     >
-                      <option value="">Main source of your funds</option>
+                      <option value="">{F.fundSourcePlaceholder}</option>
                       {FUND_SOURCES.map((item) => (
                         <option key={item.value} value={item.value}>
-                          {item.label}
+                          {F.fundSources[item.value] || item.label}
                         </option>
                       ))}
                     </select>
@@ -394,13 +401,13 @@ export default function FiscalProfilePage() {
               <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
                 <h2 className="mb-4 font-bold text-slate-900 flex items-center gap-2 text-base">
                   <Building2 className="h-5 w-5 text-blue-600" />
-                  Investment Experience
+                  {F.expSection}
                 </h2>
 
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Investment experience
+                      {F.invExpLabel}
                     </label>
                     <select
                       value={formData.investmentExperience}
@@ -412,10 +419,10 @@ export default function FiscalProfilePage() {
                       }
                       className={selectClass}
                     >
-                      <option value="">Your level of experience</option>
+                      <option value="">{F.invExpPlaceholder}</option>
                       {INVESTMENT_EXP_LEVELS.map((item) => (
                         <option key={item.value} value={item.value}>
-                          {item.label}
+                          {F.investmentExp[item.value] || item.label}
                         </option>
                       ))}
                     </select>
@@ -423,7 +430,7 @@ export default function FiscalProfilePage() {
 
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Cryptocurrency experience
+                      {F.cryptoExpLabel}
                     </label>
                     <select
                       value={formData.cryptoExperience}
@@ -432,10 +439,10 @@ export default function FiscalProfilePage() {
                       }
                       className={selectClass}
                     >
-                      <option value="">Your crypto experience</option>
+                      <option value="">{F.cryptoExpPlaceholder}</option>
                       {CRYPTO_EXP_LEVELS.map((item) => (
                         <option key={item.value} value={item.value}>
-                          {item.label}
+                          {F.cryptoExp[item.value] || item.label}
                         </option>
                       ))}
                     </select>
@@ -447,17 +454,17 @@ export default function FiscalProfilePage() {
               <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
                 <h2 className="mb-4 font-bold text-slate-900 flex items-center gap-2 text-base">
                   <Users className="h-5 w-5 text-blue-600" />
-                  Tax Compliance
+                  {F.taxSection}
                 </h2>
 
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Country of tax residence
+                      {F.taxResidenceLabel}
                     </label>
                     <input
                       type="text"
-                      placeholder="e.g. France"
+                      placeholder={F.taxResidencePlaceholder}
                       value={formData.taxResidence}
                       onChange={(e) =>
                         setFormData({ ...formData, taxResidence: e.target.value })
@@ -468,7 +475,7 @@ export default function FiscalProfilePage() {
 
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Do you have bank accounts abroad?
+                      {F.foreignAccountsLabel}
                     </label>
                     <select
                       value={formData.hasForeignAccounts}
@@ -480,15 +487,15 @@ export default function FiscalProfilePage() {
                       }
                       className={selectClass}
                     >
-                      <option value="">Select</option>
-                      <option value="no">No</option>
-                      <option value="yes">Yes</option>
+                      <option value="">{F.select}</option>
+                      <option value="no">{F.no}</option>
+                      <option value="yes">{F.yes}</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Are you a politically exposed person (PEP)?
+                      {F.pepLabel}
                     </label>
                     <select
                       value={formData.isPoliticallyExposed}
@@ -500,13 +507,12 @@ export default function FiscalProfilePage() {
                       }
                       className={selectClass}
                     >
-                      <option value="">Select</option>
-                      <option value="no">No</option>
-                      <option value="yes">Yes</option>
+                      <option value="">{F.select}</option>
+                      <option value="no">{F.no}</option>
+                      <option value="yes">{F.yes}</option>
                     </select>
                     <p className="mt-1.5 text-xs text-slate-500">
-                      A PEP is a person who holds or has held important political,
-                      judicial or administrative functions.
+                      {F.pepNote}
                     </p>
                   </div>
                 </div>
@@ -521,18 +527,18 @@ export default function FiscalProfilePage() {
                 {isLoading ? (
                   <>
                     <Loader2 className="h-5 w-5 animate-spin" />
-                    <span>Saving...</span>
+                    <span>{F.saving}</span>
                   </>
                 ) : (
                   <>
-                    <span>Continue to identity verification</span>
+                    <span>{F.continueBtn}</span>
                     <ArrowRight className="h-5 w-5" />
                   </>
                 )}
               </button>
 
               <p className="text-center text-xs text-slate-500">
-                Your data is protected and processed in accordance with GDPR.
+                {F.gdprNote}
               </p>
             </form>
           </div>

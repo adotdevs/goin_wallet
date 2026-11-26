@@ -7,6 +7,8 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import GoinLogo from "../kycPortal/GoinLogo";
 import "../kycPortal/kyc-portal.css";
+import AuthLangSwitcher from "./AuthLangSwitcher";
+import { useAuthKycLang } from "./authKycI18n";
 import {
   Eye,
   EyeOff,
@@ -38,13 +40,11 @@ const NATIONALITIES = [
   "Vietnamese", "Yemeni", "Zambian", "Zimbabwean",
 ];
 
-const BENEFITS = [
-  { icon: Shield, text: "Bank-grade security" },
-  { icon: Zap, text: "Instant transactions" },
-  { icon: TrendingUp, text: "Real-time market data" },
-];
+const BENEFIT_ICONS = [Shield, Zap, TrendingUp];
 
 function Register() {
+  const { lang, changeLang, t } = useAuthKycLang();
+  const R = t.register;
   const [isloading, setisloading] = useState(false);
   const [errors, setErrors] = useState({});
   const [errorMsg, setErrorMsg] = useState("");
@@ -86,7 +86,8 @@ function Register() {
 
   const handleInput = (e) => {
     const { name, value } = e.target;
-    setUserData((prev) => ({ ...prev, [name]: value }));
+    const nextValue = name === "phone" ? value.replace(/\D/g, "") : value;
+    setUserData((prev) => ({ ...prev, [name]: nextValue }));
   };
 
   const verifyReferralCode = async (code) => {
@@ -98,7 +99,7 @@ function Register() {
 
     if (code.trim().length < 8) {
       setReferrerInfo(null);
-      setReferralCodeError("Referral code must be at least 8 characters");
+      setReferralCodeError(R.errReferralMin);
       return;
     }
 
@@ -112,11 +113,11 @@ function Register() {
         setReferralCodeError("");
       } else {
         setReferrerInfo(null);
-        setReferralCodeError("Invalid referral code. Please check and try again.");
+        setReferralCodeError(R.errReferralInvalid);
       }
     } catch (_error) {
       setReferrerInfo(null);
-      setReferralCodeError("Invalid referral code. Please check and try again.");
+      setReferralCodeError(R.errReferralInvalid);
     } finally {
       setVerifyingCode(false);
     }
@@ -150,46 +151,53 @@ function Register() {
     const errorObj = {};
 
     if (!userData.firstName.trim()) {
-      errorObj.firstName = "First Name is Required";
+      errorObj.firstName = R.errFirstName;
       error = true;
     }
     if (!userData.lastName.trim()) {
-      errorObj.lastName = "Last Name is Required";
+      errorObj.lastName = R.errLastName;
       error = true;
     }
-    if (!userData.phone.trim()) {
-      errorObj.phone = "Phone is Required";
+    const cleanPhone = userData.phone.trim();
+    if (!cleanPhone) {
+      errorObj.phone = R.errPhone;
+      error = true;
+    } else if (!/^\d+$/.test(cleanPhone)) {
+      errorObj.phone = R.errPhoneDigits;
+      error = true;
+    } else if (cleanPhone.length < 7 || cleanPhone.length > 15) {
+      errorObj.phone = R.errPhoneLength;
       error = true;
     }
     if (!userData.country.trim()) {
-      errorObj.country = "Country is Required";
+      errorObj.country = R.errCountry;
       error = true;
     }
     if (!userData.postalCode.trim()) {
-      errorObj.postalCode = "Postal Code is Required";
+      errorObj.postalCode = R.errPostalCode;
       error = true;
     }
     if (!userData.city.trim()) {
-      errorObj.city = "City is Required";
+      errorObj.city = R.errCity;
       error = true;
     }
     if (!userData.address.trim()) {
-      errorObj.address = "Address is Required";
+      errorObj.address = R.errAddress;
       error = true;
     }
     if (!userData.email.trim()) {
-      errorObj.email = "Email is Required";
+      errorObj.email = R.errEmail;
       error = true;
     }
     if (userData.password === "") {
-      errorObj.password = "Password is Required";
+      errorObj.password = R.errPassword;
       error = true;
     } else if (userData.password.length < 8) {
-      errorObj.password = "Password must be at least 8 characters long";
+      errorObj.password = R.errPasswordMin;
       error = true;
     }
     if (userData.password !== userData.cpassword) {
-      errorObj.cpassword = "Passwords do not match";
+      errorObj.cpassword = R.errPasswordMatch;
       error = true;
     }
 
@@ -197,8 +205,8 @@ function Register() {
       if (referralCodeError || !referrerInfo) {
         Swal.fire({
           icon: "error",
-          title: "Invalid Referral Code",
-          text: "Please remove the referral code or enter a valid one to continue registration.",
+          title: R.errReferralTitle,
+          text: R.errReferralText,
         });
         error = true;
       }
@@ -279,10 +287,7 @@ function Register() {
           }
 
           toast.dismiss();
-          toast.success(
-            updateHeader.msg ||
-              "Account created! Please complete KYC verification to continue."
-          );
+          toast.success(updateHeader.msg || R.toastCreatedKyc);
           navigate(updateHeader.requireSignupKyc ? "/fiscal-profile" : "/dashboard");
           return;
         }
@@ -291,13 +296,13 @@ function Register() {
         toast.info(updateHeader.msg);
         navigate("/auth/login");
       } else {
-        const msg = updateHeader.msg || "Registration failed";
+        const msg = updateHeader.msg || R.errRegistrationFailed;
         setErrorMsg(msg);
         toast.dismiss();
         toast.error(msg);
       }
     } catch (err) {
-      const msg = err?.data?.msg || err?.message || "Something went wrong";
+      const msg = err?.data?.msg || err?.message || R.errGeneric;
       setErrorMsg(msg);
       toast.dismiss();
       toast.error(msg);
@@ -334,24 +339,23 @@ function Register() {
             <div className="space-y-8 my-auto">
               <div>
                 <h1 className="mb-4 text-4xl font-extrabold leading-tight xl:text-5xl text-white">
-                  Start your crypto journey today
+                  {R.heroTitle}
                 </h1>
                 <p className="text-lg text-blue-100/85">
-                  Join thousands of traders who trust GOin SAS for secure and
-                  seamless cryptocurrency management.
+                  {R.heroSubtitle}
                 </p>
               </div>
 
               <div className="space-y-4">
-                {BENEFITS.map((benefit, index) => {
-                  const Icon = benefit.icon;
+                {R.benefits.map((text, index) => {
+                  const Icon = BENEFIT_ICONS[index] || Shield;
                   return (
                     <div key={index} className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm">
                         <Icon className="h-5 w-5 text-white" />
                       </div>
                       <span className="text-lg font-medium text-white">
-                        {benefit.text}
+                        {text}
                       </span>
                     </div>
                   );
@@ -369,8 +373,8 @@ function Register() {
                 ))}
               </div>
               <div>
-                <p className="font-bold text-white">50,000+ users</p>
-                <p className="text-xs text-blue-100/80">Already trading with us</p>
+                <p className="font-bold text-white">{R.usersCount}</p>
+                <p className="text-xs text-blue-100/80">{R.usersSub}</p>
               </div>
             </div>
           </div>
@@ -383,23 +387,39 @@ function Register() {
             <Link to="/" title="GOin SAS">
               <GoinLogo height={34} width={136} theme="light" />
             </Link>
-            <Link
-              to="/auth/login"
-              className="text-sm font-bold text-blue-600 hover:underline"
-            >
-              Sign In
-            </Link>
+            <div className="flex items-center gap-3">
+              <AuthLangSwitcher
+                lang={lang}
+                onChange={changeLang}
+                ariaLabel={t.switcherAria}
+              />
+              <Link
+                to="/auth/login"
+                className="text-sm font-bold text-blue-600 hover:underline"
+              >
+                {R.signIn}
+              </Link>
+            </div>
           </div>
 
           <div className="flex flex-1 items-start sm:items-center justify-center p-4 sm:p-6 lg:p-10 overflow-y-auto">
             <div className="w-full max-w-2xl space-y-6 bg-white p-6 sm:p-8 lg:p-10 rounded-2xl border border-slate-200/90 shadow-sm">
-              <div className="text-center lg:text-left">
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 lg:text-3xl">
-                  Create Account
-                </h2>
-                <p className="mt-1.5 text-sm text-slate-500">
-                  Join our secure crypto management platform
-                </p>
+              <div className="flex items-start justify-between gap-4">
+                <div className="text-center lg:text-left flex-1">
+                  <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 lg:text-3xl">
+                    {R.heading}
+                  </h2>
+                  <p className="mt-1.5 text-sm text-slate-500">
+                    {R.subheading}
+                  </p>
+                </div>
+                <div className="hidden lg:block shrink-0">
+                  <AuthLangSwitcher
+                    lang={lang}
+                    onChange={changeLang}
+                    ariaLabel={t.switcherAria}
+                  />
+                </div>
               </div>
 
               {errorMsg && (
@@ -412,12 +432,12 @@ function Register() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="firstName" className={labelClass}>
-                      First Name *
+                      {R.firstName}
                     </label>
                     <input
                       id="firstName"
                       name="firstName"
-                      placeholder="John"
+                      placeholder={R.firstNamePlaceholder}
                       value={userData.firstName}
                       onChange={handleInput}
                       required
@@ -430,12 +450,12 @@ function Register() {
                   </div>
                   <div>
                     <label htmlFor="lastName" className={labelClass}>
-                      Last Name *
+                      {R.lastName}
                     </label>
                     <input
                       id="lastName"
                       name="lastName"
-                      placeholder="Doe"
+                      placeholder={R.lastNamePlaceholder}
                       value={userData.lastName}
                       onChange={handleInput}
                       required
@@ -451,13 +471,13 @@ function Register() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="email" className={labelClass}>
-                      Email Address *
+                      {R.email}
                     </label>
                     <input
                       id="email"
                       name="email"
                       type="email"
-                      placeholder="you@example.com"
+                      placeholder={R.emailPlaceholder}
                       value={userData.email}
                       onChange={handleInput}
                       required
@@ -470,13 +490,16 @@ function Register() {
                   </div>
                   <div>
                     <label htmlFor="phone" className={labelClass}>
-                      Phone Number *
+                      {R.phone}
                     </label>
                     <input
                       id="phone"
                       name="phone"
                       type="tel"
-                      placeholder="442012345678"
+                      inputMode="numeric"
+                      pattern="[0-9]{7,15}"
+                      maxLength={15}
+                      placeholder={R.phonePlaceholder}
                       value={userData.phone}
                       onChange={handleInput}
                       required
@@ -492,7 +515,7 @@ function Register() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="dateOfBirth" className={labelClass}>
-                      Date of Birth
+                      {R.dateOfBirth}
                     </label>
                     <input
                       id="dateOfBirth"
@@ -506,7 +529,7 @@ function Register() {
                   </div>
                   <div>
                     <label htmlFor="nationality" className={labelClass}>
-                      Nationality
+                      {R.nationality}
                     </label>
                     <select
                       id="nationality"
@@ -516,7 +539,7 @@ function Register() {
                       disabled={isloading}
                       className={inputClass}
                     >
-                      <option value="">Select</option>
+                      <option value="">{R.selectOption}</option>
                       {NATIONALITIES.map((nat) => (
                         <option key={nat} value={nat}>
                           {nat}
@@ -528,12 +551,12 @@ function Register() {
 
                 <div>
                   <label htmlFor="address" className={labelClass}>
-                    Address *
+                    {R.address}
                   </label>
                   <input
                     id="address"
                     name="address"
-                    placeholder="123 Main Street"
+                    placeholder={R.addressPlaceholder}
                     value={userData.address}
                     onChange={handleInput}
                     required
@@ -548,12 +571,12 @@ function Register() {
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div>
                     <label htmlFor="city" className={labelClass}>
-                      City *
+                      {R.city}
                     </label>
                     <input
                       id="city"
                       name="city"
-                      placeholder="London"
+                      placeholder={R.cityPlaceholder}
                       value={userData.city}
                       onChange={handleInput}
                       required
@@ -566,12 +589,12 @@ function Register() {
                   </div>
                   <div>
                     <label htmlFor="postalCode" className={labelClass}>
-                      Postal Code *
+                      {R.postalCode}
                     </label>
                     <input
                       id="postalCode"
                       name="postalCode"
-                      placeholder="SW1A 1AA"
+                      placeholder={R.postalCodePlaceholder}
                       value={userData.postalCode}
                       onChange={handleInput}
                       required
@@ -584,12 +607,12 @@ function Register() {
                   </div>
                   <div>
                     <label htmlFor="country" className={labelClass}>
-                      Country *
+                      {R.country}
                     </label>
                     <input
                       id="country"
                       name="country"
-                      placeholder="United Kingdom"
+                      placeholder={R.countryPlaceholder}
                       value={userData.country}
                       onChange={handleInput}
                       required
@@ -605,7 +628,7 @@ function Register() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="password" className={labelClass}>
-                      Password *
+                      {R.password}
                     </label>
                     <div className="relative">
                       <input
@@ -632,7 +655,7 @@ function Register() {
                       </button>
                     </div>
                     <p className="mt-1 text-[11px] text-slate-400">
-                      Minimum 8 characters
+                      {R.minChars}
                     </p>
                     {errors.password && (
                       <p className="mt-1 text-xs text-rose-600">{errors.password}</p>
@@ -641,7 +664,7 @@ function Register() {
 
                   <div>
                     <label htmlFor="cpassword" className={labelClass}>
-                      Confirm Password *
+                      {R.confirmPassword}
                     </label>
                     <div className="relative">
                       <input
@@ -676,7 +699,7 @@ function Register() {
                 {/* Referral Code (Optional) */}
                 <div>
                   <label htmlFor="referralCode" className={labelClass}>
-                    Referral Code (Optional)
+                    {R.referralLabel}
                   </label>
                   <div className="relative">
                     <Gift className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -689,7 +712,7 @@ function Register() {
                         setUserData((prev) => ({ ...prev, referralCode: val }));
                         verifyReferralCode(val);
                       }}
-                      placeholder="Enter 8-character referral code"
+                      placeholder={R.referralPlaceholder}
                       maxLength={8}
                       disabled={isloading}
                       className={`${inputClass} pl-10 uppercase`}
@@ -697,13 +720,13 @@ function Register() {
                   </div>
                   {verifyingCode && (
                     <p className="mt-1 text-xs text-slate-500">
-                      Verifying referral code...
+                      {R.verifyingReferral}
                     </p>
                   )}
                   {referrerInfo && !verifyingCode && (
                     <p className="mt-1 text-xs text-emerald-600 font-semibold flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      Referred by {referrerInfo.name}
+                      {R.referredBy} {referrerInfo.name}
                     </p>
                   )}
                   {referralCodeError && !verifyingCode && (
@@ -712,10 +735,10 @@ function Register() {
                 </div>
 
                 <p className="text-xs text-slate-500">
-                  By creating an account, you agree to our{" "}
-                  <span className="text-slate-700 font-semibold">Terms of Service</span>{" "}
-                  and{" "}
-                  <span className="text-slate-700 font-semibold">Privacy Policy</span>.
+                  {R.termsPrefix}{" "}
+                  <span className="text-slate-700 font-semibold">{R.termsService}</span>{" "}
+                  {R.termsAnd}{" "}
+                  <span className="text-slate-700 font-semibold">{R.privacyPolicy}</span>.
                 </p>
 
                 <button
@@ -726,10 +749,10 @@ function Register() {
                   {isloading ? (
                     <>
                       <Loader2 className="h-5 w-5 animate-spin" />
-                      <span>Creating account...</span>
+                      <span>{R.creatingAccountBtn}</span>
                     </>
                   ) : (
-                    <span>Create Account</span>
+                    <span>{R.createAccountBtn}</span>
                   )}
                 </button>
               </form>
@@ -740,20 +763,20 @@ function Register() {
                   <CheckCircle2 className="h-5 w-5" />
                 </div>
                 <div className="text-xs">
-                  <p className="font-bold text-slate-900">Your data is protected</p>
+                  <p className="font-bold text-slate-900">{R.dataProtectedTitle}</p>
                   <p className="text-slate-500">
-                    256-bit SSL encryption on all connections
+                    {R.dataProtectedSub}
                   </p>
                 </div>
               </div>
 
               <p className="text-center text-sm text-slate-500">
-                Already have an account?{" "}
+                {R.alreadyHaveAccount}{" "}
                 <Link
                   to="/auth/login"
                   className="font-bold text-blue-600 hover:underline"
                 >
-                  Sign In
+                  {R.signIn}
                 </Link>
               </p>
             </div>

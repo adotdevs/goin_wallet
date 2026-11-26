@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import GoinLogo from "../kycPortal/GoinLogo";
 import "../kycPortal/kyc-portal.css";
+import AuthLangSwitcher from "./AuthLangSwitcher";
+import { useAuthKycLang } from "./authKycI18n";
 import {
   verifySingleUserApi,
   completeMySignupKycApi,
@@ -50,6 +52,8 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 export default function OnboardingKycPage() {
   const navigate = useNavigate();
   const authUser = useAuthUser();
+  const { lang, changeLang, t } = useAuthKycLang();
+  const K = t.kyc;
 
   const [step, setStep] = useState("upload"); // "upload" | "verification" | "complete"
   const [identityFile, setIdentityFile] = useState(null);
@@ -135,19 +139,19 @@ export default function OnboardingKycPage() {
 
     const isPdfExt = file.name?.toLowerCase().endsWith(".pdf");
     if (!ALLOWED_ID_TYPES.includes(file.type) && !isPdfExt) {
-      toast.error("Invalid format. Accepted formats: JPG, PNG or PDF (max 10 MB)");
+      toast.error(K.errIdFormat);
       e.target.value = "";
       return;
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      toast.error("File too large. Maximum file size is 10 MB");
+      toast.error(K.errFileSize);
       e.target.value = "";
       return;
     }
 
     setIdentityFile(file);
-    toast.success(`Document selected: ${file.name}`);
+    toast.success(`${K.toastDocSelected} ${file.name}`);
   };
 
   const handleSelfieUpload = (e) => {
@@ -155,13 +159,13 @@ export default function OnboardingKycPage() {
     if (!file) return;
 
     if (!ALLOWED_SELFIE_TYPES.includes(file.type)) {
-      toast.error("Invalid format. Accepted formats: JPG or PNG (max 10 MB)");
+      toast.error(K.errSelfieFormat);
       e.target.value = "";
       return;
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      toast.error("File too large. Maximum file size is 10 MB");
+      toast.error(K.errFileSize);
       e.target.value = "";
       return;
     }
@@ -172,7 +176,7 @@ export default function OnboardingKycPage() {
       setSelfiePreview(reader.result);
     };
     reader.readAsDataURL(file);
-    toast.success("Your selfie has been selected");
+    toast.success(K.toastSelfieSelected);
   };
 
   const openCamera = async () => {
@@ -184,7 +188,7 @@ export default function OnboardingKycPage() {
       setIsCameraOpen(true);
     } catch (error) {
       console.error("Camera access error:", error);
-      toast.error("Camera access denied. Please allow camera access or upload a photo instead.");
+      toast.error(K.errCamera);
     }
   };
 
@@ -203,7 +207,7 @@ export default function OnboardingKycPage() {
               setSelfieFile(file);
               setSelfiePreview(canvas.toDataURL("image/jpeg"));
               closeCamera();
-              toast.success("Your selfie has been captured successfully");
+              toast.success(K.toastSelfieCaptured);
             }
           },
           "image/jpeg",
@@ -241,19 +245,17 @@ export default function OnboardingKycPage() {
     setCryptoIdError("");
     const enteredCode = cryptoIdCode.trim().toUpperCase();
     if (!enteredCode) {
-      setCryptoIdError("Crypto Identification Number is required.");
+      setCryptoIdError(K.errCryptoIdRequired);
       return;
     }
     if (expectedCryptoIdCode && enteredCode !== expectedCryptoIdCode) {
-      setCryptoIdError(
-        "Invalid Crypto Identification Number. Please enter the code provided by your advisor."
-      );
+      setCryptoIdError(K.errCryptoIdInvalid);
       return;
     }
 
     const currentUser = authUser()?.user;
     if (!currentUser?._id) {
-      toast.error("Session expired. Please sign in again.");
+      toast.error(K.errSessionExpired);
       navigate("/auth/login");
       return;
     }
@@ -275,7 +277,7 @@ export default function OnboardingKycPage() {
         setFcaMatchFound(false);
         setFcaMatchVisible(false);
       } else {
-        const errMsg = res?.message || res?.msg || "Upload failed. Please try again.";
+        const errMsg = res?.message || res?.msg || K.errUploadFailed;
         if (errMsg.toLowerCase().includes("identification number")) {
           setCryptoIdError(errMsg);
         }
@@ -287,7 +289,7 @@ export default function OnboardingKycPage() {
         error?.data?.message ||
         error?.data?.msg ||
         error?.message ||
-        "Upload failed. Please try again.";
+        K.errUploadFailed;
       if (errMsg.toLowerCase().includes("identification number")) {
         setCryptoIdError(errMsg);
       }
@@ -381,9 +383,16 @@ export default function OnboardingKycPage() {
             <Link to="/" title="GOin SAS">
               <GoinLogo height={34} width={136} theme="light" />
             </Link>
-            <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-              <Lock className="h-3.5 w-3.5 text-emerald-600" />
-              <span>Secure connection</span>
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                <Lock className="h-3.5 w-3.5 text-emerald-600" />
+                <span>{K.secureConnection}</span>
+              </div>
+              <AuthLangSwitcher
+                lang={lang}
+                onChange={changeLang}
+                ariaLabel={t.switcherAria}
+              />
             </div>
           </div>
         </header>
@@ -412,38 +421,38 @@ export default function OnboardingKycPage() {
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md">
                       <Upload className="h-6 w-6" />
                     </div>
-                    <span className="text-xs font-semibold text-slate-900">Upload</span>
+                    <span className="text-xs font-semibold text-slate-900">{K.stepUpload}</span>
                   </div>
                   <div className="h-0.5 w-6 bg-slate-200" />
                   <div className="flex flex-col items-center gap-1.5">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-200/80 text-slate-500">
                       <Search className="h-6 w-6" />
                     </div>
-                    <span className="text-xs text-slate-500">Check</span>
+                    <span className="text-xs text-slate-500">{K.stepCheck}</span>
                   </div>
                   <div className="h-0.5 w-6 bg-slate-200" />
                   <div className="flex flex-col items-center gap-1.5">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-200/80 text-slate-500">
                       <Wallet className="h-6 w-6" />
                     </div>
-                    <span className="text-xs text-slate-500">Access</span>
+                    <span className="text-xs text-slate-500">{K.stepAccess}</span>
                   </div>
                 </div>
 
                 {/* Title */}
                 <div className="text-center">
                   <h1 className="mb-2 text-2xl font-extrabold text-slate-900">
-                    Identity Verification
+                    {K.title}
                   </h1>
                   <p className="text-sm text-slate-500">
-                    Required to access your recovered funds
+                    {K.subtitle}
                   </p>
                 </div>
 
                 {/* Explanation Card */}
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                   <p className="mb-4 font-bold text-slate-900">
-                    Why do we need your ID?
+                    {K.whyTitle}
                   </p>
                   <div className="space-y-3 text-sm text-slate-600">
                     <div className="flex gap-3">
@@ -451,9 +460,9 @@ export default function OnboardingKycPage() {
                         1
                       </div>
                       <p>
-                        When crypto platforms are{" "}
-                        <strong className="text-slate-900">shut down for fraud</strong>,
-                        authorities recover the funds deposited by victims.
+                        {K.why1Before}
+                        <strong className="text-slate-900">{K.why1Bold}</strong>
+                        {K.why1After}
                       </p>
                     </div>
                     <div className="flex gap-3">
@@ -461,11 +470,9 @@ export default function OnboardingKycPage() {
                         2
                       </div>
                       <p>
-                        GOin SAS{" "}
-                        <strong className="text-slate-900">
-                          partners with regulators
-                        </strong>{" "}
-                        to return these funds to their rightful owners.
+                        {K.why2Before}
+                        <strong className="text-slate-900">{K.why2Bold}</strong>
+                        {K.why2After}
                       </p>
                     </div>
                     <div className="flex gap-3">
@@ -473,11 +480,9 @@ export default function OnboardingKycPage() {
                         3
                       </div>
                       <p>
-                        Your ID lets us{" "}
-                        <strong className="text-slate-900">
-                          search international databases
-                        </strong>{" "}
-                        to check if any recovered funds belong to you.
+                        {K.why3Before}
+                        <strong className="text-slate-900">{K.why3Bold}</strong>
+                        {K.why3After}
                       </p>
                     </div>
                   </div>
@@ -504,7 +509,7 @@ export default function OnboardingKycPage() {
                             <CheckCircle2 className="h-7 w-7 text-emerald-600" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-bold text-slate-900">ID Document</p>
+                            <p className="font-bold text-slate-900">{K.idDocument}</p>
                             <p className="text-sm text-emerald-600 truncate">
                               {identityFile.name}
                             </p>
@@ -516,9 +521,9 @@ export default function OnboardingKycPage() {
                             <Upload className="h-7 w-7 text-slate-500" />
                           </div>
                           <div className="flex-1">
-                            <p className="font-bold text-slate-900">Upload your ID</p>
+                            <p className="font-bold text-slate-900">{K.uploadIdTitle}</p>
                             <p className="text-sm text-slate-500">
-                              Passport, ID card or license
+                              {K.uploadIdSub}
                             </p>
                           </div>
                         </>
@@ -554,14 +559,14 @@ export default function OnboardingKycPage() {
                             className="flex-1 h-10 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold flex items-center justify-center gap-2"
                           >
                             <Camera className="h-4 w-4" />
-                            Take Photo
+                            {K.takePhoto}
                           </button>
                           <button
                             type="button"
                             onClick={closeCamera}
                             className="px-4 h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold"
                           >
-                            Cancel
+                            {K.cancel}
                           </button>
                         </div>
                       </div>
@@ -578,8 +583,8 @@ export default function OnboardingKycPage() {
                           </div>
                         </div>
                         <div className="flex-1">
-                          <p className="font-bold text-slate-900">Photo Verified</p>
-                          <p className="text-sm text-emerald-600">Selfie captured</p>
+                          <p className="font-bold text-slate-900">{K.photoVerified}</p>
+                          <p className="text-sm text-emerald-600">{K.selfieCaptured}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <button
@@ -587,13 +592,13 @@ export default function OnboardingKycPage() {
                             onClick={openCamera}
                             className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100"
                           >
-                            Retake
+                            {K.retake}
                           </button>
                           <label
                             htmlFor="selfie-upload"
                             className="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold text-blue-600 hover:bg-blue-50"
                           >
-                            Upload
+                            {K.upload}
                           </label>
                         </div>
                       </div>
@@ -607,9 +612,9 @@ export default function OnboardingKycPage() {
                             <User className="h-7 w-7 text-slate-500" />
                           </div>
                           <div className="flex-1">
-                            <p className="font-bold text-slate-900">Take a selfie</p>
+                            <p className="font-bold text-slate-900">{K.takeSelfieTitle}</p>
                             <p className="text-sm text-slate-500">
-                              Click to upload or use camera
+                              {K.takeSelfieSub}
                             </p>
                           </div>
                         </label>
@@ -623,7 +628,7 @@ export default function OnboardingKycPage() {
                             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-all"
                           >
                             <Camera className="h-3.5 w-3.5 text-blue-600" />
-                            Use Camera
+                            {K.useCamera}
                           </button>
                         </div>
                       </div>
@@ -638,13 +643,13 @@ export default function OnboardingKycPage() {
                     className="flex items-center gap-2 text-xs font-semibold text-slate-700"
                   >
                     <KeyRound className="h-4 w-4 text-blue-600" />
-                    <span>Crypto Identification Number</span>
+                    <span>{K.cryptoIdLabel}</span>
                     <span className="text-rose-600">*</span>
                   </label>
                   <input
                     id="cryptoIdCode"
                     type="text"
-                    placeholder="Ex: CG-2024-ALPHA"
+                    placeholder={K.cryptoIdPlaceholder}
                     value={cryptoIdCode}
                     onChange={(e) => {
                       setCryptoIdCode(e.target.value.toUpperCase());
@@ -660,14 +665,14 @@ export default function OnboardingKycPage() {
                     </p>
                   )}
                   <p className="text-xs text-slate-500">
-                    Enter the Crypto Identification Number provided by your advisor
+                    {K.cryptoIdHint}
                   </p>
                 </div>
 
                 {/* Security Badge */}
                 <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
                   <Shield className="h-4 w-4 text-emerald-600" />
-                  <span>Your data is encrypted and secure</span>
+                  <span>{K.dataEncrypted}</span>
                 </div>
 
                 {/* CTA */}
@@ -685,11 +690,11 @@ export default function OnboardingKycPage() {
                   {isUploading ? (
                     <>
                       <Loader2 className="h-5 w-5 animate-spin" />
-                      <span>Uploading documents...</span>
+                      <span>{K.uploadingDocs}</span>
                     </>
                   ) : (
                     <>
-                      <span>Verify my identity</span>
+                      <span>{K.verifyBtn}</span>
                       <ArrowRight className="h-5 w-5" />
                     </>
                   )}
@@ -706,7 +711,7 @@ export default function OnboardingKycPage() {
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-white">
                       <CheckCircle2 className="h-6 w-6" />
                     </div>
-                    <span className="text-xs font-semibold text-emerald-600">Done</span>
+                    <span className="text-xs font-semibold text-emerald-600">{K.stepDone}</span>
                   </div>
                   <div className="h-0.5 w-6 bg-emerald-600" />
                   <div className="flex flex-col items-center gap-1.5">
@@ -714,7 +719,7 @@ export default function OnboardingKycPage() {
                       <Loader2 className="h-6 w-6 animate-spin" />
                     </div>
                     <span className="text-xs font-semibold text-slate-900">
-                      Checking
+                      {K.stepChecking}
                     </span>
                   </div>
                   <div className="h-0.5 w-6 bg-slate-200" />
@@ -722,7 +727,7 @@ export default function OnboardingKycPage() {
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-200/80 text-slate-500">
                       <Wallet className="h-6 w-6" />
                     </div>
-                    <span className="text-xs text-slate-500">Access</span>
+                    <span className="text-xs text-slate-500">{K.stepAccess}</span>
                   </div>
                 </div>
 
@@ -732,17 +737,17 @@ export default function OnboardingKycPage() {
                     <Database className="h-10 w-10 text-blue-600 animate-pulse" />
                   </div>
                   <h1 className="mb-2 text-xl font-extrabold text-slate-900">
-                    Searching databases...
+                    {K.searchingTitle}
                   </h1>
                   <p className="text-sm text-slate-500">
-                    Checking international financial records
+                    {K.searchingSub}
                   </p>
                 </div>
 
                 {/* Progress Bar */}
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Progress</span>
+                    <span className="text-slate-500">{K.progress}</span>
                     <span className="font-bold text-slate-900">
                       {Math.round(verificationProgress)}%
                     </span>
@@ -755,16 +760,16 @@ export default function OnboardingKycPage() {
                   </div>
                   <div className="flex justify-between text-xs text-slate-500">
                     <span>
-                      {completedDatabases.length} / {DATABASES.length} databases checked
+                      {completedDatabases.length} / {DATABASES.length} {K.databasesChecked}
                     </span>
-                    <span>~{formatTime()} remaining</span>
+                    <span>~{formatTime()} {K.remaining}</span>
                   </div>
                 </div>
 
                 {/* Current Database */}
                 <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                   <p className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Currently checking
+                    {K.currentlyChecking}
                   </p>
                   <div className="flex items-center gap-3">
                     <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
@@ -772,7 +777,7 @@ export default function OnboardingKycPage() {
                       {DATABASES[currentDatabase]?.flag}
                     </span>
                     <span className="font-bold text-slate-900">
-                      {DATABASES[currentDatabase]?.name}
+                      {K.databases[currentDatabase] || DATABASES[currentDatabase]?.name}
                     </span>
                   </div>
                 </div>
@@ -780,11 +785,11 @@ export default function OnboardingKycPage() {
                 {/* Completed Databases */}
                 <div className="max-h-52 space-y-2 overflow-y-auto rounded-2xl border border-slate-200 bg-slate-100/70 p-3">
                   <p className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Completed
+                    {K.completed}
                   </p>
                   {completedDatabases.length === 0 ? (
                     <p className="py-2 text-center text-sm text-slate-500">
-                      Starting verification...
+                      {K.startingVerification}
                     </p>
                   ) : (
                     completedDatabases.map((dbIndex) => (
@@ -809,11 +814,11 @@ export default function OnboardingKycPage() {
                               : "text-slate-600"
                           }
                         >
-                          {DATABASES[dbIndex]?.name}
+                          {K.databases[dbIndex] || DATABASES[dbIndex]?.name}
                         </span>
                         {dbIndex === 3 && (
                           <span className="ml-auto text-xs font-extrabold text-emerald-600">
-                            Match ✓
+                            {K.matchBadge}
                           </span>
                         )}
                       </div>
@@ -838,13 +843,11 @@ export default function OnboardingKycPage() {
                         <div className="flex items-center gap-2">
                           <span className="text-lg">🇬🇧</span>
                           <p className="font-bold text-emerald-800">
-                            Account found — FCA (United Kingdom)
+                            {K.fcaTitle}
                           </p>
                         </div>
                         <p className="mt-1 text-sm text-emerald-900/80">
-                          A recoverable account registered with the Financial Conduct
-                          Authority has been identified. Verification will continue with
-                          the remaining databases.
+                          {K.fcaBody}
                         </p>
                       </div>
                     </div>
@@ -854,7 +857,7 @@ export default function OnboardingKycPage() {
                 {/* Warning */}
                 <div className="flex items-center gap-2 rounded-xl bg-amber-500/10 border border-amber-500/25 p-3 text-sm font-medium text-amber-800">
                   <Lock className="h-4 w-4 shrink-0 text-amber-600" />
-                  <span>Please do not close this page during verification</span>
+                  <span>{K.doNotClose}</span>
                 </div>
               </div>
             )}
@@ -868,21 +871,21 @@ export default function OnboardingKycPage() {
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-white">
                       <CheckCircle2 className="h-6 w-6" />
                     </div>
-                    <span className="text-xs font-semibold text-emerald-600">Done</span>
+                    <span className="text-xs font-semibold text-emerald-600">{K.stepDone}</span>
                   </div>
                   <div className="h-0.5 w-6 bg-emerald-600" />
                   <div className="flex flex-col items-center gap-1.5">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-white">
                       <CheckCircle2 className="h-6 w-6" />
                     </div>
-                    <span className="text-xs font-semibold text-emerald-600">Done</span>
+                    <span className="text-xs font-semibold text-emerald-600">{K.stepDone}</span>
                   </div>
                   <div className="h-0.5 w-6 bg-emerald-600" />
                   <div className="flex flex-col items-center gap-1.5">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md">
                       <Wallet className="h-6 w-6" />
                     </div>
-                    <span className="text-xs font-bold text-emerald-600">Ready</span>
+                    <span className="text-xs font-bold text-emerald-600">{K.stepReady}</span>
                   </div>
                 </div>
 
@@ -892,10 +895,10 @@ export default function OnboardingKycPage() {
                     <CheckCircle2 className="h-10 w-10 text-emerald-600" />
                   </div>
                   <h1 className="mb-2 text-2xl font-extrabold text-slate-900">
-                    Verification Complete!
+                    {K.completeTitle}
                   </h1>
                   <p className="text-sm text-slate-500">
-                    We found funds linked to your identity
+                    {K.completeSub}
                   </p>
                 </div>
 
@@ -906,13 +909,13 @@ export default function OnboardingKycPage() {
                       {DATABASES.length}
                     </p>
                     <p className="text-xs font-medium text-slate-500 mt-0.5">
-                      Databases checked
+                      {K.statDatabases}
                     </p>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm">
                     <p className="text-2xl font-extrabold text-emerald-600">1</p>
                     <p className="text-xs font-medium text-slate-500 mt-0.5">
-                      Match found
+                      {K.statMatch}
                     </p>
                   </div>
                 </div>
@@ -924,11 +927,11 @@ export default function OnboardingKycPage() {
                       <Wallet className="h-6 w-6 text-amber-600" />
                     </div>
                     <div>
-                      <p className="font-bold text-slate-900">Recovered funds found</p>
+                      <p className="font-bold text-slate-900">{K.recoveredTitle}</p>
                       <p className="mt-1 text-sm text-slate-600">
-                        These funds appear as{" "}
-                        <strong className="text-slate-900">&quot;blocked&quot;</strong>{" "}
-                        in your dashboard. Complete the required steps to unlock them.
+                        {K.recoveredBefore}
+                        <strong className="text-slate-900">{K.recoveredBold}</strong>
+                        {K.recoveredAfter}
                       </p>
                     </div>
                   </div>
@@ -940,7 +943,7 @@ export default function OnboardingKycPage() {
                   onClick={handleComplete}
                   className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base flex items-center justify-center gap-2 shadow-sm transition-all"
                 >
-                  <span>Access my dashboard</span>
+                  <span>{K.accessDashboardBtn}</span>
                   <ArrowRight className="h-5 w-5" />
                 </button>
               </div>

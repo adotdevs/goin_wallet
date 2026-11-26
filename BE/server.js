@@ -584,3 +584,40 @@ cron.schedule('* * * * *', async () => {
   await processDueReminders();
 });
 console.log('✅ Cron job scheduled: CRM reminder notifications (every minute)\n');
+
+// Graceful shutdown & crash handlers so PM2 / Nodemon restart cleanly without EADDRINUSE
+let isShuttingDown = false;
+const gracefulShutdown = (signal, exitCode = 0) => {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+  console.log(`\n🛑 Received ${signal}. Closing HTTP/Socket.io server gracefully...`);
+
+  const forceExitTimer = setTimeout(() => {
+    console.error('⚠️ Forced shutdown after timeout');
+    process.exit(exitCode || 1);
+  }, 4500);
+  forceExitTimer.unref();
+
+  try {
+    io.close();
+  } catch (err) {
+    console.error('Error closing Socket.io:', err.message);
+  }
+
+  server.close(() => {
+    console.log('✅ HTTP server closed cleanly');
+    process.exit(exitCode);
+  });
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM', 0));
+process.on('SIGINT', () => gracefulShutdown('SIGINT', 0));
+
+process.on('unhandledRejection', (reason) => {
+  console.error('❌ Unhandled Promise Rejection:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('💥 Uncaught Exception — triggering clean restart:', err);
+  gracefulShutdown('uncaughtException', 1);
+});
