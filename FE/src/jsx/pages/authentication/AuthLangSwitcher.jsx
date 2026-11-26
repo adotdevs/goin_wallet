@@ -7,6 +7,7 @@ export default function AuthLangSwitcher({
   lang,
   onChange,
   ariaLabel = "Choisir la langue",
+  dark = false,
 }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
@@ -33,7 +34,11 @@ export default function AuthLangSwitcher({
   }, [open]);
 
   return (
-    <div ref={containerRef} className={styles.wrapper}>
+    <div
+      ref={containerRef}
+      data-no-translate="1"
+      className={`${styles.wrapper} ${dark ? styles.dark : ""}`}
+    >
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}

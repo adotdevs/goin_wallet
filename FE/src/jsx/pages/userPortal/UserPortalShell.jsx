@@ -20,6 +20,9 @@ import {
 import GoinLogo from "../kycPortal/GoinLogo";
 import CryptoNewsTicker from "../../elements/dashboard/CryptoNewsTicker";
 import "../kycPortal/kyc-portal.css";
+import AuthLangSwitcher from "../authentication/AuthLangSwitcher";
+import { useAuthKycLang } from "../authentication/authKycI18n";
+import { applyPortalTranslations } from "./userPortalTranslations";
 import {
   LayoutDashboard,
   Wallet,
@@ -107,6 +110,14 @@ export default function UserPortalShell({ children, title, noPadding = false, sh
   const navigate = useNavigate();
   const location = useLocation();
   const menuItems = useMenuList();
+  const { lang, changeLang, t } = useAuthKycLang();
+  const portalRootRef = useRef(null);
+  const translationStateRef = useRef({
+    textOriginals: new WeakMap(),
+    textLastApplied: new WeakMap(),
+    attrOriginals: new WeakMap(),
+    attrLastApplied: new WeakMap(),
+  });
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -200,6 +211,54 @@ export default function UserPortalShell({ children, title, noPadding = false, sh
       document.documentElement.classList.remove("kyc-portal-active");
     };
   }, []);
+
+  useEffect(() => {
+    const prevLang = document.documentElement.lang;
+    document.documentElement.lang = lang;
+    return () => {
+      document.documentElement.lang = prevLang;
+    };
+  }, [lang]);
+
+  useEffect(() => {
+    const root = portalRootRef.current;
+    if (!root) return undefined;
+
+    let rafId = null;
+    let isApplying = false;
+
+    const runTranslate = () => {
+      if (isApplying) return;
+      isApplying = true;
+      try {
+        applyPortalTranslations(root, lang, translationStateRef.current);
+      } finally {
+        isApplying = false;
+      }
+    };
+
+    runTranslate();
+
+    const observer = new MutationObserver(() => {
+      if (isApplying) return;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        runTranslate();
+      });
+    });
+
+    observer.observe(root, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+
+    return () => {
+      observer.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [lang, location.pathname]);
 
   useEffect(() => {
     const role = sessionUser?.role;
@@ -595,7 +654,7 @@ export default function UserPortalShell({ children, title, noPadding = false, sh
   );
 
   return (
-    <div id="kyc-portal" className={isDark ? "user-portal-dark" : ""}>
+    <div id="kyc-portal" ref={portalRootRef} className={isDark ? "user-portal-dark" : ""}>
       <div className="min-h-screen bg-[#F8FAFC] flex">
         {/* Desktop Sidebar (Fixed, independent of body scroll) */}
         <aside className="hidden lg:block fixed inset-y-0 left-0 z-40 w-64 border-r border-slate-200/80 bg-white h-screen">
@@ -640,6 +699,14 @@ export default function UserPortalShell({ children, title, noPadding = false, sh
               </div>
 
               <div className="flex items-center gap-2.5 shrink-0">
+                {/* Language Switcher (shared with Login / Registration / KYC) */}
+                <AuthLangSwitcher
+                  lang={lang}
+                  onChange={changeLang}
+                  ariaLabel={t.switcherAria}
+                  dark={isDark}
+                />
+
                 {/* Light / Dark Mode Toggle */}
                 <button
                   type="button"
